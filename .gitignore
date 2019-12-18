@@ -101,3 +101,5 @@ ENV/
 # mypy
 .mypy_cache/
 
+# setup.py (this is a poetry project and don't want to commit temporary setup.pys)
+setup.py
