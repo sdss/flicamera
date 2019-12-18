@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "gfa"
+name = "sdss-gfa"
 version = "0.1.0-alpha.0"
 description = "A library and actor to control the Guide, Focus, and Acquisition cameras."
 authors = ["José Sánchez-Gallego <gallegoj@uw.edu>"]
@@ -7,7 +7,7 @@ license = "BSD-3-Clause"
 readme = "README.md"
 homepage = "https://github.com/sdss/gfa"
 repository = "https://github.com/sdss/gfa"
-documentation = "https://gfa.readthedocs.io/en/latest/"
+documentation = "https://sdss-gfa.readthedocs.io/en/latest/"
 keywords = ["astronomy", "software"]
 classifiers = [
     "Development Status :: 4 - Beta",
