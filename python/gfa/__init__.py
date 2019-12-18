@@ -6,7 +6,7 @@
 import os
 import warnings
 
-from .core import get_config, get_logger
+from .utils import get_config, get_logger
 
 import pkg_resources
 

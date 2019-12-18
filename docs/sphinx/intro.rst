@@ -1,7 +1,7 @@
 
 .. _intro:
 
-Introduction to gfa
-===============================
+Introduction
+============
 
 We should write an introduction here.
