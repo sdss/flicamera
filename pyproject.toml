@@ -20,7 +20,8 @@ classifiers = [
 packages = [
     { include = "gfa", from = "python" }
 ]
-include = ["README.md", "python/gfa/etc/*"]
+include = ["python/gfa/etc/*", "src/**/*"]
+build = "build.py"
 
 [tool.poetry.dependencies]
 python = "^3.7"
