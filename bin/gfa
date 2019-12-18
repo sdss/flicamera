@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+# encoding: utf-8
+#
+# @Author: José Sánchez-Gallego
+# @Date: Dec 1, 2017
+# @Filename: gfa
+# @License: BSD 3-Clause
+# @Copyright: José Sánchez-Gallego
+
+
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import unicode_literals
+
+import argparse
+import os
+import sys
+
+from gfa.main import math
+
+
+if __name__ == '__main__':
+
+    # An example of how to write a command line parser that works with the
+    # main.math function. For more details on how to use argparse, start with
+    # this tutorial: https://kapeli.com/dash_share?docset_file=Python%203&docset_name=Python%203&path=doc/howto/argparse.html%23id1&platform=python&repo=Main&version=3.6.3
+
+    parser = argparse.ArgumentParser(
+        prog=os.path.basename(sys.argv[0]),
+        description='Performs an arithmetic operation.')
+
+    parser.add_argument('VALUE1', type=float, help='The first operand')
+    parser.add_argument('OPERATOR', type=str, help='The operator [+, -, *, /]')
+    parser.add_argument('VALUE2', type=float, help='The second operand')
+
+    parser.add_argument('-v', '--verbose', action='store_true', default=False,
+                        help='sets verbose mode')
+
+    args = parser.parse_args()
+
+    result = math(args.VALUE1, args.VALUE2, arith_operator=args.OPERATOR)
+
+    if args.verbose:
+        print('{} {} {} = {}'.format(args.VALUE1, args.OPERATOR, args.VALUE2, result))
+    else:
+        print(result)

@@ -1,0 +1,35 @@
+cache:
+  pip: true
+  timeout: 1000
+
+language: python
+
+matrix:
+  fast_finish: true
+  include:
+    - python: 3.7
+      dist: xenial
+      sudo: true
+      after_success:
+        - poetry run codecov
+    - python: 3.8
+      dist: xenial
+      sudo: true
+
+notifications:
+  email: false
+
+# repo branches to test
+branches:
+  - master
+  - develop
+  - testing
+
+before_install:
+  - pip install poetry
+
+install:
+  - poetry install
+
+script:
+  - poetry run pytest
