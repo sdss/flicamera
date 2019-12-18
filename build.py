@@ -6,12 +6,11 @@
 # @Filename: build.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
-# Setup file based on https://github.com/pybind/python_example
+# Extension build system using poetry, see https://github.com/python-poetry/poetry/issues/11.
 
 import glob
 import os
 import sys
-from distutils.core import setup
 
 from setuptools import Extension
 
