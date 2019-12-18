@@ -1,5 +1,5 @@
 gfa
-================
+===
 
 ![Versions](https://img.shields.io/badge/python->3.7-blue)
 [![Documentation Status](https://readthedocs.org/projects/gfa/badge/?version=latest)](https://gfa.readthedocs.io/en/latest/?badge=latest)
