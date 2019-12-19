@@ -13,4 +13,4 @@ Note that in addition to these files, your system needs `libusb-1.0` and the ass
 
 Many of these details are taken from the [PANOPTES POCS](https://github.com/panoptes/POCS/wiki/Additional-Hardware-Drivers-Installation#finger-lake-instruments).
 
-Documentation for the SDK is available [here](http://www.flicamera.com/downloads/FLI_SDK_Documentation.pdf).
+Documentation for the SDK is available [here](http://www.flicamera.com/downloads/FLI_SDK_Documentation.pdf) and [added to this repository](https://github.com/sdss/flicamera/blob/master/cextern/FLI_SDK_Documentation.pdf). Note that some functions in the SDK are not documented.
