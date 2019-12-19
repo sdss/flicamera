@@ -11,7 +11,8 @@
 import ctypes
 import os
 import pathlib
-from ctypes import POINTER, c_char_p, c_double, c_int, c_long, c_size_t, c_ulong, c_void_p
+from ctypes import (POINTER, byref, c_char_p, c_double, c_int, c_long,
+                    c_size_t, c_ulong, c_void_p)
 
 
 __ALL__ = ['LibFLI', 'FLIWarning', 'FLIError', 'chk_err']
@@ -51,6 +52,7 @@ FLI_FRAME_TYPE_NORMAL = 0
 FLI_FRAME_TYPE_DARK   = 1
 FLI_FRAME_TYPE_FLOOD  = 2
 FLI_FRAME_TYPE_RBI_FLUSH = FLI_FRAME_TYPE_FLOOD | FLI_FRAME_TYPE_DARK
+
 
 # The gray-scale bit depth for an FLI camera device.
 
@@ -356,6 +358,8 @@ class LibFLI(ctypes.CDLL):
 
     def __init__(self, shared_object=None, debug=False):
 
+        self.domain = flidomain_t(FLIDOMAIN_USB | FLIDEVICE_CAMERA)
+
         # Sets the argtypes and restype.
         for funcname, argtypes in _API_FUNCTION_PROTOTYPES:
             so_func = self.__getattr__(funcname)
@@ -371,6 +375,17 @@ class LibFLI(ctypes.CDLL):
         so_func = self.__getattr__(funcname)
         return so_func(*args)
 
+    @staticmethod
+    def _convert_to_list(ptr):
+
+        list_ = []
+        ii = 0
+        while ptr[ii]:
+            list_.append(ptr[ii])
+            ii += 1
+
+        return list_
+
     def set_debug(self, debug=True):
         """Turns the debug system on/off."""
 
@@ -380,7 +395,12 @@ class LibFLI(ctypes.CDLL):
     def list_cameras(self):
         """Returns a list of connected cameras."""
 
-        cameras = ctypes.POINTER(ctypes.c_char_p)()
-        self.FLIList(flidomain_t(FLIDOMAIN_USB), ctypes.byref(cameras))
+        cameras_ptr = POINTER(ctypes.c_char_p)()
+        self.FLIList(self.domain, byref(cameras_ptr))
+
+        cameras = self._convert_to_list(cameras_ptr)
+
+        # Free the list
+        self.FLIFreeList(cameras_ptr)
 
         return cameras
