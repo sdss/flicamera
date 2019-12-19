@@ -7,5 +7,6 @@ ignore =
 
 per-file-ignores =
     *lib.py:E221,E501
+    setup.py:*
 
 max-line-length = 99
