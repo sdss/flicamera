@@ -11,6 +11,7 @@
 import ctypes
 import os
 import pathlib
+import warnings
 from ctypes import (POINTER, byref, c_char_p, c_double, c_int, c_long,
                     c_size_t, c_ulong, c_void_p)
 
@@ -334,8 +335,9 @@ class LibFLI(ctypes.CDLL):
         if not shared_object:
             shared_object = list(pathlib.Path(__file__).parent.glob('libfli*.so'))
             if len(shared_object) == 0:
-                raise RuntimeError('cannot find FLI library shared object.')
-            shared_object.append('libfli.so')  # In case the library exists in a system location;.
+                warnings.warn('the library was compiled without a copy of libfli. '
+                              'Trying to get it from the standard locations.', FLIWarning)
+            shared_object.append('libfli.so')  # In case the library exists in a system location.
         else:
             if not isinstance(shared_object, (list, tuple)):
                 shared_object = [shared_object]
@@ -348,7 +350,7 @@ class LibFLI(ctypes.CDLL):
                 pass
 
         if me is None:
-            raise RuntimeError('cannot load any of the provided shared libraries.')
+            raise RuntimeError('cannot load the libfli shared library.')
 
         # A hack so to override the class of the returned object (CDLL) with
         # this class. It should be ok.
