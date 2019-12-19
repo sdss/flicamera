@@ -293,10 +293,10 @@ def chk_err(err):
     """Wraps a libFLI C function call with error checking code."""
     if err < 0:
         msg = os.strerror(abs(err))  # err is always negative
-        raise FLIError(msg)
+        raise FLIError(msg + f' ({err})')
     if err > 0:
         msg = os.strerror(err)
-        raise FLIWarning(msg)
+        raise FLIWarning(msg + f' ({err})')
     return err
 
 
@@ -320,11 +320,12 @@ class LibFLI(ctypes.CDLL):
     shared_object : str
         The path to the FLI library shared object. If not provided, uses the
         default, internal version.
-
+    debug : bool
+        Whether to use the debug mode.
 
     """
 
-    def __new__(cls, shared_object=None):
+    def __new__(cls, shared_object=None, **kwargs):
 
         me = None
 
@@ -353,7 +354,7 @@ class LibFLI(ctypes.CDLL):
 
         return me
 
-    def __init__(self, shared_object=None):
+    def __init__(self, shared_object=None, debug=False):
 
         # Sets the argtypes and restype.
         for funcname, argtypes in _API_FUNCTION_PROTOTYPES:
@@ -361,8 +362,25 @@ class LibFLI(ctypes.CDLL):
             so_func.argtypes = argtypes
             so_func.restype = chk_err
 
+        if debug:
+            self.set_debug(True)
+
     def call_function(self, funcname, *args):
         """Calls a FLI library function with arguments."""
 
         so_func = self.__getattr__(funcname)
         return so_func(*args)
+
+    def set_debug(self, debug=True):
+        """Turns the debug system on/off."""
+
+        debug_level = flidebug_t(FLIDEBUG_ALL if debug else FLIDEBUG_NONE)
+        self.FLISetDebugLevel(c_char_p(None), debug_level)
+
+    def list_cameras(self):
+        """Returns a list of connected cameras."""
+
+        cameras = ctypes.POINTER(ctypes.c_char_p)()
+        self.FLIList(flidomain_t(FLIDOMAIN_USB), ctypes.byref(cameras))
+
+        return cameras
