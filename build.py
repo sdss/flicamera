@@ -26,7 +26,8 @@ def get_directories():
 
     if sys.platform in ['linux', 'darwin', 'unix']:
         dirs.append(os.path.join(LIBFLI_PATH, 'unix'))
-        dirs.append(os.path.join(LIBFLI_PATH, 'unix', 'libusb'))
+        if not TRAVIS:
+            dirs.append(os.path.join(LIBFLI_PATH, 'unix', 'libusb'))
 
     return dirs
 
