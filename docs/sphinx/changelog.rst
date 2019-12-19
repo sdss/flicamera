@@ -1,7 +1,3 @@
-
-.. _changelog:
-
-Changelog
-=========
+.. _flicamera-changelog:
 
 .. include:: ../../CHANGELOG.rst

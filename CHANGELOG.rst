@@ -1,5 +1,3 @@
-.. _flicamera-changelog:
-
 =========
 Changelog
 =========
