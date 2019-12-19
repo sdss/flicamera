@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "sdss-flicamera"
 version = "0.1.0-alpha.0"
-description = "A library and actor to control the Guide, Focus, and Acquisition cameras."
+description = "A library to control Finger Lakes Instrumentation cameras."
 authors = ["José Sánchez-Gallego <gallegoj@uw.edu>"]
 license = "BSD-3-Clause"
 readme = "README.md"
