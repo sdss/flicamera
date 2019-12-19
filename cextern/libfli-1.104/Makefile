@@ -23,16 +23,17 @@ endif
 DIR	= $(shell pwd)
 CC	= gcc
 INC	= $(DIR) $(DIR)/unix
-CFLAGS	= -fPIC -Wall -O2 -g $(patsubst %, -I%, $(INC))
 
 ifeq ($(UNAME), Darwin)
 	CFLAGS += -arch x86_64
 	INC += $(DIR)/unix/osx /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/
 	LIBS =
 	LIBPATH = /usr/local/lib /usr/lib/ /System/Library/Frameworks/CoreFoundation.framework
-	LDLIBS = $(patsubst %, -l%, $(LIBS)) -framework IOkit -framework IOkit
+	LDLIBS = $(patsubst %, -l%, $(LIBS)) -framework IOkit -framework CoreFoundation
 	LOADLIBES = $(patsubst %, -L%, $(LIBPATH))
 endif
+
+CFLAGS	= -fPIC -Wall -O2 -g $(patsubst %, -I%, $(INC))
 
 AR	= ar
 ARFLAGS	= -rus
@@ -52,7 +53,7 @@ FILT	= libfli-filter-focuser.o
 ALLOBJ	= $(SYS) $(DEBUG) $(MEM) $(IO) $(CAM) $(FILT)
 
 libfli.so: libfli.o $(ALLOBJ)
-	$(CC) -shared -o $@ $^ $(LDLIBS)
+	$(CC) -shared -o $@ $^ $(LDLIBS) $(patsubst %, -I%, $(INC))
 
 install: libfli.so
 	cp libfli.so /usr/local/lib
