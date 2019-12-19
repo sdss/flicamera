@@ -26,11 +26,6 @@ def get_directories():
         dirs.append(os.path.join(LIBFLI_PATH, 'unix'))
         dirs.append(os.path.join(LIBFLI_PATH, 'unix', 'libusb'))
 
-    # if sys.platform == 'linux':
-    #     dirs.append(os.path.join(LIBFLI_PATH, 'unix', 'linux'))
-    if sys.platform == 'darwin':
-        dirs.append(os.path.join(LIBFLI_PATH, 'unix', 'osx'))
-
     return dirs
 
 
@@ -47,9 +42,6 @@ def get_sources():
 
 extra_compile_args = ['-D__LIBUSB__', '-Wall', '-O3', '-fPIC', '-g']
 extra_link_args = ['-lm', '-nostartfiles']
-if sys.platform == 'darwin':
-    extra_compile_args += ['-framework', 'CoreFoundation',
-                           '-framework', 'IOkit']
 
 ext_modules = [
     Extension(
