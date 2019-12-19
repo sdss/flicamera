@@ -395,14 +395,109 @@ class LibFLI(ctypes.CDLL):
         self.FLISetDebugLevel(c_char_p(None), debug_level)
 
     def list_cameras(self):
-        """Returns a list of connected cameras."""
+        """Returns a list of connected camera names."""
 
-        cameras_ptr = POINTER(ctypes.c_char_p)()
-        self.FLIList(self.domain, byref(cameras_ptr))
+        names_ptr = POINTER(ctypes.c_char_p)()
+        self.FLIList(self.domain, byref(names_ptr))
 
-        cameras = self._convert_to_list(cameras_ptr)
+        cameras = [name.decode().split(';')[0]
+                   for name in self._convert_to_list(names_ptr)]
 
         # Free the list
-        self.FLIFreeList(cameras_ptr)
+        self.FLIFreeList(names_ptr)
 
         return cameras
+
+    def get_camera(self, serial):
+        """Gets a camera by its serial string."""
+
+        camera_names = self.list_cameras()
+        for camera_name in camera_names:
+            fli_camera = FLIDevice(camera_name, self)
+            if fli_camera.serial == serial:
+                return fli_camera
+            fli_camera.close()
+
+        return None
+
+
+
+class FLIDevice(object):
+    """A FLI device."""
+
+    def __init__(self, name, lib):
+
+        self._str_size = 100
+
+        self.name = name if isinstance(name, str) else name.decode()
+        self.lib = lib
+
+        self.dev = flidev_t()
+        self.fwrev = c_long()
+        self.hwrev = c_long()
+        self._model = ctypes.create_string_buffer(self._str_size)
+        self._serial = ctypes.create_string_buffer(self._str_size)
+
+        self.shutter = False
+        self.temperature = {'CCD': None, 'base': None}
+
+        self.open()
+
+    @property
+    def model(self):
+        """The model of the device."""
+
+        return self._model.value.decode()
+
+    @property
+    def serial(self):
+        """The serial string of the device."""
+
+        return self._serial.value.decode()
+
+    def open(self):
+        """Opens the device and grabs information."""
+
+        self.lib.FLIOpen(byref(self.dev), self.name.encode(), self.lib.domain)
+        self.lib.FLIGetFWRevision(self.dev, byref(self.fwrev))
+        self.lib.FLIGetHWRevision(self.dev, byref(self.hwrev))
+        self.lib.FLIGetModel(self.dev, self._model, self._str_size)
+        self.lib.FLIGetSerialString(self.dev, self._serial, self._str_size)
+
+        # The camera doesn't allow to get the status of the shutter so we
+        # close it on initialisation to be sure we know where it is.
+        self.set_shutter(False)
+
+        self.get_temperature()
+
+    def close(self):
+        """Closes the device."""
+
+        self.lib.FLIClose(self.dev)
+
+    def get_temperature(self):
+        """Gets the temperatures and updates the ``temperature`` dict."""
+
+        temp = c_double()
+
+        self.lib.FLIReadTemperature(self.dev, FLI_TEMPERATURE_BASE, byref(temp))
+        self.temperature['base'] = temp.value
+
+        self.lib.FLIReadTemperature(self.dev, FLI_TEMPERATURE_CCD, byref(temp))
+        self.temperature['ccd'] = temp.value
+
+    def set_shutter(self, shutter_value):
+        """Controls the shutter of the camera.
+
+        Parameters
+        ----------
+        shutter_value : bool
+            If `True`, opens the shutter, otherwise closes it.
+
+        """
+
+        shutter_flag = FLI_SHUTTER_OPEN if shutter_value else FLI_SHUTTER_CLOSE
+
+        self.lib.FLIControlShutter(self.dev, shutter_flag)
+
+        self.shutter = shutter_value
