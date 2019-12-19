@@ -1,7 +1,7 @@
 # flicamera
 
 ![Versions](https://img.shields.io/badge/python->3.7-blue)
-[![Documentation Status](https://readthedocs.org/projects/flicamera/badge/?version=latest)](https://sdss-flicamera.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/sdss-flicamera/badge/?version=latest)](https://sdss-flicamera.readthedocs.io/en/latest/?badge=latest)
 [![Travis (.org)](https://img.shields.io/travis/sdss/flicamera)](https://travis-ci.org/sdss/flicamera)
 [![codecov](https://codecov.io/gh/sdss/flicamera/branch/master/graph/badge.svg)](https://codecov.io/gh/sdss/flicamera)
 
