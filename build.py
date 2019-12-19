@@ -45,17 +45,22 @@ def get_sources():
 extra_compile_args = ['-D__LIBUSB__', '-Wall', '-O3', '-fPIC', '-g']
 extra_link_args = ['-lm', '-nostartfiles']
 
+# Do not use libusb on travis because it makes the build fail.
+# This still creates a usable library and we are mocking the device anyway.
+if TRAVIS:
+    libraries = []
+else:
+    libraries = ['usb-1.0']
+
 ext_modules = [
     Extension(
         'flicamera.libfli',
         sources=get_sources(),
         include_dirs=get_directories(),
-        libraries=['usb-1.0'],
+        libraries=libraries,
         extra_compile_args=extra_compile_args,
         extra_link_args=extra_link_args,
-        language='c',
-        optional=True if TRAVIS else False  # Allow it to fail on Travis
-    )
+        language='c')
 ]
 
 
