@@ -17,6 +17,8 @@ from setuptools import Extension
 
 LIBFLI_PATH = os.path.join(os.path.dirname(__file__), 'cextern/libfli-1.999.1-180223')
 
+TRAVIS = os.environ.get('TRAVIS', False)
+
 
 def get_directories():
 
@@ -51,7 +53,8 @@ ext_modules = [
         libraries=['usb-1.0'],
         extra_compile_args=extra_compile_args,
         extra_link_args=extra_link_args,
-        language='c'
+        language='c',
+        optional=True if TRAVIS else False  # Allow it to fail on Travis
     )
 ]
 
