@@ -14,6 +14,9 @@ import pathlib
 from ctypes import POINTER, c_char_p, c_double, c_int, c_long, c_size_t, c_ulong, c_void_p
 
 
+__ALL__ = ['LibFLI', 'FLIWarning', 'FLIError', 'chk_err']
+
+
 c_double_p = POINTER(c_double)
 c_long_p = POINTER(c_long)
 
@@ -361,5 +364,5 @@ class LibFLI(ctypes.CDLL):
     def call_function(self, funcname, *args):
         """Calls a FLI library function with arguments."""
 
-        so_func = getattr(self.lib, funcname)
+        so_func = self.__getattr__(funcname)
         return so_func(*args)

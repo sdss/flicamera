@@ -6,10 +6,10 @@ flicamera Reference
 
 .. _api-main:
 
-Main
-----
+lib
+---
 
-.. automodule:: flicamera.main
+.. automodule:: flicamera.lib
    :members:
    :undoc-members:
    :show-inheritance:
