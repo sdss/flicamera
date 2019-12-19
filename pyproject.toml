@@ -1,13 +1,13 @@
 [tool.poetry]
-name = "sdss-gfa"
+name = "sdss-flicamera"
 version = "0.1.0-alpha.0"
 description = "A library and actor to control the Guide, Focus, and Acquisition cameras."
 authors = ["José Sánchez-Gallego <gallegoj@uw.edu>"]
 license = "BSD-3-Clause"
 readme = "README.md"
-homepage = "https://github.com/sdss/gfa"
-repository = "https://github.com/sdss/gfa"
-documentation = "https://sdss-gfa.readthedocs.io/en/latest/"
+homepage = "https://github.com/sdss/flicamera"
+repository = "https://github.com/sdss/flicamera"
+documentation = "https://sdss-flicamera.readthedocs.io/en/latest/"
 keywords = ["astronomy", "software"]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -18,9 +18,9 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
 packages = [
-    { include = "gfa", from = "python" }
+    { include = "flicamera" }
 ]
-include = ["python/gfa/etc/*", "src/**/*"]
+include = ["flicamera/etc/*", "cextern/**/*"]
 build = "build.py"
 
 [tool.poetry.dependencies]
@@ -58,7 +58,7 @@ docs = ["Sphinx", "semantic-version"]
 line_length = 79
 sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 default_section = "THIRDPARTY"
-known_first_party = "gfa"
+known_first_party = "flicamera"
 # multi_line_output = false
 balanced_wrapping = true
 include_trailing_comma = false
@@ -68,7 +68,7 @@ use_parentheses = true
 
 [tool.coverage.run]
 branch = true
-include = ["python/gfa/*"]
+include = ["flicamera/*"]
 omit = [
     "*/core/*.py",
     "*/__init__.py",

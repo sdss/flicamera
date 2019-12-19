@@ -9,6 +9,6 @@ The current version of the libFLI library (1.104) does not compile correctly wit
 
 - ``libfli.c`` has been modified to include the MacOS definition for ``usb_bulktransfer`` (see [here](https://github.com/cversek/python-FLI/issues/5#issuecomment-129927593)).
 
-These changes have been tested with MacOS 10.15+ and Unix. **gfa does not require to manually compile the library**. In normal situations, building gfa will automatically generate a shared library from these modified sources.
+These changes have been tested with MacOS 10.15+ and Unix. **flicamera does not require to manually compile the library**. In normal situations, building flicamera will automatically generate a shared library from these modified sources.
 
 Documentation for the SDK is available [here](http://www.flicamera.com/downloads/FLI_SDK_Documentation.pdf).

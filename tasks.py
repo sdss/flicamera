@@ -56,7 +56,7 @@ def clean(ctx):
     ctx.run('rm -rf htmlcov **/htmlcov .coverage **/.coverage')
     ctx.run('rm -rf build')
     ctx.run('rm -rf dist')
-    ctx.run('rm -rf **/*.egg-info')
+    ctx.run('rm -rf **/*.egg-info *.egg-info')
 
 
 @task(clean, default=True)

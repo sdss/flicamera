@@ -1,4 +1,4 @@
-.. _gfa-changelog:
+.. _flicamera-changelog:
 
 =========
 Changelog

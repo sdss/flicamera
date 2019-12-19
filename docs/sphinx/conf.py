@@ -6,7 +6,7 @@ import sys
 
 from pkg_resources import parse_version
 
-from gfa import __version__
+from flicamera import __version__
 
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'releases'))
@@ -41,7 +41,7 @@ source_parsers = {
 master_doc = 'index'
 
 # General information about the project.
-project = 'gfa'
+project = 'flicamera'
 copyright = '{0}, {1}'.format('2019', 'José Sánchez-Gallego')
 author = 'José Sánchez-Gallego'
 
@@ -94,7 +94,7 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
-releases_github_path = 'sdss/gfa'
+releases_github_path = 'sdss/flicamera'
 releases_document_name = ['changelog']
 releases_unstable_prehistory = True
 
@@ -117,7 +117,7 @@ napoleon_use_rtype = False
 napoleon_use_ivar = True
 
 rst_epilog = f"""
-.. |gfa_version| replace:: {__version__}
+.. |flicamera_version| replace:: {__version__}
 """
 
 
@@ -133,7 +133,7 @@ html_theme = 'alabaster'
 html_theme_options = {
     'logo': 'sdss_logo.png',
     'github_user': 'sdss',
-    'github_repo': 'gfa',
+    'github_repo': 'flicamera',
     'github_button': True,
     'github_type': 'star',
     'sidebar_collapse': True,

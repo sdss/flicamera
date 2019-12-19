@@ -1,15 +1,15 @@
 
 .. _api:
 
-gfa Reference
-=============
+flicamera Reference
+===================
 
 .. _api-main:
 
 Main
 ----
 
-.. automodule:: gfa.main
+.. automodule:: flicamera.main
    :members:
    :undoc-members:
    :show-inheritance:

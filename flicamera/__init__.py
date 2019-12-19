@@ -12,7 +12,7 @@ import pkg_resources
 
 
 try:
-    __version__ = pkg_resources.get_distribution('gfa').version
+    __version__ = pkg_resources.get_distribution('flicamera').version
 except pkg_resources.DistributionNotFound:
     try:
         import toml
@@ -20,13 +20,13 @@ except pkg_resources.DistributionNotFound:
                                                     '../../pyproject.toml')))
         __version__ = poetry_config['tool']['poetry']['version']
     except Exception:
-        warnings.warn('cannot find gfa version. Using 0.0.0.', UserWarning)
+        warnings.warn('cannot find flicamera version. Using 0.0.0.', UserWarning)
         __version__ = '0.0.0'
 
 
-NAME = 'gfa'
+NAME = 'flicamera'
 
 
 config = get_config(NAME, allow_user=True)
 
-log = get_logger('gfa')
+log = get_logger('flicamera')

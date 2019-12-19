@@ -15,7 +15,7 @@ import sys
 from setuptools import Extension
 
 
-LIBFLI_PATH = os.path.join(os.path.dirname(__file__), 'src/libfli-1.104')
+LIBFLI_PATH = os.path.join(os.path.dirname(__file__), 'cextern/libfli-1.104')
 
 
 def get_directories():
@@ -51,7 +51,7 @@ if sys.platform == 'darwin':
 
 ext_modules = [
     Extension(
-        'gfa.libfli',
+        'flicamera.libfli',
         sources=get_sources(),
         include_dirs=get_directories(),
         libraries=[],
