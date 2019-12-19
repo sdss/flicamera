@@ -1,7 +1,7 @@
 libFLI
 ======
 
-The current version of the libFLI library (1.104) does not compile correctly with recent versions of MacOS, and seems to require modifications to the kernel in Linux to work with USB cameras. The 1.999.1 pre-release version seems to fix these problems and it's recommended. The standard Makefile also only produces a static library that cannot be easily wrapped with Python. The copied here has been modified so that the Makefile produces the shared a shared libary.
+The current version of the libFLI library ([1.104](http://www.flicamera.com/downloads/sdk/libfli-1.104.zip)) does not compile correctly with recent versions of MacOS, and seems to require modifications to the kernel in Linux to work with USB cameras. The 1.999.1 pre-release version seems to fix these problems and it's recommended. The standard Makefile also only produces a static library that cannot be easily wrapped with Python. The copied here has been modified so that the Makefile produces the shared a shared libary.
 
 These changes have been tested with MacOS 10.15+ and Unix. **flicamera does not require you to manually compile the library**. In normal situations, building flicamera will automatically generate a shared library from these modified sources.
 
