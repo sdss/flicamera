@@ -15,7 +15,7 @@ import sys
 from setuptools import Extension
 
 
-LIBFLI_PATH = os.path.join(os.path.dirname(__file__), 'cextern/libfli-1.104')
+LIBFLI_PATH = os.path.join(os.path.dirname(__file__), 'cextern/libfli-1.999.1-180223')
 
 
 def get_directories():
@@ -24,10 +24,11 @@ def get_directories():
 
     if sys.platform in ['linux', 'darwin', 'unix']:
         dirs.append(os.path.join(LIBFLI_PATH, 'unix'))
+        dirs.append(os.path.join(LIBFLI_PATH, 'unix', 'libusb'))
 
-    if sys.platform == 'linux':
-        dirs.append(os.path.join(LIBFLI_PATH, 'unix', 'linux'))
-    elif sys.platform == 'darwin':
+    # if sys.platform == 'linux':
+    #     dirs.append(os.path.join(LIBFLI_PATH, 'unix', 'linux'))
+    if sys.platform == 'darwin':
         dirs.append(os.path.join(LIBFLI_PATH, 'unix', 'osx'))
 
     return dirs
@@ -44,7 +45,8 @@ def get_sources():
     return sources
 
 
-extra_compile_args = []
+extra_compile_args = ['-D__LIBUSB__', '-Wall', '-O3', '-fPIC', '-g']
+extra_link_args = ['-lm', '-nostartfiles']
 if sys.platform == 'darwin':
     extra_compile_args += ['-framework', 'CoreFoundation',
                            '-framework', 'IOkit']
@@ -54,8 +56,9 @@ ext_modules = [
         'flicamera.libfli',
         sources=get_sources(),
         include_dirs=get_directories(),
-        libraries=[],
+        libraries=['usb-1.0'],
         extra_compile_args=extra_compile_args,
+        extra_link_args=extra_link_args,
         language='c'
     )
 ]

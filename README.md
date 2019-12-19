@@ -15,6 +15,8 @@ In general you should be able to install ``flicamera`` by doing
 pip install sdss-flicamera
 ```
 
+Although ``flicamera`` should handle all the compilation of the FLI libraries, you may still need to modify your system to give your user access to the FLI USB devices. See [here](https://github.com/sdss/flicamera/blob/master/cextern/README.md) for more details.
+
 ``flicamera`` uses [poetry](http://poetry.eustace.io/) for dependency management and packaging. Unfortunately, poetry provides a ``setup.py``-less build system that prevents ``python setup.py install`` or ``pip install .`` from working (the latter due to the fact that ``flicamera`` requires compilation of extensions during the build process, see [here](https://github.com/python-poetry/poetry/issues/1516) for details). As a workaround, we provide a script, ``create_setup.py`` that generates a temporary ``setup.py`` file with all the metadata from the ``pyproject.toml`` file. To build ``flicamera`` manually do
 
 ```console

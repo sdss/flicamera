@@ -1,14 +1,16 @@
 libFLI
 ======
 
-The current version of the libFLI library (1.104) does not compile correctly with recent versions of MacOS. It also produces a static library that cannot be easily wrapped with Python. The code copied here contains two modifications to the original source:
+The current version of the libFLI library (1.104) does not compile correctly with recent versions of MacOS, and seems to require modifications to the kernel in Linux to work with USB cameras. The 1.999.1 pre-release version seems to fix these problems and it's recommended. The standard Makefile also only produces a static library that cannot be easily wrapped with Python. The copied here has been modified so that the Makefile produces the shared a shared libary.
 
-- The Makefile has been modified to work with recent versions of MacOS and produces a shared library ``libfli.so``.
+These changes have been tested with MacOS 10.15+ and Unix. **flicamera does not require you to manually compile the library**. In normal situations, building flicamera will automatically generate a shared library from these modified sources.
 
-- ``unix/libfli-sys.h`` has been modified to prevent a duplicate symbol definition.
+Note that in addition to these files, your system needs `libusb-1.0` and the associated header files installed in a system location. Depending on your system, you may also need to add a rule to allow access to the USB device. To do that, in Ubuntu:
 
-- ``libfli.c`` has been modified to include the MacOS definition for ``usb_bulktransfer`` (see [here](https://github.com/cversek/python-FLI/issues/5#issuecomment-129927593)).
+- Create a new udev rules, file, for example `/etc/udev/rules.d/99-usb.rules`.
+- Add the following line `SUBSYSTEM=="usb", ATTR{idVendor}=="0f18", GROUP="sudo", MODE="0666"`. This provides access to all users in the group sudo to the USBs of vendor `0f18` (Finger Lakes Instrumentation). You may need to change this to match your group.
+- Run `sudo service udev restart` and `sudo udevadm control --reload-rules` and replug the camera.
 
-These changes have been tested with MacOS 10.15+ and Unix. **flicamera does not require to manually compile the library**. In normal situations, building flicamera will automatically generate a shared library from these modified sources.
+Many of these details are taken from the [PANOPTES POCS](https://github.com/panoptes/POCS/wiki/Additional-Hardware-Drivers-Installation#finger-lake-instruments).
 
 Documentation for the SDK is available [here](http://www.flicamera.com/downloads/FLI_SDK_Documentation.pdf).
