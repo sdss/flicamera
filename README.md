@@ -5,7 +5,7 @@
 [![Travis (.org)](https://img.shields.io/travis/sdss/flicamera)](https://travis-ci.org/sdss/flicamera)
 [![codecov](https://codecov.io/gh/sdss/flicamera/branch/master/graph/badge.svg)](https://codecov.io/gh/sdss/flicamera)
 
-A library and actor to control the Guide, Focus, and Acquisition cameras.
+A library to control Finger Lakes Instrumentation cameras. It provides the SDSS ``gfa`` and ``fvc`` actors to control the Guide, Focus and Acquisition cameras and Field View Camera, respectively.
 
 ## Installation
 
