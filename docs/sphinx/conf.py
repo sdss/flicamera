@@ -149,6 +149,10 @@ html_favicon = './_static/favicon.ico'
 # See https://github.com/rtfd/readthedocs.org/issues/1776 for why we do this
 if on_rtd:
     html_static_path = []
+    # We are not installing this package in RTD because poetry does not allow
+    # pip install . when extensions need to be compiled. So we add the path
+    # to the package so that automodule works.
+    sys.path.append(os.path.join(os.path.dirname(__file__), '../../'))
 else:
     html_static_path = ['_static']
 
