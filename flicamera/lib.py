@@ -425,6 +425,17 @@ class LibFLI(ctypes.CDLL):
 class FLIDevice(object):
     """A FLI device."""
 
+    _instances = {}
+
+    def __new__(cls, name, lib):
+
+        # Create a singleton to avoid opening the camera multiple times.
+        if name not in cls._instances:
+            cls._instances[name] = super(FLIDevice, cls).__new__(cls)
+            cls._instances[name].is_open = False
+
+        return cls._instances[name]
+
     def __init__(self, name, lib):
 
         self._str_size = 100
@@ -433,8 +444,8 @@ class FLIDevice(object):
         self.lib = lib
 
         self.dev = flidev_t()
-        self.fwrev = c_long()
-        self.hwrev = c_long()
+        self.fwrev = None
+        self.hwrev = None
         self._model = ctypes.create_string_buffer(self._str_size)
         self._serial = ctypes.create_string_buffer(self._str_size)
 
@@ -458,9 +469,19 @@ class FLIDevice(object):
     def open(self):
         """Opens the device and grabs information."""
 
-        self.lib.FLIOpen(byref(self.dev), self.name.encode(), self.lib.domain)
-        self.lib.FLIGetFWRevision(self.dev, byref(self.fwrev))
-        self.lib.FLIGetHWRevision(self.dev, byref(self.hwrev))
+        # Avoids opening multiple times
+        if not self.is_open:
+            self.lib.FLIOpen(byref(self.dev), self.name.encode(), self.lib.domain)
+            self.is_open = True
+
+        fwrev = c_long()
+        self.lib.FLIGetFWRevision(self.dev, byref(fwrev))
+        self.fwrev = fwrev.value
+
+        hwrev = c_long()
+        self.lib.FLIGetHWRevision(self.dev, byref(hwrev))
+        self.hwrev = hwrev.value
+
         self.lib.FLIGetModel(self.dev, self._model, self._str_size)
         self.lib.FLIGetSerialString(self.dev, self._serial, self._str_size)
 
@@ -484,7 +505,7 @@ class FLIDevice(object):
         self.temperature['base'] = temp.value
 
         self.lib.FLIReadTemperature(self.dev, FLI_TEMPERATURE_CCD, byref(temp))
-        self.temperature['ccd'] = temp.value
+        self.temperature['CCD'] = temp.value
 
     def set_shutter(self, shutter_value):
         """Controls the shutter of the camera.
