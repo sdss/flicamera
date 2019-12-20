@@ -596,18 +596,12 @@ class FLIDevice(object):
 
             assert self.hbin and self.vbin, 'set the binning before the area.'
 
-            ul_x = c_long()
-            ul_y = c_long()
-            lr_x = c_long()
-            lr_y = c_long()
+            ul_x, ul_y, lr_x, lr_y = self.get_visible_area()
 
-            self.lib.FLIGetArrayArea(self.dev, byref(ul_x), byref(ul_y),
-                                     byref(lr_x), byref(lr_y))
+            lr_x_prime = int(ul_x + (lr_x - ul_x) / self.hbin)
+            lr_y_prime = int(ul_y + (lr_y - ul_y) / self.vbin)
 
-            lr_x_prime = int(ul_x.value + (lr_x.value - ul_x.value) / self.hbin)
-            lr_y_prime = int(ul_y.value + (lr_y.value - ul_y.value) / self.vbin)
-
-            area = (ul_x.value, ul_y.value, lr_x_prime, lr_y_prime)
+            area = (ul_x, ul_y, lr_x_prime, lr_y_prime)
 
         self.lib.FLISetImageArea(self.dev, area[0], area[1], area[2], area[3])
 
