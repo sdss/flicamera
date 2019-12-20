@@ -14,3 +14,17 @@ Note that in addition to these files, your system needs `libusb-1.0` and the ass
 Many of these details are taken from the [PANOPTES POCS](https://github.com/panoptes/POCS/wiki/Additional-Hardware-Drivers-Installation#finger-lake-instruments).
 
 Documentation for the SDK is available [here](http://www.flicamera.com/downloads/FLI_SDK_Documentation.pdf) and [added to this repository](https://github.com/sdss/flicamera/blob/master/cextern/FLI_SDK_Documentation.pdf). Note that some functions in the SDK are not documented.
+
+Some notes on the API:
+
+- The `FLIGetDeviceStatus` function doesn't see to produce reasonable values, and in fact it is not used in most implementations. It may be camera dependant but ultimately it doesn't seem necessary.
+
+- `FLIGetArrayArea` seems to returns the same value as `FLIGetVisibleArea` but without the offset. For example, if `FLIGetVisibleArea` returns `(64, 45, 8240, 6177)` then `FLIGetArrayArea` will return `(0, 0, 8304, 6220)`. Neither of them changes when `FLISetImageArea` is called or when the binning changes. No implementation actually uses it.
+
+- It is unclear how the visible area relates the actual pixels on the CCD. For example, if the visible area is `(64, 45, 8240, 6177)`, is 64 the first pixel on the CCD or the 64th (or 63rd) and the pixels 1-63 are not read? This is important when calibrating the position of the CCD with respect to a fiducial.
+
+- There are a number of functions in the API that are not documented (e.g., `FLISetTDI`, `FLIGetDeviceStatus`, etc.)
+
+- Trying to set `FLISetBitDepth` to `FLI_MODE_16BIT` fails with error "Invalid argument".
+
+- Some code has been adapted from [python-FLI](https://github.com/cversek/python-FLI).
