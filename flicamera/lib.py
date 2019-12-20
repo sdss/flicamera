@@ -583,7 +583,7 @@ class FLIDevice(object):
 
             .. math::
 
-                lr_x^\prime = ul_x + (lr_x - ul_x) / hbin
+                lr_x^\prime = ul_x + (lr_x - ul_x) / hbin \\
                 lr_y^\prime = ul_y + (lr_y - ul_y) / vbin
 
             If you pass the area, it is expected that you're already taking
