@@ -15,6 +15,7 @@ import warnings
 from ctypes import (POINTER, byref, c_char_p, c_double, c_int, c_long,
                     c_size_t, c_ulong, c_void_p)
 
+import numpy
 
 __ALL__ = ['LibFLI', 'FLIWarning', 'FLIError', 'chk_err']
 
@@ -421,7 +422,6 @@ class LibFLI(ctypes.CDLL):
         return None
 
 
-
 class FLIDevice(object):
     """A FLI device."""
 
@@ -449,8 +449,12 @@ class FLIDevice(object):
         self._model = ctypes.create_string_buffer(self._str_size)
         self._serial = ctypes.create_string_buffer(self._str_size)
 
+        self.hbin = None
+        self.vbin = None
+        self.area = (None, None, None, None)  # The image area (ul_x, ul_y, lr_x, lr_y)
+
         self.shutter = False
-        self.temperature = {'CCD': None, 'base': None}
+        self._temperature = {'CCD': None, 'base': None}
 
         self.open()
 
@@ -466,12 +470,21 @@ class FLIDevice(object):
 
         return self._serial.value.decode()
 
+    @property
+    def temperature(self):
+        """Returns a dictionary of temperatures at different locations."""
+
+        self._update_temperature()
+
+        return self._temperature
+
     def open(self):
         """Opens the device and grabs information."""
 
         # Avoids opening multiple times
         if not self.is_open:
             self.lib.FLIOpen(byref(self.dev), self.name.encode(), self.lib.domain)
+            self.lib.FLILockDevice(self.dev)
             self.is_open = True
 
         fwrev = c_long()
@@ -489,23 +502,43 @@ class FLIDevice(object):
         # close it on initialisation to be sure we know where it is.
         self.set_shutter(False)
 
-        self.get_temperature()
+        # Set bit depth (all our cameras should support 16bits)
+        # self.lib.FLISetBitDepth(self.dev, FLI_MODE_16BIT)
+
+        self._update_temperature()
+
+        # Sets the binning to (1, 1) and resets the image area.
+        self.set_binning(1, 1)
+        self.set_image_area()
 
     def close(self):
         """Closes the device."""
 
+        self.lib.FLIUnlockDevice(self.dev)
         self.lib.FLIClose(self.dev)
 
-    def get_temperature(self):
+    def _update_temperature(self):
         """Gets the temperatures and updates the ``temperature`` dict."""
 
         temp = c_double()
 
         self.lib.FLIReadTemperature(self.dev, FLI_TEMPERATURE_BASE, byref(temp))
-        self.temperature['base'] = temp.value
+        self._temperature['base'] = temp.value
 
         self.lib.FLIReadTemperature(self.dev, FLI_TEMPERATURE_CCD, byref(temp))
-        self.temperature['CCD'] = temp.value
+        self._temperature['CCD'] = temp.value
+
+    def set_temperature(self, temp):
+        """Sets the temperature of the CCD.
+
+        Parameters
+        ----------
+        temp : float
+            Temperature in the range -55 to 45C.
+
+        """
+
+        self.lib.FLISetTemperature(self.dev, c_double(temp))
 
     def set_shutter(self, shutter_value):
         """Controls the shutter of the camera.
@@ -522,3 +555,155 @@ class FLIDevice(object):
         self.lib.FLIControlShutter(self.dev, shutter_flag)
 
         self.shutter = shutter_value
+
+    def set_exposure_time(self, exp_time):
+        """Sets the exposure time.
+
+        Parameters
+        ----------
+        exp_time : float
+            The exposure time, in seconds.
+
+        """
+
+        self.lib.FLISetExposureTime(self.dev, int(exp_time * 1000.))
+
+    def set_image_area(self, area=None):
+        """Sets the area of the image to exposure.
+
+        Parameters
+        ----------
+        area : tuple
+            The area in the format :math:`(ul_x, ul_y, lr_x, lr_y)` where
+            :math:`ul` refers to the upper-left corner of the CCD, and
+            :math:`lr` to the lower right. The lower-right values to pass
+            must take into account the horizontal and vertical binning factors.
+            In practice one must pass :math:`lr_x^\prime` and
+            :math:`lr_y^\prime` defined as
+
+            .. math::
+
+                lr_x^\prime = ul_x + (lr_x - ul_x) / hbin
+                lr_y^\prime = ul_y + (lr_y - ul_y) / vbin
+
+            If you pass the area, it is expected that you're already taking
+            the binning into account. If ``area`` is `None`, the full area of
+            the chip is used, using the current binning.
+
+        """
+
+        if area is None:
+
+            assert self.hbin and self.vbin, 'set the binning before the area.'
+
+            ul_x = c_long()
+            ul_y = c_long()
+            lr_x = c_long()
+            lr_y = c_long()
+
+            self.lib.FLIGetArrayArea(self.dev, byref(ul_x), byref(ul_y),
+                                     byref(lr_x), byref(lr_y))
+
+            lr_x_prime = int(ul_x.value + (lr_x.value - ul_x.value) / self.hbin)
+            lr_y_prime = int(ul_y.value + (lr_y.value - ul_y.value) / self.vbin)
+
+            area = (ul_x.value, ul_y.value, lr_x_prime, lr_y_prime)
+
+        self.lib.FLISetImageArea(self.dev, area[0], area[1], area[2], area[3])
+
+        self.area = (area[0], area[1], area[2], area[3])
+
+    def get_visible_area(self):
+        """Returns the visible area.
+
+        Returns
+        -------
+        visible_area : `tuple`
+            The visible area in the format :math:`(ul_x, ul_y, lr_x, lr_y)`.
+            See `.set_image_area` for details. The visible area does not change
+            regardless of the binning or image area defined; it's the total
+            available area. Note that :math:`lr_x-ul_x` and :math:`lr_y-ul_y`
+            match the total size of the CCD, but :math:`lr_x` or :math:`lr_y`
+            are not necessarily zero.
+
+        """
+
+        ul_x = c_long()
+        ul_y = c_long()
+        lr_x = c_long()
+        lr_y = c_long()
+
+        self.lib.FLIGetVisibleArea(self.dev, byref(ul_x), byref(ul_y),
+                                   byref(lr_x), byref(lr_y))
+
+        return (ul_x.value, ul_y.value, lr_x.value, lr_y.value)
+
+    def set_binning(self, hbin, vbin):
+        """Sets the binning.
+
+        The image area is automatically re-adjusted to be the full visible
+        area. If you want to change this, use `.set_image_area` manually.
+
+        """
+
+        assert hbin >= 1 and hbin <= 16, 'invalid hbin value.'
+        assert int(hbin) == hbin, 'hbin is not an integer'
+
+        assert vbin >= 1 and vbin <= 16, 'invalid vbin value.'
+        assert int(vbin) == vbin, 'vbin is not an integer'
+
+        self.lib.FLISetHBin(self.dev, c_long(hbin))
+        self.lib.FLISetVBin(self.dev, c_long(vbin))
+
+        self.hbin = hbin
+        self.vbin = vbin
+
+        # Sets the image area. Passing it without arguments it uses the full
+        # visible area but takes into account the just set binning values.
+        self.set_image_area()
+
+    def get_exposure_time_left(self):
+        """Returns the remaining exposure time, in milliseconds.."""
+
+        timeleft = c_long()
+        self.lib.FLIGetExposureStatus(self.dev, byref(timeleft))
+
+        return timeleft.value
+
+    def cancel_exposure(self):
+        """Cancels an exposure."""
+
+        self.lib.FLICancelExposure(self.dev)
+
+    def start_exposure(self, frametype='normal'):
+        """Starts and exposure and returns immediately."""
+
+        if frametype == 'dark':
+            frametype = FLI_FRAME_TYPE_DARK
+        else:
+            frametype = FLI_FRAME_TYPE_NORMAL
+
+        self.lib.FLISetFrameType(self.dev, fliframe_t(frametype))
+        self.lib.FLISetTDI(self.dev, 0, 0)
+        self.lib.FLIExposeFrame(self.dev)
+
+    def read_frame(self):
+        """Reads the image frame."""
+
+        if self.get_exposure_time_left() > 0:
+            raise FLIError('the camera is still exposing.')
+
+        (ul_x, ul_y, lr_x, lr_y) = self.area
+
+        n_cols = int((lr_x - ul_x) / self.hbin)
+        n_rows  = int((lr_y - ul_y) / self.vbin)
+
+        array = numpy.empty((n_rows, n_cols), dtype=numpy.uint16)
+
+        img_ptr   = array.ctypes.data_as(POINTER(ctypes.c_uint16))
+
+        for row in range(n_rows):
+            offset = row * n_cols * ctypes.sizeof(ctypes.c_uint16)
+            self.lib.FLIGrabRow(self.dev, byref(img_ptr.contents, offset), n_cols)
+
+        return array
