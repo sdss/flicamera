@@ -569,7 +569,7 @@ class FLIDevice(object):
         self.lib.FLISetExposureTime(self.dev, int(exp_time * 1000.))
 
     def set_image_area(self, area=None):
-        """Sets the area of the image to exposure.
+        r"""Sets the area of the image to exposure.
 
         Parameters
         ----------
