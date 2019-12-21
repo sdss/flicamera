@@ -22,6 +22,7 @@ TEST_DATA = pathlib.Path(__file__).parent / 'data/test_data.yaml'
 
 @pytest.fixture(scope='session')
 def config():
+    """Gets the test configuration."""
 
     YAML = ruamel.yaml.YAML()
 
@@ -37,6 +38,7 @@ def mock_libfli(mocker):
 
 @pytest.fixture
 def libfli(mock_libfli, config):
+    """Yields a LibFLI object with a mocked C libfli library."""
 
     warnings.filterwarnings('ignore', '.+was compiled without a copy of libfli.+')
 
