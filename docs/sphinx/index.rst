@@ -2,7 +2,7 @@
 flicamera's documentation
 =========================
 
-This is the Sphinx documentation for the SDSS Python product flicamera. This documentation is for version is |flicamera_version|.
+This is the Sphinx documentation for the SDSS Python product flicamera. This documentation is for version |flicamera_version|.
 
 Contents
 --------
