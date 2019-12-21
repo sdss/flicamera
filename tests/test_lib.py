@@ -12,3 +12,11 @@ import flicamera.lib
 def test_libfi_load(libfli):
 
     assert isinstance(libfli, flicamera.lib.LibFLI)
+
+    # Test the mocking
+    assert len(libfli.lib.devices) > 0
+
+
+def test_list_cameras(libfli, config):
+
+    assert len(libfli.list_cameras()) > 0
