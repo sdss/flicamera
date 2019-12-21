@@ -131,7 +131,7 @@ html_theme = 'alabaster'
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
-    'logo': 'sdss_logo.png',
+    'logo': 'sdssv_logo.png',
     'github_user': 'sdss',
     'github_repo': 'flicamera',
     'github_button': True,
