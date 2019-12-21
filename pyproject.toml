@@ -20,7 +20,7 @@ classifiers = [
 packages = [
     { include = "flicamera" }
 ]
-include = ["flicamera/etc/*", "cextern/**/*"]
+include = ["flicamera/etc/*", "cextern/**/*", "LICENSE.md"]
 build = "build.py"
 
 [tool.poetry.dependencies]
