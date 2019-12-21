@@ -47,6 +47,8 @@ class MockLibFLI(ctypes.CDLL):
         self.dlpath = dlpath
         self.devices = []
 
+        self.restype = flicamera.lib.chk_err
+
     def reset(self):
         """Resets the initial values of the mocked device."""
 
@@ -58,11 +60,8 @@ class MockLibFLI(ctypes.CDLL):
         # that matches that name. So for the cases when we haven't overridden
         # the library function, we returns a Mock that returns 0 (no error).
 
-        if name.startswith('FLI') or name == '_FuncPtr':
-            return unittest.mock.MagicMock(return_value=0)
-
-        # For the rest, normal behaviour.
-        return super(MockLibFLI, self).__getattr__(name)
+        if name.startswith('FLI'):
+            return unittest.mock.MagicMock(retur_value=self.restype(0))
 
     def _get_device(self, dev):
         """Gets the appropriate device."""
@@ -89,7 +88,7 @@ class MockLibFLI(ctypes.CDLL):
         # replace its contents.
         names_ptr._obj.contents = (ctypes.c_char_p * len(self.devices))(*device_names)
 
-        return 0
+        return self.restype(0)
 
     def FLIOpen(self, dev_ptr, name, domain):
 
@@ -99,14 +98,14 @@ class MockLibFLI(ctypes.CDLL):
                 dev_ptr._obj.value = device.dev
                 return 0
 
-        return -errno.ENXIO
+        return self.restype(-errno.ENXIO)
 
     def FLIGetSerialString(self, dev, serial_ptr, str_size):
 
         device = self._get_device(dev)
         if not device:
-            return -errno.ENXIO
+            return self.restype(-errno.ENXIO)
 
         serial_ptr.value = device.state['serial'].encode()
 
-        return 0
+        return self.restype(0)
