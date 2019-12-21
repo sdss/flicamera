@@ -1,0 +1,10 @@
+---
+
+devices:
+    'FLI-3':
+        serial: ML1234
+        temperature:
+            CCD: 25
+            base: 20
+        exposure_time_left: 0
+        model: 'MicroLine ML50100'
