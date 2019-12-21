@@ -12,7 +12,7 @@ import warnings
 import pytest
 import ruamel.yaml
 
-from flicamera.lib import LibFLI
+from flicamera.lib import FLIDevice, LibFLI
 
 from .helpers import MockFLIDevice, MockLibFLI
 
@@ -48,3 +48,18 @@ def libfli(mock_libfli, config):
         libfli.lib.devices.append(MockFLIDevice(camera, **config['cameras'][camera]))
 
     yield libfli
+
+    FLIDevice._instances = {}
+
+
+@pytest.fixture
+def cameras(libfli):
+    """Returns the connected cameras."""
+
+    cameras = []
+
+    for device in libfli.lib.devices:
+        serial = device.state['serial']
+        cameras.append(libfli.get_camera(serial))
+
+    yield cameras

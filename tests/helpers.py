@@ -8,7 +8,10 @@
 
 import ctypes
 import errno
+import time
 import unittest.mock
+
+import flicamera.lib
 
 
 DEV_COUNTER = 0
@@ -19,7 +22,10 @@ class MockFLIDevice(object):
     _defaults = {'temperature': {'CCD': 0, 'base': 0},
                  'serial': 'ML0000',
                  'exposure_time_left': 0,
-                 'model': 'MicroLine ML50100'}
+                 'exposure_time': 0,
+                 'exposure_status': 'idle',
+                 'model': 'MicroLine ML50100',
+                 'exposure_start_time': 0}
 
     def __init__(self, name, **kwargs):
 
@@ -107,5 +113,51 @@ class MockLibFLI(ctypes.CDLL):
             return self.restype(-errno.ENXIO)
 
         serial_ptr.value = device.state['serial'].encode()
+
+        return self.restype(0)
+
+    def FLISetExposureTime(self, dev, exp_time):
+
+        device = self._get_device(dev)
+        if not device:
+            return self.restype(-errno.ENXIO)
+
+        if isinstance(exp_time, ctypes._SimpleCData):
+            device.state['exposure_time'] = exp_time.value
+        else:
+            device.state['exposure_time'] = exp_time
+
+        return self.restype(0)
+
+    def FLIGetExposureStatus(self, dev, timeleft_ptr):
+
+        device = self._get_device(dev)
+        if not device:
+            return self.restype(-errno.ENXIO)
+
+        if device.state['exposure_status'] == 'idle':
+            timeleft_ptr.value = 0
+        elif device.state['exposure_status'] == 'exposing':
+
+            time_elapsed = time.time() - device.state['exposure_start_time']
+            if time_elapsed > device.state['exposure_time']:
+                timeleft_ptr._obj.value = 0
+            else:
+                time_left = int(1000 * (device.state['exposure_time'] - time_elapsed))
+                timeleft_ptr._obj.value = time_left
+
+        return self.restype(0)
+
+    def FLIExposeFrame(self, dev):
+
+        device = self._get_device(dev)
+        if not device:
+            return self.restype(-errno.ENXIO)
+
+        if device.state['exposure_status'] != 'idle':
+            return device.restype(-errno.EALREADY)
+
+        device.state['exposure_status'] = 'exposing'
+        device.state['exposure_start_time'] = time.time()
 
         return self.restype(0)
