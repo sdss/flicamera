@@ -249,20 +249,20 @@ class MockLibFLI(ctypes.CDLL):
             image = numpy.zeros((n_rows, n_cols), dtype=numpy.uint16) + 500
             device.image = numpy.random.poisson(image)
 
-        # This is a hack ... but there doesn't seem to be to access the memory
-        # address. In principle byref(img_ptr.contents, offset) should send
-        # a pointer pointing to the address of the first elements in the array
-        # plus the offset, but this function always seems to get the initial
-        # address of the array regardless of the offset. This may be due to
-        # the fact that this function is Python and not C ... In any case,
-        # we can get the value of each memory address that would correspond to
-        # this row and assign it. It's very slow so do not use with large image
-        # sizes.
+        # This is a hack ... but there doesn't seem to be another way to access
+        # the memory address. In principle byref(img_ptr.contents, offset)
+        # should send a pointer pointing to the address of the first element
+        # in the array plus the offset, but this function always seems to get
+        # the initial address of the array regardless of the offset. This may
+        # be due to the fact that this function is Python and not C ... In any
+        # case, we can get the value of each memory address that would
+        # correspond to this row and assign it. It's very slow  because it
+        # iterates over each elements, so do not use with large image.
         initial_address = ctypes.addressof(array_ptr._obj)
         for ii in range(col_size):
 
-            address = initial_address + \
-                (device.row * col_size + ii) * ctypes.sizeof(ctypes.c_uint16)
+            offset = device.row * col_size + ii
+            address = initial_address + offset * ctypes.sizeof(ctypes.c_uint16)
 
             (ctypes.c_uint16).from_address(address).value = device.image[device.row, ii]
 
