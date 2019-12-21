@@ -58,3 +58,24 @@ def test_exposure_time_left(cameras):
 
     assert exp_time_left_1 > 0
     assert exp_time_left_1 > exp_time_left_2
+
+
+def test_read_temperature(cameras):
+
+    camera = cameras[0]  # FLIDevice object
+    device = camera.lib.devices[0]  # MockFLIDevice object
+
+    assert camera.temperature['CCD'] == device.state['temperature']['CCD']
+    assert camera.temperature['base'] == device.state['temperature']['base']
+
+
+def test_set_temperature(cameras):
+
+    camera = cameras[0]
+
+    temp_initial = camera.temperature['CCD']
+
+    camera.set_temperature(-10.)
+
+    assert camera.temperature['CCD'] != temp_initial
+    assert camera.temperature['CCD'] == -10

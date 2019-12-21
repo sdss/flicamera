@@ -129,6 +129,29 @@ class MockLibFLI(ctypes.CDLL):
 
         return self.restype(0)
 
+    def FLISetTemperature(self, dev, temperature):
+
+        device = self._get_device(dev)
+        if not device:
+            return self.restype(-errno.ENXIO)
+
+        device.state['temperature']['CCD'] = temperature.value
+
+        return self.restype(0)
+
+    def FLIReadTemperature(self, dev, temp_flag, temp_ptr):
+
+        device = self._get_device(dev)
+        if not device:
+            return self.restype(-errno.ENXIO)
+
+        if temp_flag == flicamera.lib.FLI_TEMPERATURE_CCD:
+            temp_ptr._obj.value = device.state['temperature']['CCD']
+        elif temp_flag == flicamera.lib.FLI_TEMPERATURE_BASE:
+            temp_ptr._obj.value = device.state['temperature']['base']
+
+        return self.restype(0)
+
     def FLIGetExposureStatus(self, dev, timeleft_ptr):
 
         device = self._get_device(dev)
