@@ -114,6 +114,14 @@ class MockLibFLI(ctypes.CDLL):
 
         return self.restype(-errno.ENXIO)
 
+    def FLIClose(self, dev):
+
+        device = self._get_device(dev)
+        if not device:
+            return self.restype(-errno.ENXIO)
+
+        return self.restype(0)
+
     def FLIGetSerialString(self, dev, serial_ptr, str_size):
 
         device = self._get_device(dev)
@@ -121,6 +129,16 @@ class MockLibFLI(ctypes.CDLL):
             return self.restype(-errno.ENXIO)
 
         serial_ptr.value = device.state['serial'].encode()
+
+        return self.restype(0)
+
+    def FLIGetModel(self, dev, model_ptr, str_size):
+
+        device = self._get_device(dev)
+        if not device:
+            return self.restype(-errno.ENXIO)
+
+        model_ptr.value = device.state['model'].encode()
 
         return self.restype(0)
 

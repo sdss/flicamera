@@ -34,12 +34,18 @@ def test_get_camera(libfli, config):
         camera = libfli.get_camera(cameras_dict[camera_name]['serial'])
         assert camera is not None
         assert camera.serial == cameras_dict[camera_name]['serial']
+        assert camera.model == cameras_dict[camera_name]['model']
 
 
 def test_bad_camera(libfli):
 
     with pytest.raises(flicamera.lib.FLIError):
         flicamera.lib.FLIDevice('bad_name', libfli.lib)
+
+
+def test_get_camera_bad_serial(libfli):
+
+    assert libfli.get_camera('BADSERIAL') is None
 
 
 def test_exposure_time_left(cameras):
