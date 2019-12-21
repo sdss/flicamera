@@ -329,9 +329,9 @@ class LibFLI(ctypes.CDLL):
 
     """
 
-    def __new__(cls, shared_object=None, **kwargs):
+    def __init__(self, shared_object=None, debug=False):
 
-        me = None
+        self.domain = flidomain_t(FLIDOMAIN_USB | FLIDEVICE_CAMERA)
 
         if not shared_object:
             shared_object = list(pathlib.Path(__file__).parent.glob('libfli*.so'))
@@ -345,27 +345,17 @@ class LibFLI(ctypes.CDLL):
 
         for so in shared_object:
             try:
-                me = ctypes.cdll.LoadLibrary(so)
+                self.lib = ctypes.cdll.LoadLibrary(so)
                 break
             except OSError:
                 pass
 
-        if me is None:
+        if self.lib is None:
             raise RuntimeError('cannot load the libfli shared library.')
-
-        # A hack so to override the class of the returned object (CDLL) with
-        # this class. It should be ok.
-        me.__class__ = cls
-
-        return me
-
-    def __init__(self, shared_object=None, debug=False):
-
-        self.domain = flidomain_t(FLIDOMAIN_USB | FLIDEVICE_CAMERA)
 
         # Sets the argtypes and restype.
         for funcname, argtypes in _API_FUNCTION_PROTOTYPES:
-            so_func = self.__getattr__(funcname)
+            so_func = self.lib.__getattr__(funcname)
             so_func.argtypes = argtypes
             so_func.restype = chk_err
 
@@ -375,7 +365,7 @@ class LibFLI(ctypes.CDLL):
     def call_function(self, funcname, *args):
         """Calls a FLI library function with arguments."""
 
-        so_func = self.__getattr__(funcname)
+        so_func = self.lib.__getattr__(funcname)
         return so_func(*args)
 
     @staticmethod
@@ -393,19 +383,19 @@ class LibFLI(ctypes.CDLL):
         """Turns the debug system on/off."""
 
         debug_level = flidebug_t(FLIDEBUG_ALL if debug else FLIDEBUG_NONE)
-        self.FLISetDebugLevel(c_char_p(None), debug_level)
+        self.lib.FLISetDebugLevel(c_char_p(None), debug_level)
 
     def list_cameras(self):
         """Returns a list of connected camera names."""
 
         names_ptr = POINTER(ctypes.c_char_p)()
-        self.FLIList(self.domain, byref(names_ptr))
+        self.lib.FLIList(self.domain, byref(names_ptr))
 
         cameras = [name.decode().split(';')[0]
                    for name in self._convert_to_list(names_ptr)]
 
         # Free the list
-        self.FLIFreeList(names_ptr)
+        self.lib.FLIFreeList(names_ptr)
 
         return cameras
 
@@ -414,7 +404,7 @@ class LibFLI(ctypes.CDLL):
 
         camera_names = self.list_cameras()
         for camera_name in camera_names:
-            fli_camera = FLIDevice(camera_name, self)
+            fli_camera = FLIDevice(camera_name, self.lib)
             if fli_camera.serial == serial:
                 return fli_camera
             fli_camera.close()
