@@ -362,12 +362,6 @@ class LibFLI(ctypes.CDLL):
         if debug:
             self.set_debug(True)
 
-    def call_function(self, funcname, *args):
-        """Calls a FLI library function with arguments."""
-
-        so_func = self.lib.__getattr__(funcname)
-        return so_func(*args)
-
     @staticmethod
     def _convert_to_list(ptr):
 
