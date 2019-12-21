@@ -79,3 +79,36 @@ def test_set_temperature(cameras):
 
     assert camera.temperature['CCD'] != temp_initial
     assert camera.temperature['CCD'] == -10
+
+
+def test_get_visible_area(cameras):
+
+    camera = cameras[0]
+    device = camera.lib.devices[0]
+
+    (ul_x, ul_y, lr_x, lr_y) = camera.get_visible_area()
+
+    assert ul_x == device.state['ul_x']
+    assert ul_y == device.state['ul_y']
+    assert lr_x == device.state['lr_x']
+    assert lr_y == device.state['lr_y']
+
+
+def test_read_frame(cameras):
+
+    camera = cameras[0]
+
+    camera.set_exposure_time(0.1)
+    camera.start_exposure()
+
+    time.sleep(0.2)
+
+    assert camera.get_exposure_time_left() == 0
+
+    image = camera.read_frame()
+
+    assert image.mean() > 400.
+
+    (ul_x, ul_y, lr_x, lr_y) = camera.get_visible_area()
+
+    assert image.shape == (lr_y - ul_y, lr_x - ul_x)

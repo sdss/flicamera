@@ -11,6 +11,8 @@ import errno
 import time
 import unittest.mock
 
+import numpy
+
 import flicamera.lib
 
 
@@ -25,7 +27,9 @@ class MockFLIDevice(object):
                  'exposure_time': 0,
                  'exposure_status': 'idle',
                  'model': 'MicroLine ML50100',
-                 'exposure_start_time': 0}
+                 'exposure_start_time': 0,
+                 'ul_x': 0, 'ul_y': 0,
+                 'lr_x': 512, 'lr_y': 512}
 
     def __init__(self, name, **kwargs):
 
@@ -39,10 +43,14 @@ class MockFLIDevice(object):
         self.reset_defaults()
         self.state.update(kwargs)
 
+        self.image = None
+        self.row = 0
+
     def reset_defaults(self):
         """Resets the device to the default state."""
 
         self.state = self._defaults.copy()
+        self.row = 0
 
 
 class MockLibFLI(ctypes.CDLL):
@@ -162,11 +170,11 @@ class MockLibFLI(ctypes.CDLL):
             timeleft_ptr.value = 0
         elif device.state['exposure_status'] == 'exposing':
 
-            time_elapsed = time.time() - device.state['exposure_start_time']
+            time_elapsed = 1000 * (time.time() - device.state['exposure_start_time'])
             if time_elapsed > device.state['exposure_time']:
                 timeleft_ptr._obj.value = 0
             else:
-                time_left = int(1000 * (device.state['exposure_time'] - time_elapsed))
+                time_left = int(device.state['exposure_time'] - time_elapsed)
                 timeleft_ptr._obj.value = time_left
 
         return self.restype(0)
@@ -182,5 +190,64 @@ class MockLibFLI(ctypes.CDLL):
 
         device.state['exposure_status'] = 'exposing'
         device.state['exposure_start_time'] = time.time()
+
+        device.row = 0  # Reset readout row
+
+        return self.restype(0)
+
+    def FLIGetVisibleArea(self, dev, ul_x_ptr, ul_y_ptr, lr_x_ptr, lr_y_ptr):
+
+        device = self._get_device(dev)
+        if not device:
+            return self.restype(-errno.ENXIO)
+
+        ul_x_ptr._obj.value = device.state['ul_x']
+        ul_y_ptr._obj.value = device.state['ul_y']
+        lr_x_ptr._obj.value = device.state['lr_x']
+        lr_y_ptr._obj.value = device.state['lr_y']
+
+        return self.restype(0)
+
+    def FLIGrabRow(self, dev, array_ptr, col_size):
+
+        device = self._get_device(dev)
+        if not device:
+            return self.restype(-errno.ENXIO)
+
+        if not device.state['exposure_status'] == 'exposing':
+            return self.restype(-errno.ENXIO)
+
+        time_left = ctypes.c_long()
+        self.FLIGetExposureStatus(dev, ctypes.byref(time_left))
+
+        if time_left.value > 0:
+            return self.restype(-errno.ENXIO)
+
+        if device.row == 0 and device.image is None:
+
+            n_rows = device.state['lr_y'] - device.state['ul_y']
+            n_cols = device.state['lr_x'] - device.state['ul_x']
+
+            image = numpy.zeros((n_rows, n_cols), dtype=numpy.uint16) + 500
+            device.image = numpy.random.poisson(image)
+
+        # This is a hack ... but there doesn't seem to be to access the memory
+        # address. In principle byref(img_ptr.contents, offset) should send
+        # a pointer pointing to the address of the first elements in the array
+        # plus the offset, but this function always seems to get the initial
+        # address of the array regardless of the offset. This may be due to
+        # the fact that this function is Python and not C ... In any case,
+        # we can get the value of each memory address that would correspond to
+        # this row and assign it. It's very slow so do not use with large image
+        # sizes.
+        initial_address = ctypes.addressof(array_ptr._obj)
+        for ii in range(col_size):
+
+            address = initial_address + \
+                (device.row * col_size + ii) * ctypes.sizeof(ctypes.c_uint16)
+
+            (ctypes.c_uint16).from_address(address).value = device.image[device.row, ii]
+
+        device.row += 1
 
         return self.restype(0)
