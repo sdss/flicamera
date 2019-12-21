@@ -11,6 +11,17 @@ import os
 import ruamel.yaml
 
 
+def read_yaml_file(path):
+    """Read a YAML file and returns a dictionary."""
+
+    yaml = ruamel.yaml.YAML(typ='safe')
+
+    with open(path, 'r') as fp:
+        config = yaml.load(fp)
+
+    return config
+
+
 def merge_config(user, default):
     """Merges a user configuration with the default one."""
 
