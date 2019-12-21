@@ -431,6 +431,7 @@ class FLIDevice(object):
 
     def __init__(self, name, lib):
 
+        self.domain = flidomain_t(FLIDOMAIN_USB | FLIDEVICE_CAMERA)
         self._str_size = 100
 
         self.name = name if isinstance(name, str) else name.decode()
@@ -476,7 +477,7 @@ class FLIDevice(object):
 
         # Avoids opening multiple times
         if not self.is_open:
-            self.lib.FLIOpen(byref(self.dev), self.name.encode(), self.lib.domain)
+            self.lib.FLIOpen(byref(self.dev), self.name.encode(), self.domain)
             self.lib.FLILockDevice(self.dev)
             self.is_open = True
 
