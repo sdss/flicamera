@@ -672,6 +672,11 @@ class FLIDevice(object):
     def read_frame(self):
         """Reads the image frame."""
 
+        # TODO: We are iterating over each row of the image, which in the
+        # case of the FVC can be time consuming. It's probably an overkill
+        # but maybe this function could be moved to a Cython or Pybind11
+        # extension. Need to do some benchmarking.
+
         if self.get_exposure_time_left() > 0:
             raise FLIError('the camera is still exposing.')
 
