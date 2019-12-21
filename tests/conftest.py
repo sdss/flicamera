@@ -42,7 +42,7 @@ def libfli(mock_libfli, config):
 
     libfli = LibFLI()
 
-    for device in config['devices']:
-        libfli.lib.devices.append(MockFLIDevice(device, **config['devices'][device]))
+    for camera in config['cameras']:
+        libfli.lib.devices.append(MockFLIDevice(camera, **config['cameras'][camera]))
 
     yield libfli

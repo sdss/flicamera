@@ -7,6 +7,7 @@
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
 import ctypes
+import errno
 import unittest.mock
 
 
@@ -53,10 +54,27 @@ class MockLibFLI(ctypes.CDLL):
 
     def __getattr__(self, name):
 
-        # So for the cases when we haven't overridden the library function,
-        # we returns a Mock that returns 0 (no error).
+        # __getattr__ only gets called if there is no attribute in the class
+        # that matches that name. So for the cases when we haven't overridden
+        # the library function, we returns a Mock that returns 0 (no error).
 
-        return unittest.mock.MagicMock(return_value=0)
+        if name.startswith('FLI') or name == '_FuncPtr':
+            return unittest.mock.MagicMock(return_value=0)
+
+        # For the rest, normal behaviour.
+        return super(MockLibFLI, self).__getattr__(name)
+
+    def _get_device(self, dev):
+        """Gets the appropriate device."""
+
+        if isinstance(dev, ctypes.c_long):
+            dev = dev.value
+
+        for device in self.devices:
+            if device.dev == dev:
+                return device
+
+        return None
 
     def FLIList(self, domain, names_ptr):
 
@@ -70,3 +88,25 @@ class MockLibFLI(ctypes.CDLL):
         # Then we access the object to which the names_ptr points to and
         # replace its contents.
         names_ptr._obj.contents = (ctypes.c_char_p * len(self.devices))(*device_names)
+
+        return 0
+
+    def FLIOpen(self, dev_ptr, name, domain):
+
+        name = name.decode()
+        for device in self.devices:
+            if device.name == name:
+                dev_ptr._obj.value = device.dev
+                return 0
+
+        return -errno.ENXIO
+
+    def FLIGetSerialString(self, dev, serial_ptr, str_size):
+
+        device = self._get_device(dev)
+        if not device:
+            return -errno.ENXIO
+
+        serial_ptr.value = device.state['serial'].encode()
+
+        return 0

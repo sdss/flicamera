@@ -1,6 +1,6 @@
 ---
 
-devices:
+cameras:
     'FLI-3':
         serial: ML1234
         temperature:
