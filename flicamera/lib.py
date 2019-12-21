@@ -371,6 +371,9 @@ class LibFLI(ctypes.CDLL):
     @staticmethod
     def _convert_to_list(ptr):
 
+        if not ptr:
+            return []
+
         list_ = []
         ii = 0
         while ptr[ii]:
