@@ -5,14 +5,13 @@ packages = \
 ['flicamera', 'flicamera.utils']
 
 package_data = \
-{'': ['*'], 'flicamera': ['etc/*']}
+{'': ['*'], 'flicamera': ['etc/*', 'src/*']}
 
 install_requires = \
 ['numpy>=1.17.4,<2.0.0',
  'pygments>=2.2.0,<3.0.0',
  'ruamel.yaml>=0.15.61,<0.16.0',
- 'setuptools>=42.0.0,<43.0.0',
- 'toml>=0.10.0,<0.11.0']
+ 'sdss-basecam @ git+https://github.com/sdss/basecam.git@master']
 
 extras_require = \
 {'docs': ['Sphinx>=2.1,<3.0', 'semantic-version==2.8.0']}
@@ -31,7 +30,7 @@ setup_kwargs = {
     'package_data': package_data,
     'install_requires': install_requires,
     'extras_require': extras_require,
-    'python_requires': '>=3.7,<4.0',
+    'python_requires': '>=3.8,<4.0',
 }
 from build import *
 build(setup_kwargs)
