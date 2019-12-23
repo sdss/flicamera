@@ -12,6 +12,8 @@ import glob
 import os
 import sys
 
+import Cython.Build
+import numpy
 from setuptools import Extension
 
 
@@ -62,7 +64,14 @@ ext_modules = [
         extra_compile_args=extra_compile_args,
         extra_link_args=extra_link_args,
         language='c',
-        optional=True)
+        optional=True),
+    Extension(
+        'flicamera.grabimage',
+        ['flicamera/grabimage.c'],
+        # libraries=['fli.cpython-38-darwin'],
+        # library_dirs=['./flicamera'],
+        include_dirs=[numpy.get_include()]
+    )
 ]
 
 
@@ -71,4 +80,5 @@ def build(setup_kwargs):
 
     setup_kwargs.update({
         'ext_modules': ext_modules,
+        # 'cmdclass': {'build_ext': Cython.Build.build_ext}
     })

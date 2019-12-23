@@ -17,6 +17,12 @@ from ctypes import (POINTER, byref, c_char_p, c_double, c_int, c_long,
 
 import numpy
 
+try:
+    from flicamera.utils.grabimage import grab_image
+except ImportError:
+    grab_image = None
+
+
 __ALL__ = ['LibFLI', 'FLIWarning', 'FLIError', 'chk_err']
 
 
@@ -669,13 +675,16 @@ class FLIDevice(object):
         self.lib.FLISetTDI(self.dev, 0, 0)
         self.lib.FLIExposeFrame(self.dev)
 
-    def read_frame(self):
-        """Reads the image frame."""
+    def read_frame(self, use_cython=True):
+        """Reads the image frame.
 
-        # TODO: We are iterating over each row of the image, which in the
-        # case of the FVC can be time consuming. It's probably an overkill
-        # but maybe this function could be moved to a Cython or Pybind11
-        # extension. Need to do some benchmarking.
+        Parameters
+        ----------
+        use_cython : bool
+            If set, tries to use the ``grab_image`` Cython function. This
+            should speed up the readout process as it loops over rows.
+
+        """
 
         if self.get_exposure_time_left() > 0:
             raise FLIError('the camera is still exposing.')
@@ -685,12 +694,18 @@ class FLIDevice(object):
         n_cols = int((lr_x - ul_x) / self.hbin)
         n_rows  = int((lr_y - ul_y) / self.vbin)
 
-        array = numpy.empty((n_rows, n_cols), dtype=numpy.uint16)
+        if use_cython and grab_image:
 
-        img_ptr   = array.ctypes.data_as(POINTER(ctypes.c_uint16))
+            return grab_image(self.dev, n_rows, n_cols)
 
-        for row in range(n_rows):
-            offset = row * n_cols * ctypes.sizeof(ctypes.c_uint16)
-            self.lib.FLIGrabRow(self.dev, byref(img_ptr.contents, offset), n_cols)
+        else:
 
-        return array
+            array = numpy.empty((n_rows, n_cols), dtype=numpy.uint16)
+
+            img_ptr   = array.ctypes.data_as(POINTER(ctypes.c_uint16))
+
+            for row in range(n_rows):
+                offset = row * n_cols * ctypes.sizeof(ctypes.c_uint16)
+                self.lib.FLIGrabRow(self.dev, byref(img_ptr.contents, offset), n_cols)
+
+            return array
