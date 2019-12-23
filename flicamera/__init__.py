@@ -6,10 +6,15 @@
 import os
 import warnings
 
+import pkg_resources
+
 from .utils import get_config, get_logger
 
 
-__version__ = '0.1.0-alpha.0'
+try:
+    __version__ = pkg_resources.get_distribution('sdss-flicamera').version
+except pkg_resources.DistributionNotFound:
+    __version__ = 'dev'
 
 NAME = 'flicamera'
 
