@@ -17,11 +17,6 @@ from ctypes import (POINTER, byref, c_char_p, c_double, c_int, c_long,
 
 import numpy
 
-try:
-    from flicamera.utils.grabimage import grab_image
-except ImportError:
-    grab_image = None
-
 
 __ALL__ = ['LibFLI', 'FLIWarning', 'FLIError', 'chk_err']
 
@@ -694,18 +689,12 @@ class FLIDevice(object):
         n_cols = int((lr_x - ul_x) / self.hbin)
         n_rows  = int((lr_y - ul_y) / self.vbin)
 
-        if use_cython and grab_image:
+        array = numpy.empty((n_rows, n_cols), dtype=numpy.uint16)
 
-            return grab_image(self.dev, n_rows, n_cols)
+        img_ptr   = array.ctypes.data_as(POINTER(ctypes.c_uint16))
 
-        else:
+        for row in range(n_rows):
+            offset = row * n_cols * ctypes.sizeof(ctypes.c_uint16)
+            self.lib.FLIGrabRow(self.dev, byref(img_ptr.contents, offset), n_cols)
 
-            array = numpy.empty((n_rows, n_cols), dtype=numpy.uint16)
-
-            img_ptr   = array.ctypes.data_as(POINTER(ctypes.c_uint16))
-
-            for row in range(n_rows):
-                offset = row * n_cols * ctypes.sizeof(ctypes.c_uint16)
-                self.lib.FLIGrabRow(self.dev, byref(img_ptr.contents, offset), n_cols)
-
-            return array
+        return array

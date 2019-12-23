@@ -57,7 +57,7 @@ def clean(ctx):
     ctx.run('rm -rf build')
     ctx.run('rm -rf dist')
     ctx.run('rm -rf **/*.egg-info *.egg-info')
-    ctx.run('rm -rf */**/*.so')
+    ctx.run('rm -rf **/*.so')
 
 
 @task(clean, default=True)

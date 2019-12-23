@@ -8,12 +8,10 @@
 
 # Extension build system using poetry, see https://github.com/python-poetry/poetry/issues/11.
 
-import glob
 import os
 import sys
+import glob
 
-import Cython.Build
-import numpy
 from setuptools import Extension
 
 
@@ -55,6 +53,7 @@ if TRAVIS:
 else:
     libraries = ['usb-1.0']
 
+
 ext_modules = [
     Extension(
         'flicamera.libfli',
@@ -65,20 +64,29 @@ ext_modules = [
         extra_link_args=extra_link_args,
         language='c',
         optional=True),
-    Extension(
-        'flicamera.grabimage',
-        ['flicamera/grabimage.c'],
-        # libraries=['fli.cpython-38-darwin'],
-        # library_dirs=['./flicamera'],
-        include_dirs=[numpy.get_include()]
-    )
 ]
+
+
+# In case we wanted to compile the grabimage extension, but tests show that it
+# is not faster than the Python ctypes implementation.
+
+# We need to link grabimage against the libfli shared object but Python adds
+# a suffix. We need to figure out the output name.
+# suffix = sysconfig.get_config_var('EXT_SUFFIX')
+# libfli_lib = 'fli' + '.'.join(suffix.split('.')[:-1])
+
+# cython_ext = Extension(
+#     'flicamera.utils.grabimage',
+#     ['flicamera/src/grabimage.pyx'],
+#     libraries=[libfli_lib],
+#     library_dirs=['./flicamera'],
+#     include_dirs=[numpy.get_include()],
+# )
 
 
 def build(setup_kwargs):
     """To build the extensions with poetry."""
 
     setup_kwargs.update({
-        'ext_modules': ext_modules,
-        # 'cmdclass': {'build_ext': Cython.Build.build_ext}
+        'ext_modules': ext_modules
     })
