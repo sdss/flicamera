@@ -76,6 +76,7 @@ omit = [
 exclude_lines = [
 ]
 
-[build-system]
-build-backend = "poetry.masonry.api"
-requires = ["poetry>=1.0.0"]
+# Do not use poetry as a build system. We generate our own setup.py from poetry.
+# [build-system]
+# build-backend = "poetry.masonry.api"
+# requires = ["poetry>=1.0.0"]

@@ -30,7 +30,7 @@ setup_kwargs = {
     'package_data': package_data,
     'install_requires': install_requires,
     'extras_require': extras_require,
-    'python_requires': '>=3.8,<4.0',
+    'python_requires': '>=3.7,<4.0',
 }
 from build import *
 build(setup_kwargs)
