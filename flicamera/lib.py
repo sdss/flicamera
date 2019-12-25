@@ -670,14 +670,13 @@ class FLIDevice(object):
         self.lib.FLISetTDI(self.dev, 0, 0)
         self.lib.FLIExposeFrame(self.dev)
 
-    def read_frame(self, use_cython=True):
+    def read_frame(self):
         """Reads the image frame.
 
-        Parameters
-        ----------
-        use_cython : bool
-            If set, tries to use the ``grab_image`` Cython function. This
-            should speed up the readout process as it loops over rows.
+        This function reads the image buffer row by row. In principle it could
+        be optimised by writing a C function to encapsulate the loop, but tests
+        show that the gain is marginal so it's ok to keep it as a pure Python
+        method.
 
         """
 
