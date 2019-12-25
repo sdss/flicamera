@@ -473,7 +473,7 @@ class FLIDevice(object):
         # Avoids opening multiple times
         if not self.is_open:
             self.lib.FLIOpen(byref(self.dev), self.name.encode(), self.domain)
-            self.lib.FLILockDevice(self.dev)
+            # self.lib.FLILockDevice(self.dev)
             self.is_open = True
 
         fwrev = c_long()
