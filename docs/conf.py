@@ -2,28 +2,20 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
 
 from pkg_resources import parse_version
 
 from flicamera import __version__
 
 
-sys.path.append(os.path.join(os.path.dirname(__file__), 'releases'))
-
-# import releases  # noqa
-
-
 # Are we building in RTD?
 on_rtd = os.environ.get('READTHEDOCS') == 'True'
 
-
 # matplotlib.use('agg')
-
 
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.autosummary',
               'sphinx.ext.todo', 'sphinx.ext.viewcode', 'sphinx.ext.mathjax',
-              'sphinx.ext.intersphinx', 'releases']
+              'sphinx.ext.intersphinx', 'sdsstools.releases']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -64,8 +56,7 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'releases/**/*.rst',
-                    'releases/README.rst']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.

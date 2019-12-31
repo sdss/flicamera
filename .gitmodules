@@ -1,3 +1,0 @@
-[submodule "docs/sphinx/releases"]
-	path = docs/releases
-	url = https://github.com/albireox/releases
