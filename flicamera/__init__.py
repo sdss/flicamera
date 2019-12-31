@@ -3,31 +3,12 @@
 # flake8: noqa
 # isort:skip_file
 
-import pathlib
-
-import pkg_resources
-
-from .utils import get_config, get_logger
-
-
-def get_version():
-
-    try:
-        return pkg_resources.get_distribution('sdss-flicamera').version
-    except pkg_resources.DistributionNotFound:
-        try:
-            import toml
-            poetry_config = toml.load(
-                open(pathlib.Path(__file__).parent / '../../pyproject.toml'))
-            return poetry_config['tool']['poetry']['version']
-        except Exception:
-            return '0.0.0'
+from sdsstools import get_config, get_logger, get_package_version
 
 
 NAME = 'flicamera'
 
-__version__ = get_version()
+__version__ = get_package_version(__file__, 'sdss-flicamera') or 'dev'
 
 config = get_config(NAME, allow_user=True)
-
-log = get_logger('flicamera')
+log = get_logger(NAME)

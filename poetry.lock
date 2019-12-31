@@ -262,6 +262,14 @@ testing = ["packaging", "importlib-resources"]
 
 [[package]]
 category = "dev"
+description = "Pythonic task execution"
+name = "invoke"
+optional = false
+python-versions = "*"
+version = "1.3.0"
+
+[[package]]
+category = "dev"
 description = "IPython-enabled pdb"
 name = "ipdb"
 optional = false
@@ -790,23 +798,23 @@ type = "git"
 url = "https://github.com/sdss/clu"
 [[package]]
 category = "main"
-description = ""
+description = "Small tools for SDSS products"
 name = "sdsstools"
 optional = false
-python-versions = "^3.7"
+python-versions = ">=3.7,<4.0"
 version = "0.1.0"
 
 [package.dependencies]
-pygments = "^2.5.2"
+pygments = ">=2.5.2,<3.0.0"
 pyyaml = ">=4.0"
 
-[package.extras]
-dev = ["invoke (^1.3.0)"]
+[package.dependencies.invoke]
+optional = true
+version = ">=1.3.0,<2.0.0"
 
-[package.source]
-reference = "783371219910c506cb9a4fc59f9b14b830381d93"
-type = "git"
-url = "https://github.com/sdss/sdsstools.git"
+[package.extras]
+dev = ["invoke (>=1.3.0,<2.0.0)"]
+
 [[package]]
 category = "main"
 description = "A library implementing the 'SemVer' scheme."
@@ -1025,7 +1033,7 @@ testing = ["pathlib2", "contextlib2", "unittest2"]
 docs = ["Sphinx", "semantic-version"]
 
 [metadata]
-content-hash = "773b84c96316f736fecf620365f1396942d4d96f85c20562347ce9c1abee1e4a"
+content-hash = "f4d01c5f8b0b9de3a12296f0091778bd947b8d0ea64058fd9d07bc053853f6c0"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1176,6 +1184,11 @@ imagesize = [
 importlib-metadata = [
     {file = "importlib_metadata-1.3.0-py2.py3-none-any.whl", hash = "sha256:d95141fbfa7ef2ec65cfd945e2af7e5a6ddbd7c8d9a25e66ff3be8e3daf9f60f"},
     {file = "importlib_metadata-1.3.0.tar.gz", hash = "sha256:073a852570f92da5f744a3472af1b61e28e9f78ccf0c9117658dc32b15de7b45"},
+]
+invoke = [
+    {file = "invoke-1.3.0-py2-none-any.whl", hash = "sha256:fc803a5c9052f15e63310aa81a43498d7c55542beb18564db88a9d75a176fa44"},
+    {file = "invoke-1.3.0-py3-none-any.whl", hash = "sha256:f4ec8a134c0122ea042c8912529f87652445d9f4de590b353d23f95bfa1f0efd"},
+    {file = "invoke-1.3.0.tar.gz", hash = "sha256:c52274d2e8a6d64ef0d61093e1983268ea1fc0cd13facb9448c4ef0c9a7ac7da"},
 ]
 ipdb = [
     {file = "ipdb-0.12.3.tar.gz", hash = "sha256:5d9a4a0e3b7027a158fc6f2929934341045b9c3b0b86ed5d7e84e409653f72fd"},
@@ -1467,7 +1480,10 @@ restructuredtext-lint = [
 ]
 sdss-basecam = []
 sdss-clu = []
-sdsstools = []
+sdsstools = [
+    {file = "sdsstools-0.1.0-py3-none-any.whl", hash = "sha256:59ecf64169d4ba2709b5a8bba90b7907fa06e802cb8ab8d8662e2d9a1c2fada3"},
+    {file = "sdsstools-0.1.0.tar.gz", hash = "sha256:c8413ead125f6ba7aaba5519535b6ccf4c72bff5030e6e928444254dbf9e048b"},
+]
 semantic-version = [
     {file = "semantic_version-2.8.0-py2.py3-none-any.whl", hash = "sha256:35f8b1f37e8a1d0b6e476b3b55546d0de572bb345b4ff8e82faddb799d614888"},
     {file = "semantic_version-2.8.0.tar.gz", hash = "sha256:2e28e4d2e2b2a0a102ad7fe5c6912700a35681c94c4b4f628b317853d1ebd179"},

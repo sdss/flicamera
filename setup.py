@@ -2,17 +2,17 @@
 from setuptools import setup
 
 packages = \
-['flicamera', 'flicamera.utils']
+['flicamera']
 
 package_data = \
-{'': ['*'], 'flicamera': ['etc/*', 'src/*']}
+{'': ['*'], 'flicamera': ['etc/*']}
 
 install_requires = \
 ['numpy>=1.17.4,<2.0.0',
  'pygments>=2.2.0,<3.0.0',
  'ruamel.yaml>=0.15.61,<0.16.0',
  'sdss-basecam @ git+https://github.com/sdss/basecam.git@master',
- 'setuptools']
+ 'sdsstools @ git+https://github.com/sdss/sdsstools.git@master']
 
 extras_require = \
 {'docs': ['Sphinx>=2.1,<3.0', 'semantic-version==2.8.0']}
