@@ -9,10 +9,8 @@ package_data = \
 
 install_requires = \
 ['numpy>=1.17.4,<2.0.0',
- 'pygments>=2.2.0,<3.0.0',
- 'ruamel.yaml>=0.15.61,<0.16.0',
  'sdss-basecam @ git+https://github.com/sdss/basecam.git@master',
- 'sdsstools @ git+https://github.com/sdss/sdsstools.git@master']
+ 'sdsstools>=0.1.0,<0.2.0']
 
 extras_require = \
 {'docs': ['Sphinx>=2.1,<3.0', 'semantic-version==2.8.0']}
