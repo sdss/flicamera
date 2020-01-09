@@ -24,7 +24,7 @@ include = ["flicamera/etc/*", "cextern/**/*", "LICENSE.md"]
 build = "build.py"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 numpy = "^1.17.4"
 "sdss-basecam" = {git ="https://github.com/sdss/basecam.git"}
 sdsstools = "^0.1.0"
@@ -50,7 +50,7 @@ sdsstools = {version="^0.1.0", extras=["dev"]}
 line_length = 79
 sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 default_section = "THIRDPARTY"
-known_first_party = "flicamera"
+known_first_party = ["flicamera"]
 # multi_line_output = false
 balanced_wrapping = true
 include_trailing_comma = false
