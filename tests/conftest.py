@@ -10,7 +10,8 @@ import pathlib
 import warnings
 
 import pytest
-import ruamel.yaml
+
+from sdsstools import read_yaml_file
 
 from flicamera.lib import FLIDevice, LibFLI
 
@@ -24,9 +25,7 @@ TEST_DATA = pathlib.Path(__file__).parent / 'data/test_data.yaml'
 def config():
     """Gets the test configuration."""
 
-    YAML = ruamel.yaml.YAML()
-
-    yield YAML.load(open(TEST_DATA))
+    yield read_yaml_file(TEST_DATA)
 
 
 @pytest.fixture
@@ -45,7 +44,7 @@ def libfli(mock_libfli, config):
     libfli = LibFLI()
 
     for camera in config['cameras']:
-        libfli.lib.devices.append(MockFLIDevice(camera, **config['cameras'][camera]))
+        libfli.libc.devices.append(MockFLIDevice(camera, **config['cameras'][camera]))
 
     yield libfli
 
@@ -58,7 +57,7 @@ def cameras(libfli):
 
     cameras = []
 
-    for device in libfli.lib.devices:
+    for device in libfli.libc.devices:
         serial = device.state['serial']
         cameras.append(libfli.get_camera(serial))
 

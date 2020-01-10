@@ -414,7 +414,7 @@ class FLIDevice(object):
 
     _instances = {}
 
-    def __new__(cls, name, lib):
+    def __new__(cls, name, libc):
 
         # Create a singleton to avoid opening the camera multiple times.
         if name not in cls._instances:
@@ -423,13 +423,13 @@ class FLIDevice(object):
 
         return cls._instances[name]
 
-    def __init__(self, name, lib):
+    def __init__(self, name, libc):
 
         self.domain = flidomain_t(FLIDOMAIN_USB | FLIDEVICE_CAMERA)
         self._str_size = 100
 
         self.name = name if isinstance(name, str) else name.decode()
-        self.libc = lib
+        self.libc = libc
 
         self.dev = flidev_t()
         self.fwrev = None
