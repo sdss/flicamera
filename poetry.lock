@@ -902,7 +902,7 @@ sdsstools = "^0.1.0"
 docs = ["sphinx (^2.3.1)"]
 
 [package.source]
-reference = "3ba9cd8d57b6ad38cd607e4ee55fa65fea3c0769"
+reference = "fca420d125156133a9a7c872f77f68a0902dc6d4"
 type = "git"
 url = "https://github.com/sdss/basecam.git"
 [[package]]
