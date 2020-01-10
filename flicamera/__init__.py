@@ -9,3 +9,6 @@ __version__ = get_package_version(__file__, 'sdss-flicamera') or 'dev'
 
 # Get a logger, mostly for warning formatting.
 log = get_logger(NAME)
+
+
+from .camera import *
