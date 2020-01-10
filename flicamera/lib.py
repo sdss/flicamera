@@ -544,6 +544,14 @@ class FLIDevice(object):
 
         self.shutter = shutter_value
 
+    def get_cooler_power(self):
+        """Returns the cooler power."""
+
+        cooler = c_double()
+        self.libc.FLIGetCoolerPower(self.dev, byref(cooler))
+
+        return cooler.value
+
     def set_exposure_time(self, exp_time):
         """Sets the exposure time.
 
