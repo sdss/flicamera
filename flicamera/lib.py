@@ -499,7 +499,7 @@ class FLIDevice(object):
         self.set_binning(1, 1)
         self.set_image_area()
 
-    def close(self):
+    def __del__(self):
         """Closes the device."""
 
         self.libc.FLIUnlockDevice(self.dev)
