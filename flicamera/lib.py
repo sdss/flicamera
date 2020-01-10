@@ -346,17 +346,17 @@ class LibFLI(ctypes.CDLL):
 
         for so in shared_object:
             try:
-                self.lib = ctypes.cdll.LoadLibrary(so)
+                self.libc = ctypes.cdll.LoadLibrary(so)
                 break
             except OSError:
                 pass
 
-        if self.lib is None:
+        if self.libc is None:
             raise RuntimeError('cannot load the libfli shared library.')
 
         # Sets the argtypes and restype.
         for funcname, argtypes in _API_FUNCTION_PROTOTYPES:
-            so_func = self.lib.__getattr__(funcname)
+            so_func = self.libc.__getattr__(funcname)
             so_func.argtypes = argtypes
             so_func.restype = chk_err
 
@@ -381,19 +381,19 @@ class LibFLI(ctypes.CDLL):
         """Turns the debug system on/off."""
 
         debug_level = flidebug_t(FLIDEBUG_ALL if debug else FLIDEBUG_NONE)
-        self.lib.FLISetDebugLevel(c_char_p(None), debug_level)
+        self.libc.FLISetDebugLevel(c_char_p(None), debug_level)
 
     def list_cameras(self):
         """Returns a list of connected camera names."""
 
         names_ptr = POINTER(ctypes.c_char_p)()
-        self.lib.FLIList(self.domain, byref(names_ptr))
+        self.libc.FLIList(self.domain, byref(names_ptr))
 
         cameras = [name.decode().split(';')[0]
                    for name in self._convert_to_list(names_ptr)]
 
         # Free the list
-        self.lib.FLIFreeList(names_ptr)
+        self.libc.FLIFreeList(names_ptr)
 
         return cameras
 
@@ -402,10 +402,9 @@ class LibFLI(ctypes.CDLL):
 
         camera_names = self.list_cameras()
         for camera_name in camera_names:
-            fli_camera = FLIDevice(camera_name, self.lib)
+            fli_camera = FLIDevice(camera_name, self.libc)
             if fli_camera.serial == serial:
                 return fli_camera
-            fli_camera.close()
 
         return None
 
@@ -430,7 +429,7 @@ class FLIDevice(object):
         self._str_size = 100
 
         self.name = name if isinstance(name, str) else name.decode()
-        self.lib = lib
+        self.libc = lib
 
         self.dev = flidev_t()
         self.fwrev = None
@@ -472,27 +471,27 @@ class FLIDevice(object):
 
         # Avoids opening multiple times
         if not self.is_open:
-            self.lib.FLIOpen(byref(self.dev), self.name.encode(), self.domain)
-            # self.lib.FLILockDevice(self.dev)
+            self.libc.FLIOpen(byref(self.dev), self.name.encode(), self.domain)
+            self.libc.FLILockDevice(self.dev)
             self.is_open = True
 
         fwrev = c_long()
-        self.lib.FLIGetFWRevision(self.dev, byref(fwrev))
+        self.libc.FLIGetFWRevision(self.dev, byref(fwrev))
         self.fwrev = fwrev.value
 
         hwrev = c_long()
-        self.lib.FLIGetHWRevision(self.dev, byref(hwrev))
+        self.libc.FLIGetHWRevision(self.dev, byref(hwrev))
         self.hwrev = hwrev.value
 
-        self.lib.FLIGetModel(self.dev, self._model, self._str_size)
-        self.lib.FLIGetSerialString(self.dev, self._serial, self._str_size)
+        self.libc.FLIGetModel(self.dev, self._model, self._str_size)
+        self.libc.FLIGetSerialString(self.dev, self._serial, self._str_size)
 
         # The camera doesn't allow to get the status of the shutter so we
         # close it on initialisation to be sure we know where it is.
         self.set_shutter(False)
 
         # Set bit depth (all our cameras should support 16bits)
-        # self.lib.FLISetBitDepth(self.dev, FLI_MODE_16BIT)
+        # self.libc.FLISetBitDepth(self.dev, FLI_MODE_16BIT)
 
         self._update_temperature()
 
@@ -503,18 +502,18 @@ class FLIDevice(object):
     def close(self):
         """Closes the device."""
 
-        self.lib.FLIUnlockDevice(self.dev)
-        self.lib.FLIClose(self.dev)
+        self.libc.FLIUnlockDevice(self.dev)
+        self.libc.FLIClose(self.dev)
 
     def _update_temperature(self):
         """Gets the temperatures and updates the ``temperature`` dict."""
 
         temp = c_double()
 
-        self.lib.FLIReadTemperature(self.dev, FLI_TEMPERATURE_BASE, byref(temp))
+        self.libc.FLIReadTemperature(self.dev, FLI_TEMPERATURE_BASE, byref(temp))
         self._temperature['base'] = temp.value
 
-        self.lib.FLIReadTemperature(self.dev, FLI_TEMPERATURE_CCD, byref(temp))
+        self.libc.FLIReadTemperature(self.dev, FLI_TEMPERATURE_CCD, byref(temp))
         self._temperature['CCD'] = temp.value
 
     def set_temperature(self, temp):
@@ -527,7 +526,7 @@ class FLIDevice(object):
 
         """
 
-        self.lib.FLISetTemperature(self.dev, c_double(temp))
+        self.libc.FLISetTemperature(self.dev, c_double(temp))
 
     def set_shutter(self, shutter_value):
         """Controls the shutter of the camera.
@@ -541,7 +540,7 @@ class FLIDevice(object):
 
         shutter_flag = FLI_SHUTTER_OPEN if shutter_value else FLI_SHUTTER_CLOSE
 
-        self.lib.FLIControlShutter(self.dev, shutter_flag)
+        self.libc.FLIControlShutter(self.dev, shutter_flag)
 
         self.shutter = shutter_value
 
@@ -555,7 +554,7 @@ class FLIDevice(object):
 
         """
 
-        self.lib.FLISetExposureTime(self.dev, int(exp_time * 1000.))
+        self.libc.FLISetExposureTime(self.dev, int(exp_time * 1000.))
 
     def set_image_area(self, area=None):
         r"""Sets the area of the image to exposure.
@@ -592,7 +591,7 @@ class FLIDevice(object):
 
             area = (ul_x, ul_y, lr_x_prime, lr_y_prime)
 
-        self.lib.FLISetImageArea(self.dev, area[0], area[1], area[2], area[3])
+        self.libc.FLISetImageArea(self.dev, area[0], area[1], area[2], area[3])
 
         self.area = (area[0], area[1], area[2], area[3])
 
@@ -616,8 +615,8 @@ class FLIDevice(object):
         lr_x = c_long()
         lr_y = c_long()
 
-        self.lib.FLIGetVisibleArea(self.dev, byref(ul_x), byref(ul_y),
-                                   byref(lr_x), byref(lr_y))
+        self.libc.FLIGetVisibleArea(self.dev, byref(ul_x), byref(ul_y),
+                                    byref(lr_x), byref(lr_y))
 
         return (ul_x.value, ul_y.value, lr_x.value, lr_y.value)
 
@@ -635,8 +634,8 @@ class FLIDevice(object):
         assert vbin >= 1 and vbin <= 16, 'invalid vbin value.'
         assert int(vbin) == vbin, 'vbin is not an integer'
 
-        self.lib.FLISetHBin(self.dev, c_long(hbin))
-        self.lib.FLISetVBin(self.dev, c_long(vbin))
+        self.libc.FLISetHBin(self.dev, c_long(hbin))
+        self.libc.FLISetVBin(self.dev, c_long(vbin))
 
         self.hbin = hbin
         self.vbin = vbin
@@ -649,14 +648,14 @@ class FLIDevice(object):
         """Returns the remaining exposure time, in milliseconds.."""
 
         timeleft = c_long()
-        self.lib.FLIGetExposureStatus(self.dev, byref(timeleft))
+        self.libc.FLIGetExposureStatus(self.dev, byref(timeleft))
 
         return timeleft.value
 
     def cancel_exposure(self):
         """Cancels an exposure."""
 
-        self.lib.FLICancelExposure(self.dev)
+        self.libc.FLICancelExposure(self.dev)
 
     def start_exposure(self, frametype='normal'):
         """Starts and exposure and returns immediately."""
@@ -666,9 +665,9 @@ class FLIDevice(object):
         else:
             frametype = FLI_FRAME_TYPE_NORMAL
 
-        self.lib.FLISetFrameType(self.dev, fliframe_t(frametype))
-        self.lib.FLISetTDI(self.dev, 0, 0)
-        self.lib.FLIExposeFrame(self.dev)
+        self.libc.FLISetFrameType(self.dev, fliframe_t(frametype))
+        self.libc.FLISetTDI(self.dev, 0, 0)
+        self.libc.FLIExposeFrame(self.dev)
 
     def read_frame(self):
         """Reads the image frame.
@@ -694,6 +693,6 @@ class FLIDevice(object):
 
         for row in range(n_rows):
             offset = row * n_cols * ctypes.sizeof(ctypes.c_uint16)
-            self.lib.FLIGrabRow(self.dev, byref(img_ptr.contents, offset), n_cols)
+            self.libc.FLIGrabRow(self.dev, byref(img_ptr.contents, offset), n_cols)
 
         return array
