@@ -9,9 +9,14 @@
 import asyncio
 import time
 
+import astropy
+
 import basecam.exceptions
 from basecam import BaseCamera, CameraEvent, CameraSystem, ExposureError
+from basecam.mixins import ExposureTypeMixIn
+from basecam.model import basic_fits_model
 
+import flicamera
 import flicamera.lib
 
 
@@ -19,6 +24,8 @@ __all__ = ['FLICameraSystem', 'FLICamera']
 
 
 class FLICameraSystem(CameraSystem):
+
+    __version__ = flicamera.__version__
 
     def __init__(self, **kwargs):
 
@@ -43,6 +50,7 @@ class FLICameraSystem(CameraSystem):
 class FLICamera(BaseCamera, ExposureTypeMixIn):
 
     _device = None
+    fits_model = basic_fits_model
 
     async def _connect_internal(self, serial=None):
         """Internal method to connect the camera."""
@@ -58,7 +66,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn):
             raise basecam.exceptions.CameraConnectionError(
                 f'cannot find camera with serial {serial}.')
 
-    async def _status_internal(self):
+    def _status_internal(self):
         """Gets a dictionary with the status of the camera.
 
         Returns
@@ -85,7 +93,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn):
                     exposure_time_left=device.get_exposure_time_left(),
                     cooler_power=device.get_cooler_power())
 
-    async def _expose_internal(self, exposure_time, image_type='science', **kwargs):
+    async def _expose_internal(self, exposure, **kwargs):
         """Internal method to handle camera exposures.
 
         Returns
@@ -102,15 +110,17 @@ class FLICamera(BaseCamera, ExposureTypeMixIn):
 
         device.cancel_exposure()
 
-        device.set_exposure_time(exposure_time)
+        device.set_exposure_time(exposure.exptime)
 
+        image_type = exposure.image_type
         frametype = 'dark' if image_type in ['dark', 'bias'] else 'normal'
         device.start_exposure(frametype)
 
+        exposure.obstime = astropy.time.Time.now()
         self._notify(CameraEvent.EXPOSURE_INTEGRATING)
 
         start_time = time.time()
-        time_left = exposure_time
+        time_left = exposure.exptime
 
         while True:
 
@@ -121,9 +131,10 @@ class FLICamera(BaseCamera, ExposureTypeMixIn):
             if time_left == 0:
                 self._notify(CameraEvent.EXPOSURE_READING)
                 array = device.read_frame()
-                return array
+                exposure.data = array
+                return
 
-            if time.time() - start_time > exposure_time + TIMEOUT:
+            if time.time() - start_time > exposure.exptime + TIMEOUT:
                 raise ExposureError('timeout waiting for exposure to finish.')
 
     @property

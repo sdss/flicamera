@@ -19,11 +19,16 @@ async def main():
     serials = camera_system.list_available_cameras()
 
     camera = await camera_system.add_camera(uid=serials[0])
+
     await camera.connect()
 
-    # print(await camera.expose(1))
-    print(await camera.bias())
+    exposure = await camera.flat(1.)
+    exposure.write('test.fits')
+
 
 if __name__ == '__main__':
 
-    asyncio.run(main())
+    loop = asyncio.get_event_loop()
+    loop.create_task(main())
+
+    loop.run_forever()
