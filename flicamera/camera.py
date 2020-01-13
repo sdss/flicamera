@@ -40,7 +40,7 @@ class FLICameraSystem(CameraSystem):
         return serial_numbers
 
 
-class FLICamera(BaseCamera):
+class FLICamera(BaseCamera, ExposureTypeMixIn):
 
     _device = None
 
