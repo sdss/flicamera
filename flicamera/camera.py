@@ -90,7 +90,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
                     serial=device.serial,
                     fwrev=device.fwrev,
                     hwrev=device.hwrev,
-                    hbib=device.hbin,
+                    hbin=device.hbin,
                     vbin=device.vbin,
                     visible_area=device.get_visible_area(),
                     image_area=device.area,
