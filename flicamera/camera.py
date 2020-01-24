@@ -47,7 +47,7 @@ class FLICameraSystem(CameraSystem):
         return serial_numbers
 
 
-class FLICamera(BaseCamera, ExposureTypeMixIn):
+class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
 
     _device = None
     fits_model = basic_fits_model
@@ -149,3 +149,38 @@ class FLICamera(BaseCamera, ExposureTypeMixIn):
         """
 
         return self.get_status()['serial']
+
+    async def _get_temperature_internal(self):
+        """Internal method to get the camera temperature."""
+
+        self._device._update_temperature()
+        return self._device._temperature['CCD']
+
+    async def _set_temperature_internal(self, temperature):
+        """Internal method to set the camera temperature."""
+
+        self._device.set_temperature(temperature)
+
+    async def _get_image_area_internal(self):
+        """Internal method to return the image area."""
+
+        return self._device.area
+
+    async def _set_image_area_internal(self, area=None):
+        """Internal method to set the image area."""
+
+        if area:
+            # Convert from (x0, x1, y0, y1) to (ul_x, ul_y, lr_x, lr_y)
+            area = (area[0], area[2], area[1], area[3])
+
+        self._device.set_image_area(area)
+
+    async def _get_binning_internal(self):
+        """Internal method to return the binning."""
+
+        return (self._device.hbin, self._device.vbin)
+
+    async def _set_binning_internal(self, hbin, vbin):
+        """Internal method to set the binning."""
+
+        self._device.set_binning(hbin, vbin)
