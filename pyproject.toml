@@ -29,7 +29,7 @@ flicamera = "flicamera.__main__:flicamera"
 [tool.poetry.dependencies]
 python = "^3.7"
 numpy = "^1.17.4"
-"sdss-basecam" = {git ="https://github.com/sdss/basecam.git"}
+"sdss-basecam" = "^0.1.0"
 sdsstools = "^0.1.0"
 Sphinx = {version="^2.3.1", optional=true}
 

@@ -28,6 +28,7 @@ before_install:
 
 install:
   - poetry install
+  - pip install -U git+https://github.com/sdss/basecam
 
 script:
   - poetry run pytest

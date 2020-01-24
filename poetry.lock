@@ -876,46 +876,38 @@ docutils = ">=0.11,<1.0"
 
 [[package]]
 category = "main"
-description = ""
+description = "A base library for camera wrapping and actor."
 name = "sdss-basecam"
 optional = false
-python-versions = "^3.7"
-version = "0.1.1-alpha.0"
+python-versions = ">=3.7,<4.0"
+version = "0.1.1"
 
 [package.dependencies]
-astropy = "^3.2.1"
-numpy = "^1.17"
-sdss-clu = "branch master"
-sdsstools = "^0.1.0"
+astropy = ">=3.2.1,<4.0.0"
+numpy = ">=1.17,<2.0"
+sdss-clu = ">=0.2.0,<0.3.0"
+sdsstools = ">=0.1.0,<0.2.0"
 
 [package.extras]
-docs = ["sphinx (^2.3.1)"]
+docs = ["sphinx (>=2.3.1,<3.0.0)"]
 
-[package.source]
-reference = "2ecbb9351a7267dc7de593749ade36ba7fdd8fe7"
-type = "git"
-url = "https://github.com/sdss/basecam.git"
 [[package]]
 category = "main"
-description = ""
+description = "A new protocol for SDSS actors."
 name = "sdss-clu"
 optional = false
-python-versions = "^3.7"
-version = "0.2.1-alpha.0"
+python-versions = ">=3.7,<4.0"
+version = "0.2.1"
 
 [package.dependencies]
-Click = "^7.0"
-aio_pika = "^6.4.1"
-jsonschema = "^3.0.1"
-sdsstools = "^0.1.0"
+Click = ">=7.0,<8.0"
+aio_pika = ">=6.4.1,<7.0.0"
+jsonschema = ">=3.0.1,<4.0.0"
+sdsstools = ">=0.1.0,<0.2.0"
 
 [package.extras]
-docs = ["Sphinx (^2.3)"]
+docs = ["Sphinx (>=2.3,<3.0)"]
 
-[package.source]
-reference = "6f01305d3d1b8defaaf4e7655e112db198364799"
-type = "git"
-url = "https://github.com/sdss/clu"
 [[package]]
 category = "main"
 description = "Small tools for SDSS products"
@@ -1225,7 +1217,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 docs = ["Sphinx"]
 
 [metadata]
-content-hash = "099232c0bab35efe46f4a862aceae8801229aba3c895bb5bd624de9031768bba"
+content-hash = "517f43a5e4e24be8c2a4c46a5445b780d829037e6057c2424da188758eddc8ad"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1738,8 +1730,14 @@ requests-toolbelt = [
 restructuredtext-lint = [
     {file = "restructuredtext_lint-1.3.0.tar.gz", hash = "sha256:97b3da356d5b3a8514d8f1f9098febd8b41463bed6a1d9f126cf0a048b6fd908"},
 ]
-sdss-basecam = []
-sdss-clu = []
+sdss-basecam = [
+    {file = "sdss-basecam-0.1.1.tar.gz", hash = "sha256:e38a8055443300830487be673a7117b4d34c528b9a95c8621f2cdf6ef310d7f6"},
+    {file = "sdss_basecam-0.1.1-py3-none-any.whl", hash = "sha256:0ab46ddf043066228043924549e0f7c350e83b416357be6238ba19fc0487a53f"},
+]
+sdss-clu = [
+    {file = "sdss-clu-0.2.1.tar.gz", hash = "sha256:3b06098db600cd25a061351e73e7235659a569b55072e2eee8e68c044b8f166d"},
+    {file = "sdss_clu-0.2.1-py3-none-any.whl", hash = "sha256:e74caac4586865e82b03dc50a7b15f3cc72f568e779e5dc2a570e4d2045803b0"},
+]
 sdsstools = [
     {file = "sdsstools-0.1.5-py3-none-any.whl", hash = "sha256:29d08f7f3f3556a55bd21ac089614504cd4f41424ce933164c74dc50ff078654"},
     {file = "sdsstools-0.1.5.tar.gz", hash = "sha256:85fc460878542cad5160f080fc54dff8456305c831317fdbe4eb3b0d52d7979d"},

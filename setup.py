@@ -9,7 +9,7 @@ package_data = \
 
 install_requires = \
 ['numpy>=1.17.4,<2.0.0',
- 'sdss-basecam @ git+https://github.com/sdss/basecam.git@master',
+ 'sdss-basecam>=0.1.0,<0.2.0',
  'sdsstools>=0.1.0,<0.2.0']
 
 extras_require = \
