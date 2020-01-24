@@ -7,14 +7,15 @@
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
 import asyncio
+import os
 import time
 
 import astropy
 
 import basecam.exceptions
 from basecam import BaseCamera, CameraEvent, CameraSystem, ExposureError
-from basecam.mixins import ExposureTypeMixIn
-from basecam.model import basic_fits_model
+from basecam.mixins import CoolerMixIn, ExposureTypeMixIn, ImageAreaMixIn
+from basecam.models import basic_fz_fits_model
 
 import flicamera
 import flicamera.lib
@@ -30,7 +31,12 @@ class FLICameraSystem(CameraSystem):
     def __init__(self, **kwargs):
 
         self.lib = flicamera.lib.LibFLI()
-        super().__init__(FLICamera, **kwargs)
+
+        config_file_path = os.path.join(os.environ['SDSSCORE_DIR'],
+                                        'configuration_files/actors/flicamera.yaml')
+        camera_config = kwargs.pop('camera_config', config_file_path)
+
+        super().__init__(FLICamera, camera_config=camera_config, **kwargs)
 
     def list_available_cameras(self):
 
