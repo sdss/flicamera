@@ -15,6 +15,9 @@ install_requires = \
 extras_require = \
 {'docs': ['Sphinx>=2.3.1,<3.0.0']}
 
+entry_points = \
+{'console_scripts': ['flicamera = flicamera.__main__:flicamera']}
+
 setup_kwargs = {
     'name': 'sdss-flicamera',
     'version': '0.1.0a0',
@@ -29,6 +32,7 @@ setup_kwargs = {
     'package_data': package_data,
     'install_requires': install_requires,
     'extras_require': extras_require,
+    'entry_points': entry_points,
     'python_requires': '>=3.7,<4.0',
 }
 from build import *

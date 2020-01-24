@@ -23,6 +23,9 @@ packages = [
 include = ["flicamera/etc/*", "cextern/**/*", "LICENSE.md"]
 build = "build.py"
 
+[tool.poetry.scripts]
+flicamera = "flicamera.__main__:flicamera"
+
 [tool.poetry.dependencies]
 python = "^3.7"
 numpy = "^1.17.4"
