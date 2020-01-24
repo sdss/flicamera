@@ -425,26 +425,28 @@ class FLIDevice(object):
 
     def __init__(self, name, libc):
 
-        self.domain = flidomain_t(FLIDOMAIN_USB | FLIDEVICE_CAMERA)
-        self._str_size = 100
+        if not self.is_open:
 
-        self.name = name if isinstance(name, str) else name.decode()
-        self.libc = libc
+            self.domain = flidomain_t(FLIDOMAIN_USB | FLIDEVICE_CAMERA)
+            self._str_size = 100
 
-        self.dev = flidev_t()
-        self.fwrev = None
-        self.hwrev = None
-        self._model = ctypes.create_string_buffer(self._str_size)
-        self._serial = ctypes.create_string_buffer(self._str_size)
+            self.name = name if isinstance(name, str) else name.decode()
+            self.libc = libc
 
-        self.hbin = None
-        self.vbin = None
-        self.area = (None, None, None, None)  # The image area (ul_x, ul_y, lr_x, lr_y)
+            self.dev = flidev_t()
+            self.fwrev = None
+            self.hwrev = None
+            self._model = ctypes.create_string_buffer(self._str_size)
+            self._serial = ctypes.create_string_buffer(self._str_size)
 
-        self.shutter = False
-        self._temperature = {'CCD': None, 'base': None}
+            self.hbin = None
+            self.vbin = None
+            self.area = (None, None, None, None)  # The image area (ul_x, ul_y, lr_x, lr_y)
 
-        self.open()
+            self.shutter = False
+            self._temperature = {'CCD': None, 'base': None}
+
+            self.open()
 
     @property
     def model(self):
@@ -469,11 +471,8 @@ class FLIDevice(object):
     def open(self):
         """Opens the device and grabs information."""
 
-        # Avoids opening multiple times
-        if not self.is_open:
-            self.libc.FLIOpen(byref(self.dev), self.name.encode(), self.domain)
-            self.libc.FLILockDevice(self.dev)
-            self.is_open = True
+        self.libc.FLIOpen(byref(self.dev), self.name.encode(), self.domain)
+        self.libc.FLILockDevice(self.dev)
 
         fwrev = c_long()
         self.libc.FLIGetFWRevision(self.dev, byref(fwrev))
@@ -497,7 +496,8 @@ class FLIDevice(object):
 
         # Sets the binning to (1, 1) and resets the image area.
         self.set_binning(1, 1)
-        self.set_image_area()
+
+        self.is_open = True
 
     def __del__(self):
         """Closes the device."""
