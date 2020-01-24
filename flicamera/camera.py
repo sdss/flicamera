@@ -50,7 +50,7 @@ class FLICameraSystem(CameraSystem):
 class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
 
     _device = None
-    fits_model = basic_fits_model
+    fits_model = basic_fz_fits_model
 
     async def _connect_internal(self, serial=None):
         """Internal method to connect the camera."""
