@@ -130,7 +130,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn):
 
             if time_left == 0:
                 self._notify(CameraEvent.EXPOSURE_READING)
-                array = device.read_frame()
+                array = await self.loop.run_in_executor(None, device.read_frame)
                 exposure.data = array
                 return
 
