@@ -496,6 +496,7 @@ class FLIDevice(object):
 
         # Sets the binning to (1, 1) and resets the image area.
         self.set_binning(1, 1)
+        self.set_image_area()
 
         self.is_open = True
 
@@ -601,7 +602,7 @@ class FLIDevice(object):
 
         self.libc.FLISetImageArea(self.dev, area[0], area[1], area[2], area[3])
 
-        self.area = (area[0], area[1], area[2], area[3])
+        self.area = area
 
     def get_visible_area(self):
         """Returns the visible area.
@@ -692,8 +693,8 @@ class FLIDevice(object):
 
         (ul_x, ul_y, lr_x, lr_y) = self.area
 
-        n_cols = int((lr_x - ul_x) / self.hbin)
-        n_rows  = int((lr_y - ul_y) / self.vbin)
+        n_cols = lr_x - ul_x
+        n_rows  = lr_y - ul_y
 
         array = numpy.empty((n_rows, n_cols), dtype=numpy.uint16)
 
