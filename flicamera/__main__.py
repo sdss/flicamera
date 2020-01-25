@@ -58,11 +58,13 @@ async def flicamera(camera_name):
         actor_config['log_dir'] = f'/data/logs/actors/{camera_name}'
 
     camera_system = FLICameraSystem().setup()
+    await camera_system.start_camera_poller()
+
+    await asyncio.sleep(0.1)  # Some time to allow camera to connect.
 
     actor = await FLIActor.from_config(actor_config, camera_system,
-                                       name=camera_name).start()
-
-    await camera_system.start_camera_poller()
+                                       name=camera_name,
+                                       default_cameras=[camera_name]).start()
 
     await actor.run_forever()
 
