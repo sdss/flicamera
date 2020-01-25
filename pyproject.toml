@@ -49,9 +49,13 @@ codecov = "^2.0.15"
 coverage = {version = "5.0", extras = ["toml"]}
 ipdb = "^0.12.3"
 sdsstools = {version="^0.1.0", extras=["dev"]}
+taskipy = "^1.1.2"
 
 [tool.poetry.extras]
 docs = ["sphinx"]
+
+[tool.taskipy.tasks]
+deploy = "python create_setup.py && poetry build && poetry publish"
 
 [tool.isort]
 line_length = 79

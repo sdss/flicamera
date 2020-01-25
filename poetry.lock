@@ -633,7 +633,7 @@ wcwidth = "*"
 [[package]]
 category = "dev"
 description = "Run a subprocess in a pseudo terminal"
-marker = "python_version >= \"3.4\" and sys_platform != \"win32\" or sys_platform != \"win32\""
+marker = "python_version >= \"3.4\" and sys_platform != \"win32\" or sys_platform != \"win32\" or python_version >= \"3.4\" and sys_platform != \"win32\" and (python_version >= \"3.4\" and sys_platform != \"win32\" or sys_platform != \"win32\")"
 name = "ptyprocess"
 optional = false
 python-versions = "*"
@@ -1084,6 +1084,17 @@ six = ">=1.10.0"
 
 [[package]]
 category = "dev"
+description = "tasks runner for python projects"
+name = "taskipy"
+optional = false
+python-versions = ">=3.5,<4.0"
+version = "1.1.2"
+
+[package.dependencies]
+toml = ">=0.10.0,<0.11.0"
+
+[[package]]
+category = "dev"
 description = "ANSII Color formatting for output in terminal."
 name = "termcolor"
 optional = false
@@ -1217,7 +1228,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 docs = ["Sphinx"]
 
 [metadata]
-content-hash = "517f43a5e4e24be8c2a4c46a5445b780d829037e6057c2424da188758eddc8ad"
+content-hash = "39760b48779ddaaeb1e71126af3b9b09f8db22e8d1412796ecb412bbd1aa579a"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1789,6 +1800,10 @@ sphinxcontrib-serializinghtml = [
 stevedore = [
     {file = "stevedore-1.31.0-py2.py3-none-any.whl", hash = "sha256:01d9f4beecf0fbd070ddb18e5efb10567801ba7ef3ddab0074f54e3cd4e91730"},
     {file = "stevedore-1.31.0.tar.gz", hash = "sha256:e0739f9739a681c7a1fda76a102b65295e96a144ccdb552f2ae03c5f0abe8a14"},
+]
+taskipy = [
+    {file = "taskipy-1.1.2-py3-none-any.whl", hash = "sha256:bfb92a80580df884b7fd593f76d5d3770b40c1aa7806af8ade081a000af93fc1"},
+    {file = "taskipy-1.1.2.tar.gz", hash = "sha256:a488aede8eda9a54a7de20251d2f9f3636c66a1c581b4a88a61e759c0582c301"},
 ]
 termcolor = [
     {file = "termcolor-1.1.0.tar.gz", hash = "sha256:1d6d69ce66211143803fbc56652b41d73b4a400a2891d7bf7a1cdf4c02de613b"},
