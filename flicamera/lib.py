@@ -496,7 +496,6 @@ class FLIDevice(object):
 
         # Sets the binning to (1, 1) and resets the image area.
         self.set_binning(1, 1)
-        self.set_image_area()
 
         self.is_open = True
 
@@ -583,26 +582,31 @@ class FLIDevice(object):
                 lr_x^\prime = ul_x + (lr_x - ul_x) / hbin \\
                 lr_y^\prime = ul_y + (lr_y - ul_y) / vbin
 
-            If you pass the area, it is expected that you're already taking
-            the binning into account. If ``area`` is `None`, the full area of
+            If you pass the area, it is assumed that you are using the full
+            image area as reference; the binning is automatically taken into
+            account. Although the visible area does not necessary start at
+            ``(0, 0)``, the area passed to this function should assume an
+            origin at ``(0, 0)``. If ``area`` is `None`, the full area of
             the chip is used, using the current binning.
 
         """
 
-        if area is None:
+        assert self.hbin and self.vbin, 'set the binning before the area.'
 
-            assert self.hbin and self.vbin, 'set the binning before the area.'
+        ul_x, ul_y, lr_x, lr_y = self.get_visible_area()
 
-            ul_x, ul_y, lr_x, lr_y = self.get_visible_area()
+        if area:
 
-            lr_x_prime = int(ul_x + (lr_x - ul_x) / self.hbin)
-            lr_y_prime = int(ul_y + (lr_y - ul_y) / self.vbin)
+            ul_x += area[0]
+            ul_y += area[1]
+            lr_x = ul_x + area[2]
+            lr_y = ul_y + area[3]
 
-            area = (ul_x, ul_y, lr_x_prime, lr_y_prime)
+        lr_x_prime = int(ul_x + (lr_x - ul_x) / self.hbin)
+        lr_y_prime = int(ul_y + (lr_y - ul_y) / self.vbin)
 
-        self.libc.FLISetImageArea(self.dev, area[0], area[1], area[2], area[3])
-
-        self.area = area
+        self.libc.FLISetImageArea(self.dev, ul_x, ul_y, lr_x_prime, lr_y_prime)
+        self.area = (ul_x, ul_y, lr_x_prime, lr_y_prime)
 
     def get_visible_area(self):
         """Returns the visible area.
