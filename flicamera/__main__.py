@@ -12,6 +12,7 @@ from functools import wraps
 
 import click
 
+from clu.actor import TimerCommand
 from sdsstools import read_yaml_file
 
 from flicamera.actor import FLIActor
@@ -65,6 +66,7 @@ async def flicamera(camera_name):
     actor = await FLIActor.from_config(actor_config, camera_system,
                                        name=camera_name,
                                        default_cameras=[camera_name]).start()
+    actor.timer_commands.append(TimerCommand('status', delay=60))
 
     await actor.run_forever()
 
