@@ -593,20 +593,29 @@ class FLIDevice(object):
 
         assert self.hbin and self.vbin, 'set the binning before the area.'
 
-        ul_x, ul_y, lr_x, lr_y = self.get_visible_area()
+        v_ul_x, v_ul_y, v_lr_x, v_lr_y = self.get_visible_area()
 
         if area:
 
-            ul_x += area[0]
-            ul_y += area[1]
-            lr_x = ul_x + area[2]
-            lr_y = ul_y + area[3]
+            ul_x = v_ul_x + area[0]
+            ul_y = v_ul_y + area[1]
+            lr_x = v_ul_x + area[2]
+            lr_y = v_ul_y + area[3]
+
+        else:
+
+            ul_x = v_ul_x
+            ul_y = v_ul_y
+            lr_x = v_lr_x
+            lr_y = v_lr_y
 
         lr_x_prime = int(ul_x + (lr_x - ul_x) / self.hbin)
         lr_y_prime = int(ul_y + (lr_y - ul_y) / self.vbin)
 
         self.libc.FLISetImageArea(self.dev, ul_x, ul_y, lr_x_prime, lr_y_prime)
-        self.area = (ul_x, ul_y, lr_x_prime, lr_y_prime)
+
+        self.area = (ul_x - v_ul_x, ul_y - v_ul_y,
+                     lr_x - v_ul_x, lr_y - v_ul_y)
 
     def get_visible_area(self):
         """Returns the visible area.
@@ -697,8 +706,8 @@ class FLIDevice(object):
 
         (ul_x, ul_y, lr_x, lr_y) = self.area
 
-        n_cols = lr_x - ul_x
-        n_rows  = lr_y - ul_y
+        n_cols = int((lr_x - ul_x) / self.hbin)
+        n_rows  = int((lr_y - ul_y) / self.vbin)
 
         array = numpy.empty((n_rows, n_cols), dtype=numpy.uint16)
 
