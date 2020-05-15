@@ -44,12 +44,12 @@ async def flicamera(camera_name):
     """
 
     config_file = os.path.join(os.environ['SDSSCORE_DIR'],
-                               'configuration_files/actors/flicamera.yaml')
+                               'configuration/actors/flicamera.yaml')
 
     if not os.path.exists(config_file):
-        raise RuntimeError(f'cannot open file {config_file}.')
+        raise RuntimeError(f'cannot find configuration file {config_file}.')
 
-    actor_config = read_yaml_file(config_file).get('actor')
+    actor_config = read_yaml_file(config_file).get('actor', None)
     if not actor_config:
         raise RuntimeError('cannot find actor section in configuration file.')
 
