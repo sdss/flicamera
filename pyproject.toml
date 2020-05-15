@@ -81,7 +81,7 @@ omit = [
 exclude_lines = [
 ]
 
-# Do not use poetry as a build system. We generate our own setup.py from poetry.
 [build-system]
-build-backend = "setuptools.build_meta:__legacy__"
-requires = ["setuptools"]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0a6",
+            "setuptools>=46.0.0"]
