@@ -40,7 +40,7 @@ def test_get_camera(libfli, config):
 def test_bad_camera(libfli):
 
     with pytest.raises(flicamera.lib.FLIError):
-        flicamera.lib.FLIDevice('bad_name', libfli.libc)
+        flicamera.lib.LibFLIDevice('bad_name', libfli.libc)
 
 
 def test_get_camera_bad_serial(libfli):

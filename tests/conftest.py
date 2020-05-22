@@ -13,7 +13,7 @@ import pytest
 
 from sdsstools import read_yaml_file
 
-from flicamera.lib import FLIDevice, LibFLI
+from flicamera.lib import LibFLIDevice, LibFLI
 
 from .helpers import MockFLIDevice, MockLibFLI
 
@@ -48,7 +48,7 @@ def libfli(mock_libfli, config):
 
     yield libfli
 
-    FLIDevice._instances = {}
+    LibFLIDevice._instances = {}
 
 
 @pytest.fixture

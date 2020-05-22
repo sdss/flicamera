@@ -402,14 +402,14 @@ class LibFLI(ctypes.CDLL):
 
         camera_names = self.list_cameras()
         for camera_name in camera_names:
-            fli_camera = FLIDevice(camera_name, self.libc)
+            fli_camera = LibFLIDevice(camera_name, self.libc)
             if fli_camera.serial == serial:
                 return fli_camera
 
         return None
 
 
-class FLIDevice(object):
+class LibFLIDevice(object):
     """A FLI device."""
 
     _instances = {}
@@ -418,7 +418,7 @@ class FLIDevice(object):
 
         # Create a singleton to avoid opening the camera multiple times.
         if name not in cls._instances:
-            cls._instances[name] = super(FLIDevice, cls).__new__(cls)
+            cls._instances[name] = super(LibFLIDevice, cls).__new__(cls)
             cls._instances[name].is_open = False
 
         return cls._instances[name]
