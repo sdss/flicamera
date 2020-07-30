@@ -32,8 +32,10 @@ class FLICameraSystem(CameraSystem):
 
         self.lib = flicamera.lib.LibFLI()
 
-        config_file_path = os.path.join(os.environ['SDSSCORE_DIR'],
-                                        'configuration_files/actors/flicamera.yaml')
+        config_file_path = os.path.join(
+            os.environ['SDSSCORE_DIR'],
+            'configuration/' + os.environ['OBSERVATORY'].lower() +
+            '/actors/flicamera.yaml')
         camera_config = kwargs.pop('camera_config', config_file_path)
 
         super().__init__(FLICamera, camera_config=camera_config, **kwargs)
@@ -47,7 +49,7 @@ class FLICameraSystem(CameraSystem):
         # Get the serial number as UID.
         serial_numbers = []
         for device_id in devices_id:
-            device = flicamera.lib.FLIDevice(device_id, self.lib.libc)
+            device = flicamera.lib.LibFLIDevice(device_id, self.lib.libc)
             serial_numbers.append(device.serial)
 
         return serial_numbers
