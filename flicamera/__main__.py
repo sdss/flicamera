@@ -44,7 +44,7 @@ async def flicamera(camera_name):
     """
 
     config_file = os.path.join(os.environ['SDSSCORE_DIR'],
-                               'configuration/' + os.environ['OBSERVATORY'] +
+                               'configuration/' + os.environ['OBSERVATORY'].lower() +
                                '/actors/flicamera.yaml')
 
     if not os.path.exists(config_file):
