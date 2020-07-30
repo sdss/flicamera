@@ -8,11 +8,12 @@
 
 # Extension build system using poetry, see https://github.com/python-poetry/poetry/issues/11.
 
-import os
-import sys
 import glob
-
-from setuptools import Extension
+import os
+import shutil
+import sys
+from distutils.command.build_ext import build_ext
+from distutils.core import Distribution, Extension
 
 
 LIBFLI_PATH = os.path.join(os.path.dirname(__file__),
@@ -69,9 +70,23 @@ ext_modules = [
 ]
 
 
-def build(setup_kwargs):
-    """To build the extensions with poetry."""
+def build():
 
-    setup_kwargs.update({
-        'ext_modules': ext_modules
-    })
+    distribution = Distribution({'name': 'extended', 'ext_modules': ext_modules})
+    distribution.package_dir = 'extended'
+
+    cmd = build_ext(distribution)
+    cmd.ensure_finalized()
+    cmd.run()
+
+    # Copy built extensions back to the project
+    for output in cmd.get_outputs():
+        relative_extension = os.path.relpath(output, cmd.build_lib)
+        shutil.copyfile(output, relative_extension)
+        mode = os.stat(relative_extension).st_mode
+        mode |= (mode & 0o444) >> 2
+        os.chmod(relative_extension, mode)
+
+
+if __name__ == '__main__':
+    build()

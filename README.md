@@ -20,12 +20,10 @@ Although `flicamera` should handle all the compilation of the FLI libraries, you
 To build from source, use
 
 ```console
-git clone --recurse-submodules -j8 git@github.com:sdss/flicamera
+git clone git@github.com:sdss/flicamera
 cd flicamera
 pip install .[docs]
 ```
-
-The `--recurse-submodules -j8` flags and `[docs]` extras are only needed to build the documentation.
 
 ## Development
 
