@@ -27,8 +27,16 @@ pip install .[docs]
 
 ## Development
 
-`flicamera` uses [poetry](http://poetry.eustace.io/) for dependency management and packaging. Unfortunately, poetry provides a ``setup.py``-less build system that prevents `python setup.py install` or `pip install .` from working (the latter due to the fact that `flicamera` requires compilation of extensions during the build process, see [here](https://github.com/python-poetry/poetry/issues/1516) for details). As a workaround, we provide a script, `create_setup.py` that generates a `setup.py` file with all the metadata from the `pyproject.toml` file.
+`flicamera` uses [poetry](http://poetry.eustace.io/) for dependency management and packaging. To work with an editable install it's recommended that you setup `poetry` and install `flicamera` in a virtual environment by doing
 
-In general you can use `poetry` for development as with any other project, but when you update the dependencies remember to also do `python create_setup.py` to update `setup.py`. To all effects, you can think of `setup.py` as a lockfile. You can still use `poetry install`, `poetry build`, and `poetry publish` without worrying about these issues.
+```console
+poetry install
+```
 
-`flicamera` also disables the `poetry` build backend because the problems described above, so when building the package directly from source `setup.py` and the standard `setuptools` build system are used.
+Pip does not support editable installs with PEP-517 yet. That means that running `pip install -e .` will fail because `poetry` doesn't use a `setup.py` file. As a workaround, you can use the `create_setup.py` file to generate a temporary `setup.py` file. To install `flicamera` in editable mode without `poetry`, do
+
+```console
+pip install --pre poetry
+python create_setup.py
+pip install -e .
+```

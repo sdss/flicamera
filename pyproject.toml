@@ -20,7 +20,12 @@ classifiers = [
 packages = [
     { include = "flicamera" }
 ]
-include = ["flicamera/etc/*", "cextern/**/*", "LICENSE.md"]
+include = [
+    {path = "flicamera/etc/*"},
+    {path = "cextern/**/*"},
+    {path = "LICENSE.md"},
+    {path = "flicamera/*.so", format = "wheel"}
+]
 
 [tool.poetry.build]
 script = "build.py"
@@ -85,5 +90,6 @@ exclude_lines = [
 ]
 
 [build-system]
-requires = ["poetry-core>=1.0.0a9"]
+# Add setuptools so that we can do pip install -e . after running create_setup.py
+requires = ["poetry-core>=1.0.0a9", "setuptools>=46.0.0"]
 build-backend = "poetry.core.masonry.api"
