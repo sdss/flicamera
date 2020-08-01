@@ -13,7 +13,7 @@ import pytest
 
 from sdsstools import read_yaml_file
 
-from flicamera.lib import LibFLIDevice, LibFLI
+from flicamera.lib import LibFLI, LibFLIDevice
 
 from .helpers import MockFLIDevice, MockLibFLI
 

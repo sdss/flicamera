@@ -2,7 +2,7 @@
 
 ![Versions](https://img.shields.io/badge/python->3.7-blue)
 [![Documentation Status](https://readthedocs.org/projects/sdss-flicamera/badge/?version=latest)](https://sdss-flicamera.readthedocs.io/en/latest/?badge=latest)
-[![Travis (.org)](https://img.shields.io/travis/sdss/flicamera)](https://travis-ci.org/sdss/flicamera)
+[![Build](https://img.shields.io/github/workflow/status/sdss/flicamera/Test)](https://github.com/sdss/flicamera/actions)
 [![codecov](https://codecov.io/gh/sdss/flicamera/branch/master/graph/badge.svg)](https://codecov.io/gh/sdss/flicamera)
 
 A library to control Finger Lakes Instrumentation cameras. It provides the SDSS `gfaCamera` and `fvcCamera` actors to control the Guide, Focus and Acquisition cameras and Field View Camera, respectively.

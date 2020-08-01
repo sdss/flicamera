@@ -32,13 +32,13 @@ script = "build.py"
 generate-setup-file = false
 
 [tool.poetry.scripts]
-flicamera = "flicamera.__main__:flicamera"
+flicamera = "flicamera.__main__:main"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-numpy = ">=1.17.4"
-"sdss-basecam" = ">=0.1.0"
-sdsstools = ">=0.1.0"
+numpy = "^1.17.4"
+sdss-basecam = "^0.2.0"
+sdsstools = ">=0.2.0"
 Sphinx = {version=">=2.3.1", optional=true}
 
 [tool.poetry.dev-dependencies]
@@ -76,6 +76,9 @@ balanced_wrapping = true
 include_trailing_comma = false
 lines_after_imports = 2
 use_parentheses = true
+
+[tool.pytest.ini_options]
+addopts = "--cov flicamera --cov-report xml --cov-report html --cov-report term"
 
 [tool.coverage.run]
 branch = true
