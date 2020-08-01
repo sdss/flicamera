@@ -19,7 +19,7 @@ from distutils.core import Distribution, Extension
 LIBFLI_PATH = os.path.join(os.path.dirname(__file__),
                            'cextern/libfli-1.999.1-180223')
 
-TRAVIS = os.environ.get('TRAVIS', False)
+GH = os.environ.get('GITHUB_WORKFLOW', False)
 
 
 def get_directories():
@@ -28,7 +28,7 @@ def get_directories():
 
     if sys.platform in ['linux', 'darwin', 'unix']:
         dirs.append(os.path.join(LIBFLI_PATH, 'unix'))
-        if not TRAVIS:
+        if not GH:
             dirs.append(os.path.join(LIBFLI_PATH, 'unix', 'libusb'))
 
     return dirs
@@ -50,7 +50,7 @@ extra_link_args = ['-nostartfiles']
 
 # Do not use libusb on travis because it makes the build fail.
 # This still creates a usable library and we are mocking the device anyway.
-if TRAVIS:
+if GH:
     libraries = ['m']
 else:
     libraries = ['m', 'usb-1.0']
