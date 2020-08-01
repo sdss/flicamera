@@ -7,13 +7,11 @@
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
 import asyncio
-import os
 import time
 
 import astropy
 
-import basecam.exceptions
-from basecam import BaseCamera, CameraEvent, CameraSystem, ExposureError
+from basecam import BaseCamera, CameraEvent, CameraSystem, exceptions
 from basecam.mixins import CoolerMixIn, ExposureTypeMixIn, ImageAreaMixIn
 from basecam.models import basic_fz_fits_model
 
@@ -25,20 +23,16 @@ __all__ = ['FLICameraSystem', 'FLICamera']
 
 
 class FLICameraSystem(CameraSystem):
+    """Initialises the camera system."""
 
     __version__ = flicamera.__version__
 
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
 
+        self.camera_class = kwargs.pop('camera_system', FLICamera)
         self.lib = flicamera.lib.LibFLI()
 
-        config_file_path = os.path.join(
-            os.environ['SDSSCORE_DIR'],
-            'configuration/' + os.environ['OBSERVATORY'].lower() +
-            '/actors/flicamera.yaml')
-        camera_config = kwargs.pop('camera_config', config_file_path)
-
-        super().__init__(FLICamera, camera_config=camera_config, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def list_available_cameras(self):
 
@@ -55,24 +49,26 @@ class FLICameraSystem(CameraSystem):
         return serial_numbers
 
 
-class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
+class FLICamera(BaseCamera,
+                ExposureTypeMixIn, CoolerMixIn,
+                ImageAreaMixIn):
 
     _device = None
     fits_model = basic_fz_fits_model
 
-    async def _connect_internal(self, serial=None):
+    async def _connect_internal(self, **conn_params):
         """Internal method to connect the camera."""
 
+        serial = conn_params.get('serial', conn_params.get('uid', self.uid))
+
         if serial is None:
-            serial = self.camera_config.get('uid', None)
-            if not serial:
-                raise basecam.exceptions.CameraConnectionError('unknown serial number.')
+            raise exceptions.CameraConnectionError('unknown serial number.')
 
         self._device = self.camera_system.lib.get_camera(serial)
 
         if self._device is None:
-            raise basecam.exceptions.CameraConnectionError(
-                f'cannot find camera with serial {serial}.')
+            raise exceptions.CameraConnectionError(f'cannot find camera '
+                                                   f'with serial {serial}.')
 
     def _status_internal(self):
         """Gets a dictionary with the status of the camera.
@@ -143,20 +139,8 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
                 return
 
             if time.time() - start_time > exposure.exptime + TIMEOUT:
-                raise ExposureError('timeout waiting for exposure to finish.')
-
-    @property
-    def _uid_internal(self):
-        """Get the unique identifier from the camera (e.g., serial number).
-
-        Returns
-        -------
-        uid : str
-            The unique identifier for this camera.
-
-        """
-
-        return self.get_status()['serial']
+                raise exceptions.ExposureError('timeout while waiting for '
+                                               'exposure to finish.')
 
     async def _get_temperature_internal(self):
         """Internal method to get the camera temperature."""
