@@ -31,28 +31,28 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - name: Wait for build to succeed
-        uses: fountainhead/action-wait-for-check@v1.0.0
-        id: wait-for-build
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          checkName: Build
-          ref: ${{ github.sha }}
-
-      - name: Wait for test to succeed
-        uses: fountainhead/action-wait-for-check@v1.0.0
-        id: wait-for-test
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          checkName: Test
-          ref: ${{ github.sha }}
-
-      - name: Cancel failed build
-        if: steps.wait-for-build.outputs.conclusion == 'failure' || steps.wait-for-test.outputs.conclusion == 'failure'
-        uses: andymckay/cancel-action@0.2
-
       - name: Echo matrix
         run: echo ${{matrix.TARGET}} ${{ matrix.python-version }}
+
+      # - name: Wait for build to succeed
+      #   uses: fountainhead/action-wait-for-check@v1.0.0
+      #   id: wait-for-build
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     checkName: Build
+      #     ref: ${{ github.sha }}
+
+      # - name: Wait for test to succeed
+      #   uses: fountainhead/action-wait-for-check@v1.0.0
+      #   id: wait-for-test
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     checkName: Test
+      #     ref: ${{ github.sha }}
+
+      # - name: Cancel failed build
+      #   if: steps.wait-for-build.outputs.conclusion == 'failure' || steps.wait-for-test.outputs.conclusion == 'failure'
+      #   uses: andymckay/cancel-action@0.2
 
       - name: Install libusb
         if: matrix.os == 'ubuntu-latest'
