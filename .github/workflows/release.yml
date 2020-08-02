@@ -10,7 +10,7 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.7, 3.8]
+        python-version: [3.8]
         include:
         - os: ubuntu-latest
           TARGET: x86_64-unknown-linux-musl
