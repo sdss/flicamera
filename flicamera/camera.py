@@ -156,7 +156,12 @@ class FLICamera(BaseCamera,
     async def _get_image_area_internal(self):
         """Internal method to return the image area."""
 
-        return self._device.area
+        area = self._device.area
+
+        # Convert from (ul_x, ul_y, lr_x, lr_y) to (x0, x1, y0, y1)
+        area = (area[0], area[2], area[1], area[3])
+
+        return area
 
     async def _set_image_area_internal(self, area=None):
         """Internal method to set the image area."""
