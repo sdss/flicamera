@@ -37,8 +37,8 @@ flicamera = "flicamera.__main__:main"
 [tool.poetry.dependencies]
 python = "^3.7"
 numpy = "^1.17.4"
-sdss-basecam = "^0.2.0"
-sdsstools = ">=0.2.0"
+sdss-basecam = "^0.3.0"
+sdsstools = ">=0.3.0"
 Sphinx = {version=">=2.3.1", optional=true}
 
 [tool.poetry.dev-dependencies]
@@ -56,7 +56,6 @@ isort = ">=4.3.21"
 codecov = ">=2.0.15"
 coverage = {version = ">=5.0", extras = ["toml"]}
 ipdb = ">=0.12.3"
-sdsstools = {version=">=0.1.0", extras=["dev"]}
 taskipy = ">=1.1.2"
 
 [tool.poetry.extras]
