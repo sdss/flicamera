@@ -136,7 +136,7 @@ class FLICamera(BaseCamera,
                 self._notify(CameraEvent.EXPOSURE_READING)
                 array = await self.loop.run_in_executor(None, device.read_frame)
                 exposure.data = array
-                return
+                return exposure
 
             if time.time() - start_time > exposure.exptime + TIMEOUT:
                 raise exceptions.ExposureError('timeout while waiting for '
