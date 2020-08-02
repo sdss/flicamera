@@ -36,16 +36,16 @@ jobs:
         id: wait-for-build
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          checkName: build
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          checkName: Build
+          ref: ${{ github.sha }}
 
       - name: Wait for test to succeed
         uses: fountainhead/action-wait-for-check@v1.0.0
         id: wait-for-test
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          checkName: test
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          checkName: Test
+          ref: ${{ github.sha }}
 
       - name: Cancel failed build
         if: steps.wait-for-build.outputs.conclusion == 'failure' || steps.wait-for-test.outputs.conclusion == 'failure'
