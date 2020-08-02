@@ -22,36 +22,7 @@ import flicamera.lib
 __all__ = ['FLICameraSystem', 'FLICamera']
 
 
-class FLICameraSystem(CameraSystem):
-    """Initialises the camera system."""
-
-    __version__ = flicamera.__version__
-
-    def __init__(self, *args, **kwargs):
-
-        self.camera_class = kwargs.pop('camera_system', FLICamera)
-        self.lib = flicamera.lib.LibFLI()
-
-        super().__init__(*args, **kwargs)
-
-    def list_available_cameras(self):
-
-        # These are camera devices, not UIDs. They can change as cameras
-        # are replugged or moved to a different computer.
-        devices_id = self.lib.list_cameras()
-
-        # Get the serial number as UID.
-        serial_numbers = []
-        for device_id in devices_id:
-            device = flicamera.lib.LibFLIDevice(device_id, self.lib.libc)
-            serial_numbers.append(device.serial)
-
-        return serial_numbers
-
-
-class FLICamera(BaseCamera,
-                ExposureTypeMixIn, CoolerMixIn,
-                ImageAreaMixIn):
+class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
 
     _device = None
     fits_model = basic_fz_fits_model
@@ -118,6 +89,7 @@ class FLICamera(BaseCamera,
 
         image_type = exposure.image_type
         frametype = 'dark' if image_type in ['dark', 'bias'] else 'normal'
+
         device.start_exposure(frametype)
 
         exposure.obstime = astropy.time.Time.now()
@@ -181,3 +153,32 @@ class FLICamera(BaseCamera,
         """Internal method to set the binning."""
 
         self._device.set_binning(hbin, vbin)
+
+
+class FLICameraSystem(CameraSystem):
+    """Initialises the camera system."""
+
+    __version__ = flicamera.__version__
+
+    camera_class = FLICamera
+
+    def __init__(self, *args, **kwargs):
+
+        self.camera_class = kwargs.pop('camera_system', FLICamera)
+        self.lib = flicamera.lib.LibFLI()
+
+        super().__init__(*args, **kwargs)
+
+    def list_available_cameras(self):
+
+        # These are camera devices, not UIDs. They can change as cameras
+        # are replugged or moved to a different computer.
+        devices_id = self.lib.list_cameras()
+
+        # Get the serial number as UID.
+        serial_numbers = []
+        for device_id in devices_id:
+            device = flicamera.lib.LibFLIDevice(device_id, self.lib.libc)
+            serial_numbers.append(device.serial)
+
+        return serial_numbers
