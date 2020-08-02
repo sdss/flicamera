@@ -9,14 +9,9 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest, ubuntu-latest]
+        os: [ubuntu-latest]
         python-version: [3.7, 3.8]
         include:
-        - os: ubuntu-latest
-          TARGET: armv7-unknown-linux-musleabihf
-          COMPILER: arm-linux-gnueabihf-gcc-5
-          LINKER: gcc-5-arm-linux-gnueabihf
-
         - os: ubuntu-latest
           TARGET: x86_64-unknown-linux-musl
           COMPILER: gcc
