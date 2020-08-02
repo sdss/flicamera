@@ -36,7 +36,7 @@ jobs:
         id: wait-for-build
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          checkName: Build
+          checkName: build
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Wait for test to succeed
@@ -44,7 +44,7 @@ jobs:
         id: wait-for-test
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          checkName: Test
+          checkName: test
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Cancel failed build
