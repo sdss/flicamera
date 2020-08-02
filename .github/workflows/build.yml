@@ -1,4 +1,4 @@
-name: test matrix
+name: Build Extensions
 on: push
 jobs:
   build:

@@ -29,7 +29,7 @@ def get_directories():
 
     if sys.platform in ['linux', 'darwin', 'unix']:
         dirs.append(os.path.join(LIBFLI_PATH, 'unix'))
-        if not GH and not RTD:
+        if GH != 'Build Extensions' and not RTD:
             dirs.append(os.path.join(LIBFLI_PATH, 'unix', 'libusb'))
 
     return dirs
@@ -51,7 +51,7 @@ extra_link_args = ['-nostartfiles']
 
 # Do not use libusb on travis because it makes the build fail.
 # This still creates a usable library and we are mocking the device anyway.
-if GH or RTD:
+if GH != 'Build Extensions' or RTD:
     libraries = ['m']
 else:
     libraries = ['m', 'usb-1.0']
