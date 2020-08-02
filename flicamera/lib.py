@@ -503,7 +503,9 @@ class LibFLIDevice(object):
         """Closes the device."""
 
         self.libc.FLIUnlockDevice(self.dev)
-        self.libc.FLIClose(self.dev)
+
+        if self.is_open:
+            self.libc.FLIClose(self.dev)
 
     def _update_temperature(self):
         """Gets the temperatures and updates the ``temperature`` dict."""
