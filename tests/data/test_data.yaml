@@ -2,6 +2,7 @@
 
 cameras:
     'FLI-3':
+        uid: ML1234
         serial: ML1234
         temperature:
             CCD: 25

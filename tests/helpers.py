@@ -22,6 +22,7 @@ DEV_COUNTER = 0
 class MockFLIDevice(object):
 
     _defaults = {'temperature': {'CCD': 0, 'base': 0},
+                 'cooler_power': 0,
                  'serial': 'ML0000',
                  'exposure_time_left': 0,
                  'exposure_time': 0,
@@ -175,6 +176,16 @@ class MockLibFLI(ctypes.CDLL):
             temp_ptr._obj.value = device.state['temperature']['CCD']
         elif temp_flag == flicamera.lib.FLI_TEMPERATURE_BASE:
             temp_ptr._obj.value = device.state['temperature']['base']
+
+        return self.restype(0)
+
+    def FLIGetCoolerPower(self, dev, cooler_ptr):
+
+        device = self._get_device(dev)
+        if not device:
+            return self.restype(-errno.ENXIO)
+
+        cooler_ptr._obj.value = device.state['cooler_power']
 
         return self.restype(0)
 

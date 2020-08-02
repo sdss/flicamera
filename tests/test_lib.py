@@ -75,6 +75,16 @@ def test_read_temperature(cameras):
     assert camera.temperature['base'] == device.state['temperature']['base']
 
 
+def test_cooler_power(cameras):
+
+    camera = cameras[0]
+    device = camera.libc.devices[0]
+
+    cooler_power = camera.get_cooler_power()
+
+    assert cooler_power == device.state['cooler_power']
+
+
 def test_set_temperature(cameras):
 
     camera = cameras[0]
