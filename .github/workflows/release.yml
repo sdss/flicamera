@@ -39,8 +39,16 @@ jobs:
           checkName: Build
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
+      - name: Wait for test to succeed
+        uses: fountainhead/action-wait-for-check@v1.0.0
+        id: wait-for-test
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: Test
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
       - name: Cancel failed build
-        if: steps.wait-for-build.outputs.conclusion == 'failure'
+        if: steps.wait-for-build.outputs.conclusion == 'failure' || steps.wait-for-test.outputs.conclusion == 'failure'
         uses: andymckay/cancel-action@0.2
 
       - name: Echo matrix
