@@ -29,7 +29,7 @@ def get_directories():
 
     if sys.platform in ['linux', 'darwin', 'unix']:
         dirs.append(os.path.join(LIBFLI_PATH, 'unix'))
-        if GH != 'Build Extensions' and not RTD:
+        if GH == 'Build Extensions' and not RTD:
             dirs.append(os.path.join(LIBFLI_PATH, 'unix', 'libusb'))
 
     return dirs
