@@ -196,7 +196,7 @@ class MockLibFLI(ctypes.CDLL):
             return self.restype(-errno.ENXIO)
 
         if device.state['exposure_status'] == 'idle':
-            timeleft_ptr.value = 0
+            timeleft_ptr._obj.value = 0
         elif device.state['exposure_status'] == 'exposing':
 
             time_elapsed = 1000 * (time.time() - device.state['exposure_start_time'])
@@ -215,12 +215,23 @@ class MockLibFLI(ctypes.CDLL):
             return self.restype(-errno.ENXIO)
 
         if device.state['exposure_status'] != 'idle':
-            return device.restype(-errno.EALREADY)
+            return self.restype(-errno.EALREADY)
 
         device.state['exposure_status'] = 'exposing'
         device.state['exposure_start_time'] = time.time()
 
         device.row = 0  # Reset readout row
+
+        return self.restype(0)
+
+    def FLICancelExposure(self, dev):
+
+        device = self._get_device(dev)
+        if not device:
+            return self.restype(-errno.ENXIO)
+
+        device.state['exposure_status'] = 'idle'
+        device.state['exposure_time_left'] = 0
 
         return self.restype(0)
 

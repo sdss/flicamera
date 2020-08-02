@@ -13,12 +13,15 @@ import pytest
 
 from sdsstools import read_yaml_file
 
+from flicamera import FLICameraSystem
 from flicamera.lib import LibFLI, LibFLIDevice
 
 from .helpers import MockFLIDevice, MockLibFLI
 
 
 TEST_DATA = pathlib.Path(__file__).parent / 'data/test_data.yaml'
+
+warnings.filterwarnings('ignore', '.+was compiled without a copy of libfli.+')
 
 
 @pytest.fixture(scope='session')
@@ -32,19 +35,18 @@ def config():
 def mock_libfli(mocker):
     """Mocks the FLI library."""
 
-    yield mocker.patch('ctypes.cdll.LoadLibrary', MockLibFLI)
+    mocker.patch('ctypes.cdll.LoadLibrary', MockLibFLI)
 
 
 @pytest.fixture
 def libfli(mock_libfli, config):
     """Yields a LibFLI object with a mocked C libfli library."""
 
-    warnings.filterwarnings('ignore', '.+was compiled without a copy of libfli.+')
-
     libfli = LibFLI()
 
     for camera in config['cameras']:
-        libfli.libc.devices.append(MockFLIDevice(camera, **config['cameras'][camera]))
+        libfli.libc.devices.append(MockFLIDevice(camera,
+                                                 **config['cameras'][camera]))
 
     yield libfli
 
@@ -62,3 +64,27 @@ def cameras(libfli):
         cameras.append(libfli.get_camera(serial))
 
     yield cameras
+
+
+@pytest.fixture
+async def camera_system(mock_libfli, config):
+
+    camera_system = FLICameraSystem(camera_config=TEST_DATA)
+    camera_system.lib.libc.devices = []
+
+    for camera in config['cameras']:
+        device = MockFLIDevice(camera, **config['cameras'][camera])
+        camera_system.lib.libc.devices.append(device)
+
+    camera_system.setup()
+    for camera in config['cameras']:
+        await camera_system.add_camera(camera)
+
+    yield camera_system
+
+    LibFLIDevice._instances = {}
+
+    for camera in camera_system.cameras:
+        await camera.disconnect()
+
+    await camera_system.disconnect()
