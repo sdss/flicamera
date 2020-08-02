@@ -32,7 +32,7 @@ jobs:
 
       - name: Install libusb
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get install -y libusb-1.0-0 libusb-dev
+        run: sudo apt-get install -y libusb-1.0-0 libusb-1.0.0-dev
 
       - name: Cache Setup
         uses: actions/cache@v2
