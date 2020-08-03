@@ -91,7 +91,6 @@ releases_unstable_prehistory = True
 
 # Intersphinx mappings
 intersphinx_mapping = {'python': ('https://docs.python.org/3.7', None),
-                       'can': ('https://python-can.readthedocs.io/en/develop/', None),
                        'numpy': ('http://docs.scipy.org/doc/numpy/', None)}
 # 'astropy': ('http://docs.astropy.org/en/latest', None),
 # 'matplotlib': ('https://matplotlib.org/', None),
