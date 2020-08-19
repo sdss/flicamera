@@ -103,7 +103,7 @@ async def flicamera(ctx, cameras, config_path, port, actor_name, no_log, verbose
     if verbose:
         log.set_level(logging.NOTSET)
     else:
-        log.set_level(logging.ERROR)
+        log.set_level(logging.WARNING)
 
     # We want to allow the actor to minimally work without a configuration
     # file so instead of passing it to the actor using the .from_config
