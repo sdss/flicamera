@@ -14,10 +14,12 @@ import warnings
 from functools import wraps
 
 import click
+from click_default_group import DefaultGroup
 
 from basecam.exposure import ImageNamer
 from clu.actor import TimerCommand
 from sdsstools import read_yaml_file
+from sdsstools.daemonizer import DaemonGroup
 
 from flicamera import __version__, log
 from flicamera.actor import FLIActor
@@ -71,28 +73,19 @@ class FLICameraSystemWrapper(object):
         await self.camera_system.disconnect()
 
 
-pass_camera_system = click.make_pass_decorator(FLICameraSystemWrapper,
-                                               ensure=True)
-
-
-@click.group(invoke_without_command=True)
+@click.group(cls=DefaultGroup, default='daemon', default_if_no_args=True)
 @click.option('--cameras', type=str, required=False, show_envvar=True,
               help='Comma-separated list of camera names to connect.')
 @click.option('-c', '--config', 'config_path', show_envvar=True,
               type=click.Path(exists=True, dir_okay=False),
               help='Path to configuration file. Defaults to $SDSSCORE_DIR.')
-@click.option('-p', '--port', type=int, show_default=True, show_envvar=True,
-              default=19995, help='Port on which to run the actor.')
-@click.option('-n', '--actor-name', type=str, show_default=True,
-              show_envvar=True, default='flicamera',
-              help='The name of the actor.')
 @click.option('--no-log', is_flag=True, allow_from_autoenv=False,
               help='Disable logging.')
 @click.option('-v', '--verbose', is_flag=True, allow_from_autoenv=False,
               help='Output to stdout.')
 @click.pass_context
 @cli_coro
-async def flicamera(ctx, cameras, config_path, port, actor_name, no_log, verbose):
+async def flicamera(ctx, cameras, config_path, no_log, verbose):
     """Command Line Interface for Finger Lakes Instrumentation cameras.
 
     When called by itself this command will start a TCP actor accessible
@@ -139,50 +132,66 @@ async def flicamera(ctx, cameras, config_path, port, actor_name, no_log, verbose
 
     include = cameras or None
 
-    ctx.obj = FLICameraSystemWrapper(camera_config=camera_config,
-                                     include=include,
-                                     log_file=log_file,
-                                     verbose=verbose,
-                                     config_path=config_path)
+    ctx.obj['camera_system'] = FLICameraSystemWrapper(camera_config=camera_config,
+                                                      include=include,
+                                                      log_file=log_file,
+                                                      verbose=verbose,
+                                                      config_path=config_path)
 
-    if ctx.invoked_subcommand is None:
+    # Store some of the options here for the daemon
+    ctx.obj['cameras'] = cameras
+    ctx.obj['config'] = config
+    ctx.obj['verbose'] = verbose
+    ctx.obj['no_log'] = no_log
 
-        async with ctx.obj as fli:
 
-            actor_params = {'name': actor_name,
-                            'host': 'localhost',
-                            'port': port,
-                            'version': __version__,
-                            'verbose': verbose}
-            if config and 'actor' in config:
-                actor_params.update(config['actor'])
+@flicamera.group(cls=DaemonGroup, prog='daemon', workdir=os.getcwd())
+@click.option('-p', '--port', type=int, show_default=True, show_envvar=True,
+              default=19995, help='Port on which to run the actor.')
+@click.option('-n', '--actor-name', type=str, show_default=True,
+              show_envvar=True, default='flicamera',
+              help='The name of the actor.')
+@click.pass_obj
+@cli_coro
+async def daemon(obj, port, actor_name):
+    """Start/stop the daemon."""
 
-            if 'log_dir' in actor_params and no_log is False:
-                log_dir = actor_params['log_dir'].format(actor_name=actor_name)
-                actor_params['log_dir'] = log_dir
+    async with obj['camera_system'] as fli:
 
-            # By default the image namer writes to ./ For production we want to
-            # write to /data but we'll define that in the config file.
-            data_dir = actor_params.pop('data_dir', './')
-            FLICamera.image_name = ImageNamer('{camera.uid}-{num:04d}.fits',
-                                              dirname=data_dir, overwrite=False)
+        actor_params = {'name': actor_name,
+                        'host': 'localhost',
+                        'port': port,
+                        'version': __version__,
+                        'verbose': obj['verbose']}
+        if obj['config'] and 'actor' in obj['config']:
+            actor_params.update(obj['config']['actor'])
 
-            if cameras:
-                actor_params.update({'default_cameras': list(cameras)})
+        if 'log_dir' in actor_params and obj['no_log'] is False:
+            log_dir = actor_params['log_dir'].format(actor_name=actor_name)
+            actor_params['log_dir'] = log_dir
 
-            actor = await FLIActor(fli, **actor_params).start()
-            actor.timer_commands.append(TimerCommand('status', delay=60))
+        # By default the image namer writes to ./ For production we want to
+        # write to /data but we'll define that in the config file.
+        data_dir = actor_params.pop('data_dir', './')
+        FLICamera.image_name = ImageNamer('{camera.uid}-{num:04d}.fits',
+                                          dirname=data_dir, overwrite=False)
 
-            await actor.run_forever()
+        if obj['cameras']:
+            actor_params.update({'default_cameras': list(obj['cameras'])})
+
+        actor = await FLIActor(fli, **actor_params).start()
+        actor.timer_commands.append(TimerCommand('status', delay=60))
+
+        await actor.run_forever()
 
 
 @flicamera.command()
-@pass_camera_system
+@click.pass_obj
 @cli_coro
-async def status(camera_system):
+async def status(obj):
     """Returns the status of the connected cameras."""
 
-    async with camera_system as fli:
+    async with obj['camera_system'] as fli:
 
         if len(fli.cameras) == 0:
             log.error('No cameras connected.')
@@ -202,12 +211,12 @@ async def status(camera_system):
 @click.argument('EXPTIME', default=1, type=float, required=False)
 @click.argument('OUTFILE', type=click.Path(dir_okay=False), required=False)
 @click.option('--overwrite', is_flag=True, help='Overwrite existing images.')
-@pass_camera_system
+@click.pass_obj
 @cli_coro
-async def expose(camera_system, exptime, outfile, overwrite):
+async def expose(obj, exptime, outfile, overwrite):
     """Returns the status of the connected cameras."""
 
-    async with camera_system as fli:
+    async with obj['camera_system'] as fli:
 
         log.debug('starting camera exposures ... ')
         exposures = await asyncio.gather(*[camera.expose(exptime)
