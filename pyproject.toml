@@ -38,10 +38,11 @@ flicamera = "flicamera.__main__:main"
 python = "^3.7"
 numpy = "^1.17.4"
 sdss-basecam = "^0.3.0"
-sdsstools = ">=0.3.0"
+sdsstools = ">=0.4.0"
 Sphinx = {version=">=2.3.1", optional=true}
 daemonocle = "^1.0.2"
 click_default_group = "^1.2.2"
+nest_asyncio = "^1.4.0"
 
 [tool.poetry.dev-dependencies]
 ipython = ">=7.9.0"
