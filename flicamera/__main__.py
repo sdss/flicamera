@@ -18,10 +18,10 @@ from click_default_group import DefaultGroup
 
 from basecam.exposure import ImageNamer
 from clu.actor import TimerCommand
-from sdsstools import read_yaml_file
+from sdsstools import get_logger, read_yaml_file
 from sdsstools.daemonizer import DaemonGroup
 
-from flicamera import __version__, log
+from flicamera import NAME, __version__
 from flicamera.actor import FLIActor
 from flicamera.camera import FLICamera, FLICameraSystem
 
@@ -50,16 +50,13 @@ class FLICameraSystemWrapper(object):
     async def __aenter__(self):
 
         config_path = self.kwargs.pop('config_path', None)
+        if config_path:
+            self.camera_system.logger.debug(f'Loading configuration file '
+                                            f'{config_path}')
 
         self.camera_system = FLICameraSystem(*self.args, **self.kwargs)
-
-        if not self.kwargs.get('verbose', False):
-            self.camera_system.logger.handlers[0].setLevel(logging.ERROR)
-
-        if config_path:
-            self.camera_system.logger.debug(f'loaded configuration file {config_path}')
-
         self.camera_system.setup()
+
         await self.camera_system.start_camera_poller()
         await asyncio.sleep(0.1)  # Some time to allow camera to connect.
 
@@ -79,19 +76,14 @@ class FLICameraSystemWrapper(object):
 @click.option('-c', '--config', 'config_path', show_envvar=True,
               type=click.Path(exists=True, dir_okay=False),
               help='Path to configuration file. Defaults to $SDSSCORE_DIR.')
-@click.option('--no-log', is_flag=True, allow_from_autoenv=False,
-              help='Disable logging.')
 @click.option('-v', '--verbose', is_flag=True, allow_from_autoenv=False,
-              help='Output to stdout.')
+              help='Output extra information to stdout.')
 @click.pass_context
 @cli_coro
-async def flicamera(ctx, cameras, config_path, no_log, verbose):
-    """Command Line Interface for Finger Lakes Instrumentation cameras.
+async def flicamera(ctx, cameras, config_path, verbose):
+    """Command Line Interface for Finger Lakes Instrumentation cameras."""
 
-    When called by itself this command will start a TCP actor accessible
-    on 127.0.0.1:port.
-
-    """
+    log = get_logger(NAME)
 
     if verbose:
         log.set_level(logging.NOTSET)
@@ -102,30 +94,27 @@ async def flicamera(ctx, cameras, config_path, no_log, verbose):
     # file so instead of passing it to the actor using the .from_config
     # classmethod we parse the configuration ourselves.
 
+    config = None
+
     try:
         if not config_path:
             sdsscore = os.environ['SDSSCORE_DIR']
             obs = os.environ['OBSERVATORY'].lower()
             config_path = f'{sdsscore}/configuration/{obs}/actors/flicamera.yaml'
         config = read_yaml_file(config_path)
-
     except BaseException:
-        config = None
         if verbose:
-            warnings.warn('Cannot read configuration file. Using defaults.',
-                          UserWarning)
+            warnings.warn('Cannot read configuration file or SDSSCORE. '
+                          'Using defaults.', UserWarning)
 
     if config:
         if 'cameras' in config:
             camera_config = config['cameras'].copy()
         else:
             camera_config = config.copy()
-        if no_log:
-            log_file = None
-        else:
-            log_file = config.get('log_file', None)
-            if log_file:
-                log_file = log_file.format(hostname=socket.getfqdn())
+        log_file = config.get('log_file', None)
+        if log_file:
+            log_file = log_file.format(hostname=socket.getfqdn())
     else:
         log_file = None
         camera_config = None
@@ -142,7 +131,6 @@ async def flicamera(ctx, cameras, config_path, no_log, verbose):
     ctx.obj['cameras'] = cameras
     ctx.obj['config'] = config
     ctx.obj['verbose'] = verbose
-    ctx.obj['no_log'] = no_log
 
 
 @flicamera.group(cls=DaemonGroup, prog='daemon', workdir=os.getcwd())
@@ -154,7 +142,7 @@ async def flicamera(ctx, cameras, config_path, no_log, verbose):
 @click.pass_obj
 @cli_coro
 async def daemon(obj, port, actor_name):
-    """Start/stop the daemon."""
+    """Start/stop the actor as a daemon."""
 
     async with obj['camera_system'] as fli:
 
@@ -166,7 +154,7 @@ async def daemon(obj, port, actor_name):
         if obj['config'] and 'actor' in obj['config']:
             actor_params.update(obj['config']['actor'])
 
-        if 'log_dir' in actor_params and obj['no_log'] is False:
+        if 'log_dir' in actor_params:
             log_dir = actor_params['log_dir'].format(actor_name=actor_name)
             actor_params['log_dir'] = log_dir
 
