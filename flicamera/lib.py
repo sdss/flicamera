@@ -337,22 +337,13 @@ class LibFLI(ctypes.CDLL):
         if not shared_object:
             shared_object = list(pathlib.Path(__file__).parent.glob('libfli*.so'))
             if len(shared_object) == 0:
-                warnings.warn('the library was compiled without a copy of libfli. '
-                              'Trying to get it from the standard locations.', FLIWarning)
-            shared_object.append('libfli.so')  # In case the library exists in a system location.
-        else:
-            if not isinstance(shared_object, (list, tuple)):
-                shared_object = [shared_object]
+                raise OSError('The library was compiled without a copy of libfli.')
+            shared_object = shared_object[0]
 
-        for so in shared_object:
-            try:
-                self.libc = ctypes.cdll.LoadLibrary(so)
-                break
-            except OSError:
-                pass
+        self.libc = ctypes.cdll.LoadLibrary(shared_object)
 
         if self.libc is None:
-            raise RuntimeError('cannot load the libfli shared library.')
+            raise RuntimeError('Cannot load the libfli shared library.')
 
         # Sets the argtypes and restype.
         for funcname, argtypes in _API_FUNCTION_PROTOTYPES:
