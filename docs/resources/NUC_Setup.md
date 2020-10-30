@@ -35,7 +35,7 @@ network:
 
 - Add this key to ``/home/sdss/.ssh/authorized_keys`` and make the file read-only (``chmod 600 .ssh/authorized_keys``):
 
-```
+```less
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDBA+fGJtEZWD99GUAQESwg3PzsLMG2/TvBVQMnr5eXr59ZeO6gi89Ezi1y9Tni8pf0rPsNFr5iHgahi+OeHtSvc+hW2MieKe7xu8hEt5+pLdNnvoiBXGwW12aut+nbYEcdIsttUEqnNp7iJoAf9SWfFnIdhy6ArHeWWT83UHXIs+k3q5jdMIynFlvJxLfpR1n1t9Wq9c0+x6XxnJ6Q6ewQoPViiN885/tJq+4CB/TG+kbf5A8l3UyCTNt7YmWls6djrQtRZmDAzUSWJYA//3ebx9RH7ZmkTRTLPM/et98oec7BztKG+b5wGPqPCT/6XP3ofoHc+wvn8r8w85PmQVGwBBnDKBJu3L2ucPHJjm/YRMuPodR5wnKyZfZtrbbnXi/DajItYHaC6u4wAeMYC75zlyGL6Ev3yYDgJZ3BM69kUnjAWRM2JUVHQUWVSRl06QX+A07y2wckjF0md3oPluV5uTHLnp606Y4DCjI8slJDNZWLyNt/lBCvrimOTPQAMlU= albireo@albireopro.lan
 ```
 
@@ -49,7 +49,7 @@ sudo systemctl restart docker
 
 - Log out and log in again and test docker by doing ``docker run hello-world``. The output should be something like
 
-```
+```less
 Unable to find image 'hello-world:latest' locally
 latest: Pulling from library/hello-world
 0e03bdcc26d7: Pull complete
@@ -91,7 +91,7 @@ For more examples and ideas, visit:
 
 - Create the file `/etc/systemd/system/docker.service.d/docker.conf` with content
 
-```
+```less
 [Service]
 ExecStart=
 ExecStart=/usr/bin/dockerd
@@ -101,7 +101,7 @@ ExecStart=/usr/bin/dockerd
 
 - Edit/create the file `/etc/udev/rules.d/99-usb.rules` with content
 
-```
+```less
 SUBSYSTEM=="usb", ATTR{idVendor}=="0f18", GROUP="sudo", MODE="0666",SYMLINK+="flicam"
 ```
 
