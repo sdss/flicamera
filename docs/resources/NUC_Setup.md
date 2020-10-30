@@ -19,6 +19,14 @@ network:
         - 192.168.1.1/24
 ```
 
+- Apply the configuration and disable the `systemd-networkd-wait-online` service:
+
+```bash
+sudo netplan apply
+sudo systemctl disable systemd-networkd-wait-online.service
+sudo systemctl mask systemd-networkd-wait-online.service
+```
+
 - Set the computer hostname to `sdss-gfaX` where `X=1-6` for the GFA NUCs. For the FVC NUC set the hostname to `sdss-fvc`.
 
 - Select a password and use it for all the `sdss` accounts in all the NUCs.
