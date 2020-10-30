@@ -1,12 +1,12 @@
 # GFA/FVC NUC Setup
 
-- Download latest version of Ubuntu Server 20.04 LST (https://releases.ubuntu.com/20.04/ubuntu-20.04.1-live-server-amd64.iso)
+- Download latest version of Ubuntu Server 20.04 LST from [here](https://releases.ubuntu.com/20.04/ubuntu-20.04.1-live-server-amd64.iso).
 
 - During the installation or later, set eth0 to static 10.1.10.XX where XX is 21-26 for each one of the six NUCs for a given observatory, and XX=20 for the FVC NUC. Set eth1 to static 192.168.1.1. In both cases, set the netmask to 255.255.0.0.
 
-- For reference, this is a valid /etc/netplan/01-network.yaml file
+- For reference, this is a valid `/etc/netplan/01-network.yaml` file
 
-```
+```yaml
 network:
   version: 2
   renderer: networkd
@@ -19,11 +19,11 @@ network:
         - 192.168.1.1/24
 ```
 
-- Set the computer hostname to sdss-gfaX where X=1-6 for the GFA NUCs. For the FVC NUC set the hostname to sdss-fvc.
+- Set the computer hostname to `sdss-gfaX` where `X=1-6` for the GFA NUCs. For the FVC NUC set the hostname to `sdss-fvc`.
 
-- Create a single user sdss with password panoptic-5
+- Select a password and use it for all the `sdss` accounts in all the NUCs.
 
-- Enable openssh to allow incoming ssh connections on port 22.
+- Enable `openssh` to allow incoming ssh connections on port 22.
 
 - During the installation, do **not** install docker from snap.
 
@@ -39,9 +39,9 @@ network:
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDBA+fGJtEZWD99GUAQESwg3PzsLMG2/TvBVQMnr5eXr59ZeO6gi89Ezi1y9Tni8pf0rPsNFr5iHgahi+OeHtSvc+hW2MieKe7xu8hEt5+pLdNnvoiBXGwW12aut+nbYEcdIsttUEqnNp7iJoAf9SWfFnIdhy6ArHeWWT83UHXIs+k3q5jdMIynFlvJxLfpR1n1t9Wq9c0+x6XxnJ6Q6ewQoPViiN885/tJq+4CB/TG+kbf5A8l3UyCTNt7YmWls6djrQtRZmDAzUSWJYA//3ebx9RH7ZmkTRTLPM/et98oec7BztKG+b5wGPqPCT/6XP3ofoHc+wvn8r8w85PmQVGwBBnDKBJu3L2ucPHJjm/YRMuPodR5wnKyZfZtrbbnXi/DajItYHaC6u4wAeMYC75zlyGL6Ev3yYDgJZ3BM69kUnjAWRM2JUVHQUWVSRl06QX+A07y2wckjF0md3oPluV5uTHLnp606Y4DCjI8slJDNZWLyNt/lBCvrimOTPQAMlU= albireo@albireopro.lan
 ```
 
-- Install docker by following the instructions on this page https://docs.docker.com/engine/install/ubuntu/. After installing it, confirm that there is a docker group
+- Install docker by following the instructions on [this page](https://docs.docker.com/engine/install/ubuntu/). After installing it, confirm that there is a docker group
 
-```
+```bash
 sudo groupadd docker
 sudo usermod -aG docker sdss
 sudo systemctl restart docker
@@ -82,7 +82,7 @@ For more examples and ideas, visit:
 
 - Create the file `/etc/docker/daemon.json` with content
 
-```
+```json
 {
     "insecure-registries":["sdss-hub:5000"],
     "hosts": ["tcp://0.0.0.0:2375", "unix:///var/run/docker.sock"]
