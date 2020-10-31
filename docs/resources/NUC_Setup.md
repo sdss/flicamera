@@ -2,7 +2,7 @@
 
 - Download latest version of Ubuntu Server 20.04 LST from [here](https://releases.ubuntu.com/20.04/ubuntu-20.04.1-live-server-amd64.iso).
 
-- During the installation or later, set eth0 to static 10.25.10.XX where XX is 21-26 for each one of the six NUCs for a given observatory, and XX=20 for the FVC NUC. Set eth1 to static 192.168.1.1. In both cases, set the netmask to 255.255.0.0.
+- During the installation or later, set eth0 to static `10.25.10.XX` where `XX` is 21-26 for each one of the six NUCs for a given observatory, and `XX=20` for the FVC NUC. Set `eth1` to static `192.168.1.1`. In both cases, set the netmask to `255.255.0.0`.
 
 - For reference, this is a valid `/etc/netplan/01-network.yaml` file
 
@@ -35,13 +35,13 @@ sudo systemctl mask systemd-networkd-wait-online.service
 
 - During the installation, do **not** install docker from snap.
 
-- Install ``wpasupplicant`` and ``net-tools`` (``sudo apt install wpasupplicant net-tools``). This seems to be needed for the wifi, in case we want to use it at some point.
+- Install `wpasupplicant` and `net-tools` (`sudo apt install wpasupplicant net-tools`). This seems to be needed for the wifi, in case we want to use it at some point.
 
-- Make sure wifi is down with ``sudo ip link set wls1 down``.
+- Make sure wifi is down with `sudo ip link set wls1 down`.
 
-- Make sure firewall is disables with ``sudo ufw disable``.
+- Make sure firewall is disables with `sudo ufw disable`.
 
-- Add this key to ``/home/sdss/.ssh/authorized_keys`` and make the file read-only (``chmod 600 .ssh/authorized_keys``):
+- Add this key to `/home/sdss/.ssh/authorized_keys` and make the file read-only (`chmod 600 .ssh/authorized_keys`):
 
 ```less
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDBA+fGJtEZWD99GUAQESwg3PzsLMG2/TvBVQMnr5eXr59ZeO6gi89Ezi1y9Tni8pf0rPsNFr5iHgahi+OeHtSvc+hW2MieKe7xu8hEt5+pLdNnvoiBXGwW12aut+nbYEcdIsttUEqnNp7iJoAf9SWfFnIdhy6ArHeWWT83UHXIs+k3q5jdMIynFlvJxLfpR1n1t9Wq9c0+x6XxnJ6Q6ewQoPViiN885/tJq+4CB/TG+kbf5A8l3UyCTNt7YmWls6djrQtRZmDAzUSWJYA//3ebx9RH7ZmkTRTLPM/et98oec7BztKG+b5wGPqPCT/6XP3ofoHc+wvn8r8w85PmQVGwBBnDKBJu3L2ucPHJjm/YRMuPodR5wnKyZfZtrbbnXi/DajItYHaC6u4wAeMYC75zlyGL6Ev3yYDgJZ3BM69kUnjAWRM2JUVHQUWVSRl06QX+A07y2wckjF0md3oPluV5uTHLnp606Y4DCjI8slJDNZWLyNt/lBCvrimOTPQAMlU= albireo@albireopro.lan
@@ -55,7 +55,7 @@ sudo usermod -aG docker sdss
 sudo systemctl restart docker
 ```
 
-- Log out and log in again and test docker by doing ``docker run hello-world``. The output should be something like
+- Log out and log in again and test docker by doing `docker run hello-world`. The output should be something like
 
 ```less
 Unable to find image 'hello-world:latest' locally
@@ -86,7 +86,7 @@ For more examples and ideas, visit:
  https://docs.docker.com/get-started/
 ```
 
-- Install NFS client tools with ``sudo apt -y install nfs-common``.
+- Install NFS client tools with `sudo apt -y install nfs-common`.
 
 - Create the file `/etc/docker/daemon.json` with content
 
