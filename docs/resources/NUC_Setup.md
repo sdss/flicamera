@@ -4,7 +4,13 @@
 
 - During the installation or later, set eth0 to static `10.25.10.XX` where `XX` is 21-26 for each one of the six NUCs for a given observatory, and `XX=20` for the FVC NUC. Set `eth1` to static `192.168.1.1`. In both cases, set the netmask to `255.255.0.0`.
 
-- For reference, this is a valid `/etc/netplan/01-network.yaml` file
+- Create a user `sdss` and select the same password for all the NUCs.
+
+- Enable `openssh` to allow incoming ssh connections on port 22.
+
+- During the installation, do **not** install docker from snap.
+
+- After installation, confirm that `/etc/netplan/01-network.yaml` contains
 
 ```yaml
 network:
@@ -12,9 +18,14 @@ network:
   renderer: networkd
   ethernets:
     enp3s0:
+      dhcp4: no
+      dhcp6: no
       addresses:
         - 10.25.10.21/16
+      gateway4: 10.25.1.1
     enp4s0:
+      dhcp4: no
+      dhcp6: no
       addresses:
         - 192.168.1.1/24
 ```
@@ -27,19 +38,31 @@ sudo systemctl disable systemd-networkd-wait-online.service
 sudo systemctl mask systemd-networkd-wait-online.service
 ```
 
-- Set the computer hostname to `sdss-gfaX` where `X=1-6` for the GFA NUCs. For the FVC NUC set the hostname to `sdss-fvc`.
+- In `/etc/hostname` set the computer hostname to `sdss-gfaX.apo.nmsu.edu` where `X=1-6` for the GFA NUCs. For the FVC NUC set the hostname to `sdss-fvc`. Replace `.apo.nmsu.edu` with `.lco.cl` for the LCO-bound NUCs.
 
-- Select a password and use it for all the `sdss` accounts in all the NUCs.
+- Edit the hosts file `/etc/hosts` to include
 
-- Enable `openssh` to allow incoming ssh connections on port 22.
+```less
+127.0.0.1 localhost
+127.0.1.1 sdss-gfaX
 
-- During the installation, do **not** install docker from snap.
+10.25.1.1       sdss-hub sdss-hub.apo.nmsu.edu
+10.25.10.21     sdss-gfa1 sdss-gfa1.apo.nmsu.edu
+10.25.10.22     sdss-gfa2 sdss-gfa2.apo.nmsu.edu
+10.25.10.23     sdss-gfa3 sdss-gfa3.apo.nmsu.edu
+10.25.10.24     sdss-gfa4 sdss-gfa4.apo.nmsu.edu
+10.25.10.25     sdss-gfa5 sdss-gfa5.apo.nmsu.edu
+10.25.10.26     sdss-gfa6 sdss-gfa6.apo.nmsu.edu
+10.25.10.20     sdss-fvc sdss-fvc.apo.nmsu.edu
+```
+
+replacing `sdss-gfaX` with the correct NUC hostname. For the LCO-bound NUCs, replace `apo.nmsu.edu` with `.lco.cl`.
 
 - Install `wpasupplicant` and `net-tools` (`sudo apt install wpasupplicant net-tools`). This seems to be needed for the wifi, in case we want to use it at some point.
 
 - Make sure wifi is down with `sudo ip link set wls1 down`.
 
-- Make sure firewall is disables with `sudo ufw disable`.
+- Make sure firewall is disabled with `sudo ufw disable`.
 
 - Add this key to `/home/sdss/.ssh/authorized_keys` and make the file read-only (`chmod 600 .ssh/authorized_keys`):
 
@@ -55,7 +78,7 @@ sudo usermod -aG docker sdss
 sudo systemctl restart docker
 ```
 
-- Log out and log in again and test docker by doing `docker run hello-world`. The output should be something like
+- Log out and log in again and test docker by doing `docker run hello-world` (requires the computer being connected to the internet). The output should be something like
 
 ```less
 Unable to find image 'hello-world:latest' locally
