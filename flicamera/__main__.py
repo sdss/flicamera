@@ -112,9 +112,8 @@ async def flicamera(ctx, cameras, config_path, verbose):
             config_path = f'{sdsscore}/configuration/{obs}/actors/flicamera.yaml'
         config = read_yaml_file(config_path)
     except BaseException:
-        if verbose:
-            warnings.warn('Cannot read configuration file or SDSSCORE_DIR. '
-                          'Using defaults.', UserWarning)
+        warnings.warn('Cannot read configuration file or SDSSCORE_DIR. '
+                      'Using defaults.', UserWarning)
 
     if config:
         if 'cameras' in config:
