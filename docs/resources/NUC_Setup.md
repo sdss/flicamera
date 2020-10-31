@@ -2,7 +2,7 @@
 
 - Download latest version of Ubuntu Server 20.04 LST from [here](https://releases.ubuntu.com/20.04/ubuntu-20.04.1-live-server-amd64.iso).
 
-- During the installation or later, set eth0 to static 10.1.10.XX where XX is 21-26 for each one of the six NUCs for a given observatory, and XX=20 for the FVC NUC. Set eth1 to static 192.168.1.1. In both cases, set the netmask to 255.255.0.0.
+- During the installation or later, set eth0 to static 10.25.10.XX where XX is 21-26 for each one of the six NUCs for a given observatory, and XX=20 for the FVC NUC. Set eth1 to static 192.168.1.1. In both cases, set the netmask to 255.255.0.0.
 
 - For reference, this is a valid `/etc/netplan/01-network.yaml` file
 
@@ -13,7 +13,7 @@ network:
   ethernets:
     enp3s0:
       addresses:
-        - 10.1.10.21/16
+        - 10.25.10.21/16
     enp4s0:
       addresses:
         - 192.168.1.1/24
