@@ -31,7 +31,7 @@ FLICamera.image_namer = ImageNamer('{camera.name}-{num:04d}.fits',
                                    overwrite=False)
 
 
-class FLICameraSystemWrapper(object):
+class FLICameraWrapper(object):
     """A helper to store CameraSystem initialisation parameters."""
 
     def __init__(self, *args, **kwargs):
@@ -91,21 +91,9 @@ def flicamera(ctx, cameras, config_path, verbose):
 
     config = None
 
-<<<<<<< HEAD
-    try:
-        if not config_path:
-            sdsscore = os.environ['SDSSCORE_DIR']
-            obs = os.environ['OBSERVATORY'].lower()
-            config_path = f'{sdsscore}/configuration/{obs}/actors/flicamera.yaml'
-        config = read_yaml_file(config_path)
-    except BaseException:
-        warnings.warn('Cannot read configuration file or SDSSCORE_DIR. '
-                      'Using defaults.', UserWarning)
-=======
     if not config_path:
         config_path = f'{os.path.dirname(__file__)}/etc/flicamera.yaml'
     config = read_yaml_file(config_path)
->>>>>>> Move flicamera config back to etc
 
     if config:
         if 'cameras' in config:
@@ -121,11 +109,11 @@ def flicamera(ctx, cameras, config_path, verbose):
 
     include = cameras or None
 
-    ctx.obj['camera_system'] = FLICameraSystemWrapper(camera_config=camera_config,
-                                                      include=include,
-                                                      log_file=log_file,
-                                                      verbose=verbose,
-                                                      config_path=config_path)
+    ctx.obj['camera_system'] = FLICameraWrapper(camera_config=camera_config,
+                                                include=include,
+                                                log_file=log_file,
+                                                verbose=verbose,
+                                                config_path=config_path)
 
     # Store some of the options here for the daemon
     ctx.obj['cameras'] = cameras
