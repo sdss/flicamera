@@ -22,7 +22,9 @@ network:
       dhcp6: no
       addresses:
         - 10.25.10.21/16
-      gateway4: 10.25.1.1
+      gateway4: 10.25.1.252
+      nameservers:
+        addresses: [192.41.211.10, 192.41.211.11]
     enp4s0:
       dhcp4: no
       dhcp6: no
