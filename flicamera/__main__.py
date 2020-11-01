@@ -17,7 +17,7 @@ import click
 from click_default_group import DefaultGroup
 
 from basecam.exposure import ImageNamer
-from clu.actor import TimerCommand
+from clu.command import TimedCommand
 from sdsstools import get_logger, read_yaml_file
 from sdsstools.daemonizer import DaemonGroup
 
@@ -190,7 +190,7 @@ async def actor(obj, host, port, actor_name):
             actor_params.update({'default_cameras': list(obj['cameras'])})
 
         actor = await FLIActor(fli, **actor_params).start()
-        actor.timer_commands.append(TimerCommand('status', delay=60))
+        actor.timed_commands.append(TimedCommand('status', delay=60))
 
         await actor.run_forever()
 
