@@ -10,8 +10,6 @@ import asyncio
 import logging
 import os
 import socket
-import warnings
-from functools import wraps
 
 import click
 from click_default_group import DefaultGroup
@@ -19,7 +17,7 @@ from click_default_group import DefaultGroup
 from basecam.exposure import ImageNamer
 from clu.command import TimedCommand
 from sdsstools import get_logger, read_yaml_file
-from sdsstools.daemonizer import DaemonGroup
+from sdsstools.daemonizer import DaemonGroup, cli_coro
 
 from flicamera import NAME, __version__
 from flicamera.actor import FLIActor
@@ -31,17 +29,6 @@ log = get_logger(NAME)
 # Set default image namer
 FLICamera.image_namer = ImageNamer('{camera.name}-{num:04d}.fits',
                                    overwrite=False)
-
-
-def cli_coro(f):
-    """Decorator function that allows defining coroutines with click."""
-
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        loop = asyncio.get_event_loop()
-        return loop.run_until_complete(f(*args, **kwargs))
-
-    return wrapper
 
 
 class FLICameraSystemWrapper(object):
@@ -90,8 +77,7 @@ class FLICameraSystemWrapper(object):
 @click.option('-v', '--verbose', is_flag=True, allow_from_autoenv=False,
               help='Output extra information to stdout.')
 @click.pass_context
-@cli_coro
-async def flicamera(ctx, cameras, config_path, verbose):
+def flicamera(ctx, cameras, config_path, verbose):
     """Command Line Interface for Finger Lakes Instrumentation cameras."""
 
     if verbose:
@@ -105,6 +91,7 @@ async def flicamera(ctx, cameras, config_path, verbose):
 
     config = None
 
+<<<<<<< HEAD
     try:
         if not config_path:
             sdsscore = os.environ['SDSSCORE_DIR']
@@ -114,6 +101,11 @@ async def flicamera(ctx, cameras, config_path, verbose):
     except BaseException:
         warnings.warn('Cannot read configuration file or SDSSCORE_DIR. '
                       'Using defaults.', UserWarning)
+=======
+    if not config_path:
+        config_path = f'{os.path.dirname(__file__)}/etc/flicamera.yaml'
+    config = read_yaml_file(config_path)
+>>>>>>> Move flicamera config back to etc
 
     if config:
         if 'cameras' in config:
@@ -150,7 +142,7 @@ async def flicamera(ctx, cameras, config_path, verbose):
 @click.option('-p', '--port', type=int, show_envvar=True,
               help='Port on which to run the actor. Defaults to 19995.')
 @click.pass_obj
-@cli_coro
+@cli_coro()
 async def actor(obj, host, port, actor_name):
     """Start/stop the actor as a daemon."""
 
@@ -197,7 +189,7 @@ async def actor(obj, host, port, actor_name):
 
 @flicamera.command()
 @click.pass_obj
-@cli_coro
+@cli_coro()
 async def status(obj):
     """Returns the status of the connected cameras."""
 
@@ -222,7 +214,7 @@ async def status(obj):
 @click.argument('OUTFILE', type=click.Path(dir_okay=False), required=False)
 @click.option('--overwrite', is_flag=True, help='Overwrite existing images.')
 @click.pass_obj
-@cli_coro
+@cli_coro()
 async def expose(obj, exptime, outfile, overwrite):
     """Returns the status of the connected cameras."""
 
