@@ -10,6 +10,7 @@ RUN apt-get -y install libusb-1.0-0 python3 python3-pip
 
 # This Dockerfile is mean to be run with context the root of flicamera
 COPY . flicamera
+
 RUN rm -f flicamera/libfli*.so
 RUN cd flicamera && pip3 install .
 
@@ -17,7 +18,8 @@ RUN cd flicamera && pip3 install .
 # when starting the service.
 EXPOSE 19995
 
-COPY etc/entrypoint.sh .
-RUN ["chmod", "+x", "entrypoint.sh"]
+# Default actor name. Can be overriden when running the container.
+ENV ACTOR_NAME=flicamera
 
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT flicamera actor --host 0.0.0.0 \
+           --actor-name $ACTOR_NAME start --debug
