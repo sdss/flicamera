@@ -11,7 +11,6 @@
 import ctypes
 import os
 import pathlib
-import warnings
 from ctypes import (POINTER, byref, c_char_p, c_double, c_int,
                     c_long, c_size_t, c_ulong, c_void_p)
 
