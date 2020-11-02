@@ -117,7 +117,7 @@ For more examples and ideas, visit:
 
 ```json
 {
-    "insecure-registries":["sdss-hub:5000"],
+    "insecure-registries":["10.25.1.1:5000", "sdss-hub:5000"],
     "hosts": ["tcp://0.0.0.0:2375", "unix:///var/run/docker.sock"]
 }
 ```
