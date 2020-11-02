@@ -1,5 +1,9 @@
 name: Build
-on: push
+on:
+  push:
+    paths:
+    - build.py'
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
