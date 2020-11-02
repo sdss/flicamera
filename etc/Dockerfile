@@ -21,5 +21,7 @@ EXPOSE 19995
 # Default actor name. Can be overriden when running the container.
 ENV ACTOR_NAME=flicamera
 
+# Need to use --host 0.0.0.0 because the container won't listen to 127.0.0.1
+# See https://bit.ly/2HUwEms
 ENTRYPOINT flicamera actor --host 0.0.0.0 \
            --actor-name $ACTOR_NAME start --debug
