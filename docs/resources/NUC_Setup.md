@@ -22,7 +22,9 @@ network:
       dhcp6: no
       addresses:
         - 10.25.10.21/16
-      gateway4: 10.25.1.1
+      gateway4: 10.25.1.252
+      nameservers:
+        addresses: [192.41.211.10, 192.41.211.11]
     enp4s0:
       dhcp4: no
       dhcp6: no
@@ -115,7 +117,7 @@ For more examples and ideas, visit:
 
 ```json
 {
-    "insecure-registries":["sdss-hub:5000"],
+    "insecure-registries":["10.25.1.1:5000", "sdss-hub:5000"],
     "hosts": ["tcp://0.0.0.0:2375", "unix:///var/run/docker.sock"]
 }
 ```

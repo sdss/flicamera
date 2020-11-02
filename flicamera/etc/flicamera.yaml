@@ -1,0 +1,14 @@
+actor:
+    name: flicamera
+    host: 127.0.0.1
+    port: 19995
+    data_dir: "/data/fimg/{camera.name}/{int(date.mjd)}"
+    log_dir: "/data/logs/actors/{actor_name}/"
+
+cameras:
+  fvc1:
+      uid: ML7734916
+      serial: ML7734916
+      autoconnect: true
+
+log_file: "/data/logs/flicamera/{hostname}/flicamera.log"

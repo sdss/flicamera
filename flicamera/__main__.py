@@ -10,16 +10,14 @@ import asyncio
 import logging
 import os
 import socket
-import warnings
-from functools import wraps
 
 import click
 from click_default_group import DefaultGroup
 
 from basecam.exposure import ImageNamer
-from clu.actor import TimerCommand
+from clu.command import TimedCommand
 from sdsstools import get_logger, read_yaml_file
-from sdsstools.daemonizer import DaemonGroup
+from sdsstools.daemonizer import DaemonGroup, cli_coro
 
 from flicamera import NAME, __version__
 from flicamera.actor import FLIActor
@@ -33,18 +31,7 @@ FLICamera.image_namer = ImageNamer('{camera.name}-{num:04d}.fits',
                                    overwrite=False)
 
 
-def cli_coro(f):
-    """Decorator function that allows defining coroutines with click."""
-
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        loop = asyncio.get_event_loop()
-        return loop.run_until_complete(f(*args, **kwargs))
-
-    return wrapper
-
-
-class FLICameraSystemWrapper(object):
+class FLICameraWrapper(object):
     """A helper to store CameraSystem initialisation parameters."""
 
     def __init__(self, *args, **kwargs):
@@ -90,8 +77,7 @@ class FLICameraSystemWrapper(object):
 @click.option('-v', '--verbose', is_flag=True, allow_from_autoenv=False,
               help='Output extra information to stdout.')
 @click.pass_context
-@cli_coro
-async def flicamera(ctx, cameras, config_path, verbose):
+def flicamera(ctx, cameras, config_path, verbose):
     """Command Line Interface for Finger Lakes Instrumentation cameras."""
 
     if verbose:
@@ -105,15 +91,9 @@ async def flicamera(ctx, cameras, config_path, verbose):
 
     config = None
 
-    try:
-        if not config_path:
-            sdsscore = os.environ['SDSSCORE_DIR']
-            obs = os.environ['OBSERVATORY'].lower()
-            config_path = f'{sdsscore}/configuration/{obs}/actors/flicamera.yaml'
-        config = read_yaml_file(config_path)
-    except BaseException:
-        warnings.warn('Cannot read configuration file or SDSSCORE_DIR. '
-                      'Using defaults.', UserWarning)
+    if not config_path:
+        config_path = f'{os.path.dirname(__file__)}/etc/flicamera.yaml'
+    config = read_yaml_file(config_path)
 
     if config:
         if 'cameras' in config:
@@ -129,11 +109,11 @@ async def flicamera(ctx, cameras, config_path, verbose):
 
     include = cameras or None
 
-    ctx.obj['camera_system'] = FLICameraSystemWrapper(camera_config=camera_config,
-                                                      include=include,
-                                                      log_file=log_file,
-                                                      verbose=verbose,
-                                                      config_path=config_path)
+    ctx.obj['camera_system'] = FLICameraWrapper(camera_config=camera_config,
+                                                include=include,
+                                                log_file=log_file,
+                                                verbose=verbose,
+                                                config_path=config_path)
 
     # Store some of the options here for the daemon
     ctx.obj['cameras'] = cameras
@@ -150,7 +130,7 @@ async def flicamera(ctx, cameras, config_path, verbose):
 @click.option('-p', '--port', type=int, show_envvar=True,
               help='Port on which to run the actor. Defaults to 19995.')
 @click.pass_obj
-@cli_coro
+@cli_coro()
 async def actor(obj, host, port, actor_name):
     """Start/stop the actor as a daemon."""
 
@@ -164,12 +144,12 @@ async def actor(obj, host, port, actor_name):
         actor_params['version'] = __version__
         actor_params['verbose'] = obj['verbose']
 
-        if 'name' not in actor_params:
-            actor_params['name'] = actor_name or 'flicamera'
-        if 'host' not in actor_params:
-            actor_params['host'] = host or '127.0.0.1'
-        if 'port' not in actor_params:
-            actor_params['port'] = port or 19995
+        if actor_name:
+            actor_params['name'] = actor_name
+        if host:
+            actor_params['host'] = host
+        if port:
+            actor_params['port'] = port
 
         if 'log_dir' in actor_params:
             log_dir = actor_params['log_dir'].format(actor_name=actor_name)
@@ -190,14 +170,14 @@ async def actor(obj, host, port, actor_name):
             actor_params.update({'default_cameras': list(obj['cameras'])})
 
         actor = await FLIActor(fli, **actor_params).start()
-        actor.timer_commands.append(TimerCommand('status', delay=60))
+        actor.timed_commands.append(TimedCommand('status', delay=60))
 
         await actor.run_forever()
 
 
 @flicamera.command()
 @click.pass_obj
-@cli_coro
+@cli_coro()
 async def status(obj):
     """Returns the status of the connected cameras."""
 
@@ -222,7 +202,7 @@ async def status(obj):
 @click.argument('OUTFILE', type=click.Path(dir_okay=False), required=False)
 @click.option('--overwrite', is_flag=True, help='Overwrite existing images.')
 @click.pass_obj
-@cli_coro
+@cli_coro()
 async def expose(obj, exptime, outfile, overwrite):
     """Returns the status of the connected cameras."""
 
