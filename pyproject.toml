@@ -92,9 +92,9 @@ omit = [
     "*/actor.py"
 ]
 
-[tool.coverage.report]
-exclude_lines = [
-]
+# [tool.coverage.report]
+# exclude_lines = [
+# ]
 
 [build-system]
 # Add setuptools so that we can do pip install -e . after running create_setup.py

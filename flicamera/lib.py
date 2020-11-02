@@ -333,7 +333,10 @@ class LibFLI(ctypes.CDLL):
 
         self.domain = flidomain_t(FLIDOMAIN_USB | FLIDEVICE_CAMERA)
 
-        if not shared_object:
+        # For tests, we check if PYTEST_RUNNING is set, and in that case
+        # we skip this part. We'll mock LoadLibrary.
+        is_pytest = os.environ.get('PYTEST_RUNNING', '0')
+        if not shared_object and is_pytest != '1':  # pragma: no cover
             shared_object = list(pathlib.Path(__file__).parent.glob('libfli*.so'))
             if len(shared_object) == 0:
                 raise OSError('The library was compiled without a copy of libfli.')

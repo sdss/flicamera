@@ -6,6 +6,7 @@
 # @Filename: conftest.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
+import os
 import pathlib
 import warnings
 
@@ -22,6 +23,9 @@ from .helpers import MockFLIDevice, MockLibFLI
 TEST_DATA = pathlib.Path(__file__).parent / 'data/test_data.yaml'
 
 warnings.filterwarnings('ignore', '.+was compiled without a copy of libfli.+')
+
+
+os.environ['PYTEST_RUNNING'] = '1'
 
 
 @pytest.fixture(scope='session')
