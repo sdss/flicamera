@@ -144,12 +144,12 @@ async def actor(obj, host, port, actor_name):
         actor_params['version'] = __version__
         actor_params['verbose'] = obj['verbose']
 
-        if 'name' not in actor_params:
-            actor_params['name'] = actor_name or 'flicamera'
-        if 'host' not in actor_params:
-            actor_params['host'] = host or '127.0.0.1'
-        if 'port' not in actor_params:
-            actor_params['port'] = port or 19995
+        if actor_name:
+            actor_params['name'] = actor_name
+        if host:
+            actor_params['host'] = host
+        if port:
+            actor_params['port'] = port
 
         if 'log_dir' in actor_params:
             log_dir = actor_params['log_dir'].format(actor_name=actor_name)
