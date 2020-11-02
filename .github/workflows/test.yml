@@ -3,15 +3,7 @@
 
 name: Test
 
-on:
-  push:
-    branches: [ master ]
-    paths:
-      - build.py
-  pull_request:
-    branches: [ master ]
-    paths:
-      - build.py
+on: push
 
 jobs:
   test:
