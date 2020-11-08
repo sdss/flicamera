@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sdss-flicamera"
-version = "0.1.1-alpha.0"
+version = "0.1.1"
 description = "A library to control Finger Lakes Instrumentation cameras."
 authors = ["José Sánchez-Gallego <gallegoj@uw.edu>"]
 license = "BSD-3-Clause"
