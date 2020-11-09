@@ -8,14 +8,14 @@ WORKDIR /opt
 RUN apt-get -y update
 RUN apt-get -y install libusb-1.0-0 python3 python3-pip
 
-# This Dockerfile is mean to be run with context the root of flicamera
+# This Dockerfile is meant to be run with context the root of flicamera
 COPY . flicamera
 
 RUN rm -f flicamera/libfli*.so
 RUN cd flicamera && pip3 install .
 
-# This is the default port but the real port is exposed
-# when starting the service.
+# This is the default port but the real port can be changed when
+# starting the service.
 EXPOSE 19995
 
 # Default actor name. Can be overriden when running the container.
