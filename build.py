@@ -19,7 +19,6 @@ from distutils.core import Distribution, Extension
 LIBFLI_PATH = os.path.join(os.path.dirname(__file__),
                            'cextern/libfli-1.999.1-180223')
 
-GH = os.environ.get('GITHUB_WORKFLOW', False)
 RTD = os.environ.get('READTHEDOCS', False)
 
 
@@ -29,7 +28,7 @@ def get_directories():
 
     if sys.platform in ['linux', 'darwin', 'unix']:
         dirs.append(os.path.join(LIBFLI_PATH, 'unix'))
-        if GH == 'Build Extensions' and not RTD:
+        if not RTD:  # Add the libusb directory except when in RTD.
             dirs.append(os.path.join(LIBFLI_PATH, 'unix', 'libusb'))
 
     return dirs
@@ -49,9 +48,9 @@ def get_sources():
 extra_compile_args = ['-O3', '-fPIC', '-g']
 extra_link_args = ['-nostartfiles']
 
-# Do not use libusb on travis because it makes the build fail.
+# Do not use libusb on RTD because it makes the build fail.
 # This still creates a usable library and we are mocking the device anyway.
-if GH != 'Build Extensions' or RTD:
+if RTD:
     libraries = ['m']
 else:
     libraries = ['m', 'usb-1.0']

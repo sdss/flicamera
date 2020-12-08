@@ -2,6 +2,8 @@
 Changelog
 =========
 
+* :bug:`5` Fixed compilation of ``libfli``. It was failing due to an issue with the libraries to be linked when outside RTD or GH environment.
+
 * :release:`0.1.1 <2020-11-08>`
 * :feature:`3` Include ``Dockerfile`` to create an image that can run ``flicamera``.
 * :support:`-` Simplified loading of the ``libfli`` library. Now it forces to use the inplace object.

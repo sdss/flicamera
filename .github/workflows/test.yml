@@ -32,6 +32,9 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: Install libusb
+      run: sudo apt-get install -y libusb-1.0-0 libusb-1.0.0-dev
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
