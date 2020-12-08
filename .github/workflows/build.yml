@@ -3,6 +3,7 @@ on:
   push:
     paths:
     - build.py'
+  pull_request:
 
 jobs:
   build:
