@@ -69,6 +69,10 @@ jobs:
           pip install pep517
           pip install .
 
+      - name: Test flicamera
+        run: |
+          flicamera status
+
       - name: Build source package
         if: matrix.python-version == '3.8' && matrix.target == 'x86_64-unknown-linux-musl'
         run: |
