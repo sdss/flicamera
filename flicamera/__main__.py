@@ -152,7 +152,8 @@ async def actor(obj, host, port, actor_name):
             actor_params['port'] = port
 
         if 'log_dir' in actor_params:
-            log_dir = actor_params['log_dir'].format(actor_name=actor_name)
+            log_dir = actor_params['log_dir'].format(
+                actor_name=actor_params['name'])
             actor_params['log_dir'] = log_dir
 
         # By default the image namer writes to ./ For production we want to
