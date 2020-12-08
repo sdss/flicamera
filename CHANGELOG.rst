@@ -2,6 +2,7 @@
 Changelog
 =========
 
+* :release:`0.1.2 <2020-12-07>`
 * :bug:`5` Fixed compilation of ``libfli``. It was failing due to an issue with the libraries to be linked when outside RTD or GH environment.
 
 * :release:`0.1.1 <2020-11-08>`
