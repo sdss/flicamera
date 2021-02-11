@@ -1,4 +1,5 @@
 # encoding: utf-8
+# isort:skip
 
 from sdsstools import get_package_version
 
