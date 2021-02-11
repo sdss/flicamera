@@ -66,24 +66,24 @@ Sphinx = "^3.2.0"
 sphinx-copybutton = "^0.3.1"
 m2r2 = "^0.2.5"
 sphinx-click = "^2.3.0"
+black = {version = "^20.8b1", allow-prereleases = true}
 
 [tool.poetry.extras]
 docs = ["sphinx", "sphinx-copybutton", "m2r2", "sphinx-click"]
 
-[tool.taskipy.tasks]
-deploy = "python create_setup.py && poetry build && poetry publish"
+[tool.black]
+line-length = 88
+target-version = ['py38']
+fast = true
 
 [tool.isort]
-line_length = 79
-sections = ["FUTURE", "STDLIB", "THIRDPARTY", "SDSS", "FIRSTPARTY", "LOCALFOLDER"]
+profile = "black"
+sections = ["FUTURE", "STDLIB", "TYPING", "THIRDPARTY", "SDSS", "FIRSTPARTY", "LOCALFOLDER"]
 default_section = "THIRDPARTY"
-known_first_party = ["flicamera"]
-known_sdss = ["clu", "sdsstools", "basecam"]
-# multi_line_output = false
-balanced_wrapping = true
-include_trailing_comma = false
+known_first_party = "archon"
+known_typing = ["typing"]
+known_sdss = ["sdsstools", "clu", "basecam"]
 lines_after_imports = 2
-use_parentheses = true
 
 [tool.pytest.ini_options]
 addopts = "--cov flicamera --cov-report xml --cov-report html --cov-report term"
@@ -96,10 +96,6 @@ omit = [
     "*/__main__.py",
     "*/actor.py"
 ]
-
-# [tool.coverage.report]
-# exclude_lines = [
-# ]
 
 [build-system]
 # Add setuptools so that we can do pip install -e . after running create_setup.py

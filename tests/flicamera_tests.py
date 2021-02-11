@@ -22,11 +22,11 @@ async def main():
 
     await camera.connect()
 
-    exposure = await camera.flat(1.)
-    exposure.write('test.fits')
+    exposure = await camera.flat(1.0)
+    exposure.write("test.fits")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     loop = asyncio.get_event_loop()
     loop.create_task(main())

@@ -1,0 +1,3 @@
+{
+  "ignore": ["create_setup.py", "docs/**"]
+}

@@ -21,16 +21,20 @@ DEV_COUNTER = 0
 
 class MockFLIDevice(object):
 
-    _defaults = {'temperature': {'CCD': 0, 'base': 0},
-                 'cooler_power': 0,
-                 'serial': 'ML0000',
-                 'exposure_time_left': 0,
-                 'exposure_time': 0,
-                 'exposure_status': 'idle',
-                 'model': 'MicroLine ML50100',
-                 'exposure_start_time': 0,
-                 'ul_x': 0, 'ul_y': 0,
-                 'lr_x': 512, 'lr_y': 512}
+    _defaults = {
+        "temperature": {"CCD": 0, "base": 0},
+        "cooler_power": 0,
+        "serial": "ML0000",
+        "exposure_time_left": 0,
+        "exposure_time": 0,
+        "exposure_status": "idle",
+        "model": "MicroLine ML50100",
+        "exposure_start_time": 0,
+        "ul_x": 0,
+        "ul_y": 0,
+        "lr_x": 512,
+        "lr_y": 512,
+    }
 
     def __init__(self, name, **kwargs):
 
@@ -75,7 +79,7 @@ class MockLibFLI(ctypes.CDLL):
         # that matches that name. So for the cases when we haven't overridden
         # the library function, we returns a Mock that returns 0 (no error).
 
-        if name.startswith('FLI'):
+        if name.startswith("FLI"):
             return unittest.mock.MagicMock(retur_value=self.restype(0))
 
     def _get_device(self, dev):
@@ -92,8 +96,9 @@ class MockLibFLI(ctypes.CDLL):
 
     def FLIList(self, domain, names_ptr):
 
-        device_names = [(dev.name + ';' + dev.state['model']).encode()
-                        for dev in self.devices]
+        device_names = [
+            (dev.name + ";" + dev.state["model"]).encode() for dev in self.devices
+        ]
 
         # names_ptr is a pointer to a pointer to a char pointer (yep).
         # We create a char pointer array with the length of the devices and
@@ -129,7 +134,7 @@ class MockLibFLI(ctypes.CDLL):
         if not device:
             return self.restype(-errno.ENXIO)
 
-        serial_ptr.value = device.state['serial'].encode()
+        serial_ptr.value = device.state["serial"].encode()
 
         return self.restype(0)
 
@@ -139,7 +144,7 @@ class MockLibFLI(ctypes.CDLL):
         if not device:
             return self.restype(-errno.ENXIO)
 
-        model_ptr.value = device.state['model'].encode()
+        model_ptr.value = device.state["model"].encode()
 
         return self.restype(0)
 
@@ -150,9 +155,9 @@ class MockLibFLI(ctypes.CDLL):
             return self.restype(-errno.ENXIO)
 
         if isinstance(exp_time, ctypes._SimpleCData):
-            device.state['exposure_time'] = exp_time.value
+            device.state["exposure_time"] = exp_time.value
         else:
-            device.state['exposure_time'] = exp_time
+            device.state["exposure_time"] = exp_time
 
         return self.restype(0)
 
@@ -162,7 +167,7 @@ class MockLibFLI(ctypes.CDLL):
         if not device:
             return self.restype(-errno.ENXIO)
 
-        device.state['temperature']['CCD'] = temperature.value
+        device.state["temperature"]["CCD"] = temperature.value
 
         return self.restype(0)
 
@@ -173,9 +178,9 @@ class MockLibFLI(ctypes.CDLL):
             return self.restype(-errno.ENXIO)
 
         if temp_flag == flicamera.lib.FLI_TEMPERATURE_CCD:
-            temp_ptr._obj.value = device.state['temperature']['CCD']
+            temp_ptr._obj.value = device.state["temperature"]["CCD"]
         elif temp_flag == flicamera.lib.FLI_TEMPERATURE_BASE:
-            temp_ptr._obj.value = device.state['temperature']['base']
+            temp_ptr._obj.value = device.state["temperature"]["base"]
 
         return self.restype(0)
 
@@ -185,7 +190,7 @@ class MockLibFLI(ctypes.CDLL):
         if not device:
             return self.restype(-errno.ENXIO)
 
-        cooler_ptr._obj.value = device.state['cooler_power']
+        cooler_ptr._obj.value = device.state["cooler_power"]
 
         return self.restype(0)
 
@@ -195,15 +200,15 @@ class MockLibFLI(ctypes.CDLL):
         if not device:
             return self.restype(-errno.ENXIO)
 
-        if device.state['exposure_status'] == 'idle':
+        if device.state["exposure_status"] == "idle":
             timeleft_ptr._obj.value = 0
-        elif device.state['exposure_status'] == 'exposing':
+        elif device.state["exposure_status"] == "exposing":
 
-            time_elapsed = 1000 * (time.time() - device.state['exposure_start_time'])
-            if time_elapsed > device.state['exposure_time']:
+            time_elapsed = 1000 * (time.time() - device.state["exposure_start_time"])
+            if time_elapsed > device.state["exposure_time"]:
                 timeleft_ptr._obj.value = 0
             else:
-                time_left = int(device.state['exposure_time'] - time_elapsed)
+                time_left = int(device.state["exposure_time"] - time_elapsed)
                 timeleft_ptr._obj.value = time_left
 
         return self.restype(0)
@@ -214,11 +219,11 @@ class MockLibFLI(ctypes.CDLL):
         if not device:
             return self.restype(-errno.ENXIO)
 
-        if device.state['exposure_status'] != 'idle':
+        if device.state["exposure_status"] != "idle":
             return self.restype(-errno.EALREADY)
 
-        device.state['exposure_status'] = 'exposing'
-        device.state['exposure_start_time'] = time.time()
+        device.state["exposure_status"] = "exposing"
+        device.state["exposure_start_time"] = time.time()
 
         device.row = 0  # Reset readout row
 
@@ -230,8 +235,8 @@ class MockLibFLI(ctypes.CDLL):
         if not device:
             return self.restype(-errno.ENXIO)
 
-        device.state['exposure_status'] = 'idle'
-        device.state['exposure_time_left'] = 0
+        device.state["exposure_status"] = "idle"
+        device.state["exposure_time_left"] = 0
 
         return self.restype(0)
 
@@ -241,10 +246,10 @@ class MockLibFLI(ctypes.CDLL):
         if not device:
             return self.restype(-errno.ENXIO)
 
-        ul_x_ptr._obj.value = device.state['ul_x']
-        ul_y_ptr._obj.value = device.state['ul_y']
-        lr_x_ptr._obj.value = device.state['lr_x']
-        lr_y_ptr._obj.value = device.state['lr_y']
+        ul_x_ptr._obj.value = device.state["ul_x"]
+        ul_y_ptr._obj.value = device.state["ul_y"]
+        lr_x_ptr._obj.value = device.state["lr_x"]
+        lr_y_ptr._obj.value = device.state["lr_y"]
 
         return self.restype(0)
 
@@ -254,7 +259,7 @@ class MockLibFLI(ctypes.CDLL):
         if not device:
             return self.restype(-errno.ENXIO)
 
-        if not device.state['exposure_status'] == 'exposing':
+        if not device.state["exposure_status"] == "exposing":
             return self.restype(-errno.ENXIO)
 
         time_left = ctypes.c_long()
@@ -265,8 +270,8 @@ class MockLibFLI(ctypes.CDLL):
 
         if device.row == 0 and device.image is None:
 
-            n_rows = device.state['lr_y'] - device.state['ul_y']
-            n_cols = device.state['lr_x'] - device.state['ul_x']
+            n_rows = device.state["lr_y"] - device.state["ul_y"]
+            n_cols = device.state["lr_x"] - device.state["ul_x"]
 
             image = numpy.zeros((n_rows, n_cols), dtype=numpy.uint16) + 500
             device.image = numpy.random.poisson(image)

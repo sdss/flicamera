@@ -20,15 +20,15 @@ from flicamera.lib import LibFLI, LibFLIDevice
 from .helpers import MockFLIDevice, MockLibFLI
 
 
-TEST_DATA = pathlib.Path(__file__).parent / 'data/test_data.yaml'
+TEST_DATA = pathlib.Path(__file__).parent / "data/test_data.yaml"
 
-warnings.filterwarnings('ignore', '.+was compiled without a copy of libfli.+')
-
-
-os.environ['PYTEST_RUNNING'] = '1'
+warnings.filterwarnings("ignore", ".+was compiled without a copy of libfli.+")
 
 
-@pytest.fixture(scope='session')
+os.environ["PYTEST_RUNNING"] = "1"
+
+
+@pytest.fixture(scope="session")
 def config():
     """Gets the test configuration."""
 
@@ -39,7 +39,7 @@ def config():
 def mock_libfli(mocker):
     """Mocks the FLI library."""
 
-    mocker.patch('ctypes.cdll.LoadLibrary', MockLibFLI)
+    mocker.patch("ctypes.cdll.LoadLibrary", MockLibFLI)
 
 
 @pytest.fixture
@@ -48,9 +48,10 @@ def libfli(mock_libfli, config):
 
     libfli = LibFLI()
 
-    for camera in config['cameras']:
-        libfli.libc.devices.append(MockFLIDevice(camera,
-                                                 **config['cameras'][camera]))
+    for camera in config["cameras"]:
+        libfli.libc.devices.append(  # type:ignore
+            MockFLIDevice(camera, **config["cameras"][camera])
+        )
 
     yield libfli
 
@@ -64,7 +65,7 @@ def cameras(libfli):
     cameras = []
 
     for device in libfli.libc.devices:
-        serial = device.state['serial']
+        serial = device.state["serial"]
         cameras.append(libfli.get_camera(serial))
 
     yield cameras
@@ -74,14 +75,14 @@ def cameras(libfli):
 async def camera_system(mock_libfli, config):
 
     camera_system = FLICameraSystem(camera_config=TEST_DATA)
-    camera_system.lib.libc.devices = []
+    camera_system.lib.libc.devices = []  # type: ignore
 
-    for camera in config['cameras']:
-        device = MockFLIDevice(camera, **config['cameras'][camera])
+    for camera in config["cameras"]:
+        device = MockFLIDevice(camera, **config["cameras"][camera])
         camera_system.lib.libc.devices.append(device)
 
     camera_system.setup()
-    for camera in config['cameras']:
+    for camera in config["cameras"]:
         await camera_system.add_camera(camera)
 
     yield camera_system

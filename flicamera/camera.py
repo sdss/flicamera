@@ -6,78 +6,80 @@
 # @Filename: camera.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
+from __future__ import annotations
+
 import asyncio
 import time
 
-import astropy
+from typing import Any, Optional
 
-from basecam import BaseCamera, CameraEvent, CameraSystem, exceptions
+import astropy.time
+
+from basecam import BaseCamera, CameraEvent, CameraSystem, Exposure, exceptions
 from basecam.mixins import CoolerMixIn, ExposureTypeMixIn, ImageAreaMixIn
 from basecam.models import basic_fz_fits_model
 
 import flicamera
 import flicamera.lib
+from flicamera.lib import LibFLIDevice
 
 
-__all__ = ['FLICameraSystem', 'FLICamera']
+__all__ = ["FLICameraSystem", "FLICamera"]
 
 
 class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
 
-    _device = None
+    _device: Optional[LibFLIDevice] = None
     fits_model = basic_fz_fits_model
 
     async def _connect_internal(self, **conn_params):
         """Internal method to connect the camera."""
 
-        serial = conn_params.get('serial', conn_params.get('uid', self.uid))
+        serial = conn_params.get("serial", conn_params.get("uid", self.uid))
 
         if serial is None:
-            raise exceptions.CameraConnectionError('unknown serial number.')
+            raise exceptions.CameraConnectionError("unknown serial number.")
 
         self._device = self.camera_system.lib.get_camera(serial)
 
         if self._device is None:
-            raise exceptions.CameraConnectionError(f'cannot find camera '
-                                                   f'with serial {serial}.')
+            raise exceptions.CameraConnectionError(
+                f"cannot find camera " f"with serial {serial}."
+            )
 
-    def _status_internal(self):
+    def _status_internal(self) -> dict[str, Any]:
         """Gets a dictionary with the status of the camera.
 
         Returns
         -------
-        status : dict
+        status
             A dictionary with status values from the camera (e.g.,
             temperature, cooling status, firmware information, etc.)
-
         """
 
         device = self._device
         device._update_temperature()
 
-        return dict(model=device.model,
-                    serial=device.serial,
-                    fwrev=device.fwrev,
-                    hwrev=device.hwrev,
-                    hbin=device.hbin,
-                    vbin=device.vbin,
-                    visible_area=device.get_visible_area(),
-                    image_area=device.area,
-                    temperature_ccd=device._temperature['CCD'],
-                    temperature_base=device._temperature['base'],
-                    exposure_time_left=device.get_exposure_time_left(),
-                    cooler_power=device.get_cooler_power())
+        return dict(
+            model=device.model,
+            serial=device.serial,
+            fwrev=device.fwrev,
+            hwrev=device.hwrev,
+            hbin=device.hbin,
+            vbin=device.vbin,
+            visible_area=device.get_visible_area(),
+            image_area=device.area,
+            temperature_ccd=device._temperature["CCD"],
+            temperature_base=device._temperature["base"],
+            exposure_time_left=device.get_exposure_time_left(),
+            cooler_power=device.get_cooler_power(),
+        )
 
-    async def _expose_internal(self, exposure, **kwargs):
-        """Internal method to handle camera exposures.
+    async def _expose_internal(self, exposure: Exposure, **kwargs) -> Exposure:
+        """Internal method to handle camera exposures."""
 
-        Returns
-        -------
-        fits : `~astropy.io.fits.HDUList` or `~numpy.array`
-            An HDU list with a single extension containing the image data
-            and header, or a 2D Numpy array.
-
-        """
+        if not exposure.exptime:
+            raise exceptions.ExposureError("Exposure time not set.")
 
         TIMEOUT = 5
 
@@ -88,7 +90,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
         device.set_exposure_time(exposure.exptime)
 
         image_type = exposure.image_type
-        frametype = 'dark' if image_type in ['dark', 'bias'] else 'normal'
+        frametype = "dark" if image_type in ["dark", "bias"] else "normal"
 
         device.start_exposure(frametype)
 
@@ -96,13 +98,14 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
         self._notify(CameraEvent.EXPOSURE_INTEGRATING)
 
         start_time = time.time()
+
         time_left = exposure.exptime
 
         while True:
 
             await asyncio.sleep(time_left)
 
-            time_left = device.get_exposure_time_left() / 1000.
+            time_left = device.get_exposure_time_left() / 1000.0
 
             if time_left == 0:
                 self._notify(CameraEvent.EXPOSURE_READING)
@@ -111,21 +114,22 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
                 return exposure
 
             if time.time() - start_time > exposure.exptime + TIMEOUT:
-                raise exceptions.ExposureError('timeout while waiting for '
-                                               'exposure to finish.')
+                raise exceptions.ExposureError(
+                    "timeout while waiting for exposure to finish."
+                )
 
-    async def _get_temperature_internal(self):
+    async def _get_temperature_internal(self) -> float:
         """Internal method to get the camera temperature."""
 
         self._device._update_temperature()
-        return self._device._temperature['CCD']
+        return self._device._temperature["CCD"]
 
-    async def _set_temperature_internal(self, temperature):
+    async def _set_temperature_internal(self, temperature: float):
         """Internal method to set the camera temperature."""
 
         self._device.set_temperature(temperature)
 
-    async def _get_image_area_internal(self):
+    async def _get_image_area_internal(self) -> tuple[int, int, int, int]:
         """Internal method to return the image area."""
 
         area = self._device.area
@@ -135,7 +139,10 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
 
         return area
 
-    async def _set_image_area_internal(self, area=None):
+    async def _set_image_area_internal(
+        self,
+        area: Optional[tuple[int, int, int, int]] = None,
+    ):
         """Internal method to set the image area."""
 
         if area:
@@ -144,7 +151,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
 
         self._device.set_image_area(area)
 
-    async def _get_binning_internal(self):
+    async def _get_binning_internal(self) -> tuple[int, int]:
         """Internal method to return the binning."""
 
         return (self._device.hbin, self._device.vbin)
@@ -164,12 +171,12 @@ class FLICameraSystem(CameraSystem):
 
     def __init__(self, *args, **kwargs):
 
-        self.camera_class = kwargs.pop('camera_system', FLICamera)
+        self.camera_class = kwargs.pop("camera_system", FLICamera)
         self.lib = flicamera.lib.LibFLI()
 
         super().__init__(*args, **kwargs)
 
-    def list_available_cameras(self):
+    def list_available_cameras(self) -> list[str]:
 
         # These are camera devices, not UIDs. They can change as cameras
         # are replugged or moved to a different computer.

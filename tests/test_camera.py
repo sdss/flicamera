@@ -23,7 +23,7 @@ def test_list_cameras(camera_system):
     available_cameras = camera_system.list_available_cameras()
 
     assert len(available_cameras) == 1
-    assert available_cameras[0] == 'ML1234'
+    assert available_cameras[0] == "ML1234"
 
 
 def test_get_status(camera_system):
@@ -42,7 +42,7 @@ async def test_temperature(camera_system):
     await camera.set_temperature(250)
     temperature = await camera.get_temperature()
 
-    assert temperature == 250.
+    assert temperature == 250.0
 
 
 @pytest.mark.asyncio

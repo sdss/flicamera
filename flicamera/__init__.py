@@ -3,9 +3,9 @@
 from sdsstools import get_package_version
 
 
-NAME = 'sdss-flicamera'
+NAME = "sdss-flicamera"
 
-__version__ = get_package_version(__file__, 'sdss-flicamera') or 'dev'
+__version__ = get_package_version(__file__, "sdss-flicamera") or "dev"
 
 
 from .camera import *
