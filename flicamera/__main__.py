@@ -284,7 +284,7 @@ async def expose(obj, exptime, outfile, overwrite):
 
     async with obj["camera_system"] as fli:
 
-        log.debug("starting camera exposures ... ")
+        log.debug("starting camera exposure ... ")
         exposures = await asyncio.gather(
             *[camera.expose(exptime) for camera in fli.cameras], return_exceptions=False
         )
