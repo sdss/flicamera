@@ -15,7 +15,8 @@ from typing import Any, Optional
 
 import astropy.time
 
-from basecam import BaseCamera, CameraEvent, CameraSystem, Exposure, exceptions
+from basecam import BaseCamera, CameraEvent, CameraSystem, Exposure
+from basecam.exceptions import CameraConnectionError, ExposureError
 from basecam.mixins import CoolerMixIn, ExposureTypeMixIn, ImageAreaMixIn
 from basecam.models import basic_fz_fits_model
 
@@ -39,14 +40,12 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
         serial = conn_params.get("serial", conn_params.get("uid", self.uid))
 
         if serial is None:
-            raise exceptions.CameraConnectionError("unknown serial number.")
+            raise CameraConnectionError("unknown serial number.")
 
         self._device = self.camera_system.lib.get_camera(serial)
 
         if self._device is None:
-            raise exceptions.CameraConnectionError(
-                f"cannot find camera " f"with serial {serial}."
-            )
+            raise CameraConnectionError(f"cannot find camera with serial {serial}.")
 
     def _status_internal(self) -> dict[str, Any]:
         """Gets a dictionary with the status of the camera.
@@ -80,7 +79,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
         """Internal method to handle camera exposures."""
 
         if not exposure.exptime:
-            raise exceptions.ExposureError("Exposure time not set.")
+            raise ExposureError("Exposure time not set.")
 
         TIMEOUT = 5
 
@@ -115,9 +114,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
                 return exposure
 
             if time.time() - start_time > exposure.exptime + TIMEOUT:
-                raise exceptions.ExposureError(
-                    "timeout while waiting for exposure to finish."
-                )
+                raise ExposureError("timeout while waiting for exposure to finish.")
 
     async def _get_temperature_internal(self) -> float:
         """Internal method to get the camera temperature."""
