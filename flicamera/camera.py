@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import asyncio
+import os
 import time
 
 from typing import Any, Optional, Type
@@ -18,21 +19,34 @@ import astropy.time
 from basecam import BaseCamera, CameraEvent, CameraSystem, Exposure
 from basecam.exceptions import CameraConnectionError, ExposureError
 from basecam.mixins import CoolerMixIn, ExposureTypeMixIn, ImageAreaMixIn
-from basecam.models import basic_fz_fits_model
 
 import flicamera
 from flicamera.lib import LibFLI, LibFLIDevice
+from flicamera.model import flicamera_model
 
 
 __all__ = ["FLICameraSystem", "FLICamera"]
 
 
 class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
+    """A FLI camera."""
 
     camera_system: FLICameraSystem
 
     _device: Optional[LibFLIDevice] = None
-    fits_model = basic_fz_fits_model
+    fits_model = flicamera_model
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.gain: float = self.camera_params.get("gain", -999)
+        self.read_noise: float = self.camera_params.get("read_noise", -999)
+
+        self.observatory: str = os.environ.get("OBSERVATORY", "UNKNOWN").upper()
+        if self.observatory in flicamera.config["pixel_scale"]:
+            self.pixel_scale: float = flicamera.config["pixel_scale"][self.observatory]
+        else:
+            self.pixel_scale: float = -999.0
 
     async def _connect_internal(self, **conn_params):
         """Internal method to connect the camera."""
@@ -161,7 +175,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
 
 
 class FLICameraSystem(CameraSystem):
-    """Initialises the camera system."""
+    """FLI camera system."""
 
     __version__ = flicamera.__version__
 

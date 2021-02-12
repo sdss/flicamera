@@ -18,21 +18,17 @@ from typing import Any
 import click
 from click_default_group import DefaultGroup
 
-from basecam.exposure import ImageNamer
 from sdsstools import get_logger, read_yaml_file
 from sdsstools._vendor.color_print import color_text
 from sdsstools.daemonizer import DaemonGroup, cli_coro
 
 from flicamera import NAME, __version__
 from flicamera.actor import FLIActor
-from flicamera.camera import FLICamera, FLICameraSystem
+from flicamera.camera import FLICameraSystem
 from flicamera.mock import get_mock_camera_system
 
 
 log = get_logger(NAME)
-
-# Set default image namer
-FLICamera.image_namer = ImageNamer("{camera.name}-{num:04d}.fits", overwrite=False)
 
 
 class FLICameraWrapper(object):
@@ -291,7 +287,7 @@ async def expose(obj, exptime, outfile, overwrite):
             else:
                 writers.append(exposure.write(overwrite=overwrite))
 
-        await asyncio.gather(*writers, return_exceptions=True)
+        await asyncio.gather(*writers, return_exceptions=False)
 
 
 def main():
