@@ -93,8 +93,9 @@ branch = true
 include = ["flicamera/*"]
 omit = [
     "*/__init__.py",
-    "*/__main__.py",
-    "*/actor.py"
+    "flicamera/__main__.py",
+    "flicamera/actor.py",
+    "flicamera/mock.py"
 ]
 
 [build-system]

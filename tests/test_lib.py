@@ -11,8 +11,7 @@ import time
 import pytest
 
 import flicamera.lib
-
-from .helpers import MockLibFLI
+from flicamera.mock import MockLibFLI
 
 
 def test_libfi_load(libfli: MockLibFLI):

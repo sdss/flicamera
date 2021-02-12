@@ -1,3 +1,9 @@
 {
-  "ignore": ["create_setup.py", "docs/**"]
+  "ignore": ["create_setup.py", "docs/**"],
+  "executionEnvironments": [
+    {
+      "root": ".",
+      "extraPaths": ["../basecam", "../sdsstools/src"]
+    }
+  ]
 }

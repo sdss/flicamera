@@ -1,14 +1,48 @@
 actor:
-    name: flicamera
-    host: 127.0.0.1
-    port: 19995
-    data_dir: "/data/fimg/{camera.name}/{int(date.mjd)}"
-    log_dir: "/data/logs/actors/{actor_name}/"
+  name: flicamera
+  host: 127.0.0.1
+  port: 19995
+  data_dir: '/data/fimg/{camera.name}/{int(date.mjd)}'
+  log_dir: '/data/logs/actors/{actor_name}/'
 
 cameras:
   fvc1:
-      uid: ML7734916
-      serial: ML7734916
-      autoconnect: true
+    uid: ML7734916
+    serial: ML7734916
+    autoconnect: true
 
-log_file: "/data/logs/flicamera/{hostname}/flicamera.log"
+log_file: '/data/logs/flicamera/{hostname}/flicamera.log'
+
+simulation:
+  profiles:
+    default:
+      devices:
+        ML12345:
+          params:
+            temperature:
+              CCD: -25
+              base: -10
+            cooler_power: 60
+            serial: ML12345
+            model: 'MicroLine ML50100'
+            ul_x: 0
+            ul_y: 0
+            lr_x: 2048
+            lr_y: 2048
+          exposures:
+            - seed: null
+              shape: [2048, 2048]
+              noise:
+                distribution: gaussian
+                mean: 400.
+                stddev: 10.
+              sources:
+                n_sources: 10
+                params_ranges:
+                  amplitude: [500, 20000]
+                  x_mean: [0, 2048]
+                  y_mean: [0, 2048]
+                  x_stddev: [1, 5]
+                  y_stddev: [1, 5]
+                  theta: [0, 3.141592]
+              apply_poison_noise: true

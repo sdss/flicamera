@@ -3,8 +3,10 @@
 #
 # @Author: José Sánchez-Gallego (gallegoj@uw.edu)
 # @Date: 2019-12-20
-# @Filename: helpers.py
+# @Filename: mock.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
+
+from __future__ import annotations
 
 import ctypes
 import errno
@@ -15,11 +17,38 @@ import numpy
 
 import flicamera.lib
 
+from .camera import FLICameraSystem
+
 
 DEV_COUNTER = 0
 
 
+async def get_mock_camera_system(devices: dict, camera_config={}) -> FLICameraSystem:
+    """Returns a camera system with mock devices attached."""
+
+    with unittest.mock.patch("ctypes.cdll.LoadLibrary", MockLibFLI):
+
+        camera_system = FLICameraSystem(
+            simulation_mode=True,
+            camera_config=camera_config,
+        )
+
+        assert isinstance(camera_system.lib.libc, MockLibFLI)
+        camera_system.lib.libc.devices = []
+
+        for devname in devices:
+            device = MockFLIDevice(devname, **devices[devname]["params"])
+            camera_system.lib.libc.devices.append(device)
+
+        camera_system.setup()
+        for camera in devices:
+            await camera_system.add_camera(uid=camera)
+
+        return camera_system
+
+
 class MockFLIDevice(object):
+    """A mock FLI device."""
 
     _defaults = {
         "temperature": {"CCD": 0, "base": 0},
@@ -61,10 +90,10 @@ class MockFLIDevice(object):
 class MockLibFLI(ctypes.CDLL):
     """Mocks the CDLL object with the FLI dynamic library."""
 
-    def __init__(self, dlpath):
+    def __init__(self, dlpath: str):
 
-        self.dlpath = dlpath
-        self.devices = []
+        self.dlpath: str = dlpath
+        self.devices: list[MockFLIDevice] = []
 
         self.restype = flicamera.lib.chk_err
 

@@ -20,14 +20,15 @@ from basecam.mixins import CoolerMixIn, ExposureTypeMixIn, ImageAreaMixIn
 from basecam.models import basic_fz_fits_model
 
 import flicamera
-import flicamera.lib
-from flicamera.lib import LibFLIDevice
+from flicamera.lib import LibFLI, LibFLIDevice
 
 
 __all__ = ["FLICameraSystem", "FLICamera"]
 
 
 class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
+
+    camera_system: FLICameraSystem
 
     _device: Optional[LibFLIDevice] = None
     fits_model = basic_fz_fits_model
@@ -169,10 +170,10 @@ class FLICameraSystem(CameraSystem):
 
     camera_class = FLICamera
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, simulation_mode=False, **kwargs):
 
         self.camera_class = kwargs.pop("camera_system", FLICamera)
-        self.lib = flicamera.lib.LibFLI()
+        self.lib = LibFLI(simulation_mode=simulation_mode)
 
         super().__init__(*args, **kwargs)
 
@@ -185,7 +186,7 @@ class FLICameraSystem(CameraSystem):
         # Get the serial number as UID.
         serial_numbers = []
         for device_id in devices_id:
-            device = flicamera.lib.LibFLIDevice(device_id, self.lib.libc)
+            device = LibFLIDevice(device_id, self.lib.libc)
             serial_numbers.append(device.serial)
 
         return serial_numbers

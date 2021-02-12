@@ -13,6 +13,7 @@ from __future__ import annotations
 import ctypes
 import os
 import pathlib
+import unittest.mock
 from ctypes import (
     POINTER,
     byref,
@@ -383,22 +384,24 @@ class LibFLI(ctypes.CDLL):
 
     def __init__(
         self,
-        shared_object: Optional[str | pathlib.Path] = None,
+        shared_object: Optional[str] = None,
         debug: bool = False,
+        simulation_mode: bool = False,
     ):
 
         self.domain = flidomain_t(FLIDOMAIN_USB | FLIDEVICE_CAMERA)
 
-        # For tests, we check if PYTEST_RUNNING is set, and in that case
-        # we skip this part. We'll mock LoadLibrary.
-        is_pytest = os.environ.get("PYTEST_RUNNING", "0")
-        if not shared_object and is_pytest != "1":  # pragma: no cover
-            shared_object_list = list(pathlib.Path(__file__).parent.glob("libfli*.so"))
-            if len(shared_object_list) == 0:
-                raise OSError("The library was compiled without a copy of libfli.")
-            shared_object = shared_object_list[0]
+        if not shared_object:
+            if not simulation_mode:
+                workdir = pathlib.Path(__file__).parent
+                shared_object_list = list(workdir.glob("libfli*.so"))
+                if len(shared_object_list) == 0:
+                    raise OSError("The library was compiled without a copy of libfli.")
+                shared_object = str(shared_object_list[0])
+            else:
+                shared_object = "libflimock.so"
 
-        self.libc = ctypes.cdll.LoadLibrary(str(shared_object))
+        self.libc = ctypes.cdll.LoadLibrary(shared_object)
 
         if self.libc is None:
             raise RuntimeError("Cannot load the libfli shared library.")

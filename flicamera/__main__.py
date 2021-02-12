@@ -6,10 +6,14 @@
 # @Filename: __main__.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
+from __future__ import annotations
+
 import asyncio
 import logging
 import os
 import socket
+
+from typing import Any
 
 import click
 from click_default_group import DefaultGroup
@@ -17,11 +21,13 @@ from click_default_group import DefaultGroup
 from basecam.exposure import ImageNamer
 from clu.command import TimedCommand
 from sdsstools import get_logger, read_yaml_file
+from sdsstools._vendor.color_print import color_text
 from sdsstools.daemonizer import DaemonGroup, cli_coro
 
 from flicamera import NAME, __version__
 from flicamera.actor import FLIActor
 from flicamera.camera import FLICamera, FLICameraSystem
+from flicamera.mock import get_mock_camera_system
 
 
 log = get_logger(NAME)
@@ -42,21 +48,29 @@ class FLICameraWrapper(object):
 
     async def __aenter__(self):
 
-        config_path = self.kwargs.pop("config_path", None)
+        if self.kwargs["simulate_config"] is False:
+            config_path = self.kwargs.pop("config_path", None)
 
-        self.camera_system = FLICameraSystem(*self.args, **self.kwargs)
-        self.camera_system.setup()
+            self.camera_system = FLICameraSystem(*self.args, **self.kwargs)
+            self.camera_system.setup()
+
+            if config_path:
+                self.camera_system.logger.debug(
+                    f"Loading configuration file " f"{config_path}"
+                )
+
+            await self.camera_system.start_camera_poller()
+            await asyncio.sleep(0.1)  # Some time to allow camera to connect.
+        else:
+            devices = self.kwargs["simulate_config"]["devices"]
+            camera_config = self.kwargs["simulate_config"].get("cameras", {})
+            self.camera_system = await get_mock_camera_system(
+                devices,
+                camera_config=camera_config,
+            )
 
         if "verbose" in self.kwargs and self.kwargs["verbose"] is False:
             self.camera_system.logger.sh.setLevel(logging.WARNING)
-
-        if config_path:
-            self.camera_system.logger.debug(
-                f"Loading configuration file " f"{config_path}"
-            )
-
-        await self.camera_system.start_camera_poller()
-        await asyncio.sleep(0.1)  # Some time to allow camera to connect.
 
         return self.camera_system
 
@@ -82,7 +96,22 @@ class FLICameraWrapper(object):
     "config_path",
     show_envvar=True,
     type=click.Path(exists=True, dir_okay=False),
-    help="Path to configuration file. Defaults to $SDSSCORE_DIR.",
+    help="Path to configuration file.",
+)
+@click.option(
+    "-s",
+    "--simulate",
+    allow_from_autoenv=False,
+    is_flag=True,
+    help="Starts the camera system in simulation mode.",
+)
+@click.option(
+    "--simulation-profile",
+    metavar="PROFILE",
+    allow_from_autoenv=False,
+    type=str,
+    default="default",
+    help="Profile to use for the simulation mode.",
 )
 @click.option(
     "-v",
@@ -92,7 +121,7 @@ class FLICameraWrapper(object):
     help="Output extra information to stdout.",
 )
 @click.pass_context
-def flicamera(ctx, cameras, config_path, verbose):
+def flicamera(ctx, cameras, config_path, simulate, simulation_profile, verbose):
     """Command Line Interface for Finger Lakes Instrumentation cameras."""
 
     if verbose:
@@ -124,12 +153,27 @@ def flicamera(ctx, cameras, config_path, verbose):
 
     include = cameras or None
 
+    simulate_config: bool | dict[str, Any]
+    if simulate is True:
+        if not config:
+            raise RuntimeError("Cannot simulate without a configuration file.")
+        elif "simulation" not in config:
+            raise RuntimeError("'simulate' section not found in config file.")
+
+        if "profiles" in config["simulation"]:
+            simulate_config = config["simulation"]["profiles"][simulation_profile]
+        else:
+            simulate_config = config["simulation"]
+    else:
+        simulate_config = False
+
     ctx.obj["camera_system"] = FLICameraWrapper(
         camera_config=camera_config,
         include=include,
         log_file=log_file,
         verbose=verbose,
         config_path=config_path,
+        simulate_config=simulate_config,
     )
 
     # Store some of the options here for the daemon
@@ -221,7 +265,10 @@ async def status(obj):
         for camera in fli.cameras:
             status = camera.get_status()
             key_len = max([len(key) for key in status]) + 1
-            print("\nCamera".ljust(key_len), ": ", camera.name)
+            camera_header = color_text(
+                "Camera".ljust(key_len) + f" :  {camera.name}", "red"
+            )
+            print(camera_header)
             for key, value in status.items():
                 if key == "name":
                     continue

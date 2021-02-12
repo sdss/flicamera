@@ -16,8 +16,7 @@ from sdsstools import read_yaml_file
 
 from flicamera import FLICameraSystem
 from flicamera.lib import LibFLI, LibFLIDevice
-
-from .helpers import MockFLIDevice, MockLibFLI
+from flicamera.mock import MockFLIDevice, MockLibFLI
 
 
 TEST_DATA = pathlib.Path(__file__).parent / "data/test_data.yaml"
@@ -46,7 +45,7 @@ def mock_libfli(mocker):
 def libfli(mock_libfli, config):
     """Yields a LibFLI object with a mocked C libfli library."""
 
-    libfli = LibFLI()
+    libfli = LibFLI(simulation_mode=True)
 
     for camera in config["cameras"]:
         libfli.libc.devices.append(  # type:ignore
@@ -74,7 +73,7 @@ def cameras(libfli):
 @pytest.fixture
 async def camera_system(mock_libfli, config):
 
-    camera_system = FLICameraSystem(camera_config=TEST_DATA)
+    camera_system = FLICameraSystem(camera_config=TEST_DATA, simulation_mode=True)
     camera_system.lib.libc.devices = []  # type: ignore
 
     for camera in config["cameras"]:
