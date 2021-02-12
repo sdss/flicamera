@@ -6,10 +6,114 @@ actor:
   log_dir: '/data/logs/actors/{actor_name}/'
 
 cameras:
+  gfa0:
+    uid: ML0112718
+    serial: ML0112718
+    autoconnect: true
+    gain: 1.15
+    read_noise: 17.5
+  gfa1:
+    uid: ML0122718
+    serial: ML0122718
+    autoconnect: true
+    gain: 1.48
+    read_noise: 15.2
+  gfa2:
+    uid: ML0132718
+    serial: ML0132718
+    autoconnect: true
+    gain: 1.45
+    read_noise: 15.2
+  gfa3:
+    uid: ML0142718
+    serial: ML0142718
+    autoconnect: true
+    gain: 1.11
+    read_noise: 15.0
+  gfa4:
+    uid: ML0162718
+    serial: ML0162718
+    autoconnect: true
+    gain: 1.09
+    read_noise: 18.4
+  gfa5:
+    uid: ML0172718
+    serial: ML0172718
+    autoconnect: true
+    gain: 1.46
+    read_noise: 17.2
+  gfa6:
+    uid: ML0182718
+    serial: ML0182718
+    autoconnect: true
+    gain: 1.18
+    read_noise: 14.8
+  gfa7:
+    uid: ML0192718
+    serial: ML0192718
+    autoconnect: true
+    gain: 1.47
+    read_noise: 15.9
+  gfa8:
+    uid: ML0024718
+    serial: ML0024718
+    autoconnect: true
+    gain: 1.51
+    read_noise: 15.2
+  gfa9:
+    uid: ML0034718
+    serial: ML0034718
+    autoconnect: true
+    gain: 1.44
+    read_noise: 15.0
+  gfa10:
+    uid: ML0202718
+    serial: ML0202718
+    autoconnect: true
+    gain: 1.50
+    read_noise: 16.7
+  gfa11:
+    uid: ML0102718
+    serial: ML0102718
+    autoconnect: true
+    gain: 1.53
+    read_noise: 15.5
+  gfa12:
+    uid: ML0014718
+    serial: ML0014718
+    autoconnect: true
+    gain: 1.49
+    read_noise: 14.7
+  gfa13:
+    uid: ML0044718
+    serial: ML0044718
+    autoconnect: true
+    gain: 1.46
+    read_noise: 14.9
+  fvc0:
+    uid: ML5774418
+    serial: ML5774418
+    autoconnect: true
+    gain: 0.59
+    read_noise: 10.7
   fvc1:
     uid: ML7734916
     serial: ML7734916
     autoconnect: true
+    gain: 0.64
+    read_noise: 12.3
+  fvc2:
+    uid: ML3321819
+    serial: ML3321819
+    autoconnect: true
+    gain: 0.60
+    read_noise: 10.0
+  fvc3:
+    uid: ML3331819
+    serial: ML3331819
+    autoconnect: true
+    gain: 0.58
+    read_noise: 10.3
 
 log_file: '/data/logs/flicamera/{hostname}/flicamera.log'
 
