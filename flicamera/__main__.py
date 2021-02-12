@@ -62,11 +62,9 @@ class FLICameraWrapper(object):
             await self.camera_system.start_camera_poller()
             await asyncio.sleep(0.1)  # Some time to allow camera to connect.
         else:
-            devices = self.kwargs["simulate_config"]["devices"]
-            camera_config = self.kwargs["simulate_config"].get("cameras", {})
             self.camera_system = await get_mock_camera_system(
-                devices,
-                camera_config=camera_config,
+                camera_config=self.kwargs["camera_config"],
+                **self.kwargs["simulate_config"],
             )
 
         if "verbose" in self.kwargs and self.kwargs["verbose"] is False:

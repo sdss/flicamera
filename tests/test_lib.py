@@ -124,7 +124,7 @@ def test_read_frame(cameras):
 
     image = camera.read_frame()
 
-    assert image.mean() > 400.0
+    assert image.mean() > 390.0  # Default is Gaussian noise mean=400, stddev=10
 
     (ul_x, ul_y, lr_x, lr_y) = camera.get_visible_area()
 

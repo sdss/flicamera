@@ -605,6 +605,23 @@ python-versions = "*"
 ptyprocess = ">=0.5"
 
 [[package]]
+name = "photutils"
+version = "1.0.2"
+description = "An Astropy package for source detection and photometry"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+astropy = ">=4.0"
+numpy = ">=1.17"
+
+[package.extras]
+all = ["scipy", "matplotlib (>=2.2)", "scikit-image (>=0.14.2)", "scikit-learn", "gwcs (>=0.12)"]
+docs = ["scipy", "sphinx-astropy", "matplotlib (>=2.2)", "scikit-image (>=0.14.2)", "scikit-learn", "gwcs (>=0.12)"]
+test = ["pytest-astropy"]
+
+[[package]]
 name = "pickleshare"
 version = "0.7.5"
 description = "Tiny 'shelve'-like database with concurrency support"
@@ -1197,7 +1214,7 @@ docs = ["Sphinx", "sphinx-copybutton", "m2r2", "sphinx-click"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "d4783f9299d2d50b3e594dfc8085198fb7b958364523bb746eaed02a51f4dfbe"
+content-hash = "2ffe7a149cd4af229b77db8918d00462e2bf8024161d4e5912f09e3af73d73cc"
 
 [metadata.files]
 aio-pika = [
@@ -1615,6 +1632,37 @@ pbr = [
 pexpect = [
     {file = "pexpect-4.8.0-py2.py3-none-any.whl", hash = "sha256:0b48a55dcb3c05f3329815901ea4fc1537514d6ba867a152b581d69ae3710937"},
     {file = "pexpect-4.8.0.tar.gz", hash = "sha256:fc65a43959d153d0114afe13997d439c22823a27cefceb5ff35c2178c6784c0c"},
+]
+photutils = [
+    {file = "photutils-1.0.2-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:d3b3b053c04b2e00e1d1c0502965f7304bc956bc40129d915e8aa00798d9924f"},
+    {file = "photutils-1.0.2-cp36-cp36m-manylinux1_i686.whl", hash = "sha256:f68578ef3162df3e4191396b36127ee4e6868e857acad0f154e2a7093935e16c"},
+    {file = "photutils-1.0.2-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:563efca9dbdda4835cc06eb3e8af6183b9adf09f5aa16f5e71388e16c6d45f06"},
+    {file = "photutils-1.0.2-cp36-cp36m-manylinux2010_i686.whl", hash = "sha256:1e064dadf3c5dedbd4788f7c96f66936a5be885e751eed6f35b8442ae0f2907b"},
+    {file = "photutils-1.0.2-cp36-cp36m-manylinux2010_x86_64.whl", hash = "sha256:53ea282ef3c23f5a636288292d2bea2345d4a267092d90ba0ac95771556648d6"},
+    {file = "photutils-1.0.2-cp36-cp36m-win32.whl", hash = "sha256:7aa3ce56ed8ec7e9f652ac2aba4e3a2131dcdd0db0f57a0e54a451a8f93b7462"},
+    {file = "photutils-1.0.2-cp36-cp36m-win_amd64.whl", hash = "sha256:08049ace0ede0d6cee3b826e905b9bac3fac8d2db5c105d95c9a3aeb0cbb2f4b"},
+    {file = "photutils-1.0.2-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:d15362285c3369b7e4e072d4a1a285c9d81e84020241e1391474692a4785c8ef"},
+    {file = "photutils-1.0.2-cp37-cp37m-manylinux1_i686.whl", hash = "sha256:13902fa09c496b63c1f607918fc59ee9f62d81c2386def213d74c77d853e43c0"},
+    {file = "photutils-1.0.2-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:27d0aefd159d7ae2c219ccd0981efab916072223858ab401df81970cbe6e4931"},
+    {file = "photutils-1.0.2-cp37-cp37m-manylinux2010_i686.whl", hash = "sha256:68c3ca043517a34b321310ab748dfb64be4c841eff3f7c8cbf0b5ff7fab79a43"},
+    {file = "photutils-1.0.2-cp37-cp37m-manylinux2010_x86_64.whl", hash = "sha256:81cd91066aee848960fbf5ddd11bb83b2de7c904c0b2b0dad76313037d2ed2ab"},
+    {file = "photutils-1.0.2-cp37-cp37m-win32.whl", hash = "sha256:ea2f1655dabb6642cba88996197b38d56499ea68fb4056de45fa68aca4431cbd"},
+    {file = "photutils-1.0.2-cp37-cp37m-win_amd64.whl", hash = "sha256:f7447c19f7f6f4afdb2d72ac82b4bbf0c469b6943f700b7bf0a7e29582410277"},
+    {file = "photutils-1.0.2-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:6c4e11161b9bf795d7ddc92b5a39d8b9c41ea344e03444cbeb3e6c592ffe8adc"},
+    {file = "photutils-1.0.2-cp38-cp38-manylinux1_i686.whl", hash = "sha256:f33a6647235faf1b39d694a385ed7c442c0d18d3dc45bc78e7ee31d532a8e22a"},
+    {file = "photutils-1.0.2-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:1fdad3eafa8fda2dea36c0a848464d09ef4a0b34cadaa1af4502b6128ffd2eb0"},
+    {file = "photutils-1.0.2-cp38-cp38-manylinux2010_i686.whl", hash = "sha256:a57a0dcd306472b045ab61fb548f4e70c6c92512d780ac8ebeddb8704f8b3564"},
+    {file = "photutils-1.0.2-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:4939c6d8f61542ccb1c38b0156143452a2f739c041ff474190e564946f4d439d"},
+    {file = "photutils-1.0.2-cp38-cp38-win32.whl", hash = "sha256:f304afc95e43c039a4479d98e434cd4145afeb8e1115344424c51921dfcbdd06"},
+    {file = "photutils-1.0.2-cp38-cp38-win_amd64.whl", hash = "sha256:c2a1e424e0a3f9c26d15c33bacc514a63a448ae7ba28de0a153ce8f97496af34"},
+    {file = "photutils-1.0.2-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:1a88ac74b3a9dd774e544b4e8389eaae93fdfe47b4884c254efb2578d4f8abcf"},
+    {file = "photutils-1.0.2-cp39-cp39-manylinux1_i686.whl", hash = "sha256:0f4a23a4683009301bead70ec572bb3a4129d2f3b54751e6b7a78dc917c7c2e9"},
+    {file = "photutils-1.0.2-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:a02f883dbc0867f090a5dbe8914a985747b5b8ee0b60351aba1485200c93b0e6"},
+    {file = "photutils-1.0.2-cp39-cp39-manylinux2010_i686.whl", hash = "sha256:500b166a455594d044c25569520b58c421e53ee0caf97d387c13bf666a7f3df0"},
+    {file = "photutils-1.0.2-cp39-cp39-manylinux2010_x86_64.whl", hash = "sha256:201e00851f66fa7897da2e2b880cdd11099f785443cf934a9b9e8f99d5f453e6"},
+    {file = "photutils-1.0.2-cp39-cp39-win32.whl", hash = "sha256:e32c9e73ce63761c17d7cdba1ff3785a288e3a58c79fd3cd2a53985d3b5f9595"},
+    {file = "photutils-1.0.2-cp39-cp39-win_amd64.whl", hash = "sha256:acd0fc8ff0d31f299df8198536aca085d47f35968225b718e2f56ce61a3690d7"},
+    {file = "photutils-1.0.2.tar.gz", hash = "sha256:86f605e29276f081b80b7895fa2d95d545fd2a47ed1f47b283538cf05211c131"},
 ]
 pickleshare = [
     {file = "pickleshare-0.7.5-py2.py3-none-any.whl", hash = "sha256:9649af414d74d4df115d5d718f82acb59c9d418196b7b4290ed47a12ce62df56"},

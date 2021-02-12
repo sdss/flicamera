@@ -16,6 +16,7 @@ log_file: '/data/logs/flicamera/{hostname}/flicamera.log'
 simulation:
   profiles:
     default:
+      fast_read: true
       devices:
         ML12345:
           params:
@@ -37,8 +38,8 @@ simulation:
                 mean: 400.
                 stddev: 10.
               sources:
-                n_sources: 10
-                params_ranges:
+                n_sources: [29, 30]
+                param_ranges:
                   amplitude: [500, 20000]
                   x_mean: [0, 2048]
                   y_mean: [0, 2048]

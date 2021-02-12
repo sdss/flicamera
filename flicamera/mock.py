@@ -13,7 +13,15 @@ import errno
 import time
 import unittest.mock
 
+from typing import Any
+
 import numpy
+from photutils.datasets import (
+    apply_poisson_noise,
+    make_gaussian_sources_image,
+    make_noise_image,
+    make_random_gaussians_table,
+)
 
 import flicamera.lib
 
@@ -23,7 +31,17 @@ from .camera import FLICameraSystem
 DEV_COUNTER = 0
 
 
-async def get_mock_camera_system(devices: dict, camera_config={}) -> FLICameraSystem:
+def read_frame_mock(self):
+    """Mock version of `.LibFLIDevice.read_frame` for fast reading."""
+
+    return self.libc._get_image(self.dev)
+
+
+async def get_mock_camera_system(
+    devices: dict[str, Any],
+    camera_config: dict[str, Any] = {},
+    fast_read: bool = True,
+) -> FLICameraSystem:
     """Returns a camera system with mock devices attached."""
 
     with unittest.mock.patch("ctypes.cdll.LoadLibrary", MockLibFLI):
@@ -36,8 +54,18 @@ async def get_mock_camera_system(devices: dict, camera_config={}) -> FLICameraSy
         assert isinstance(camera_system.lib.libc, MockLibFLI)
         camera_system.lib.libc.devices = []
 
+        # If read_fast, mock the library read_frame method to immediately return
+        # the image array. This helps because FLIGrabRow is very slow if it needs
+        # to loop over a large image in Python.
+        if fast_read is True:
+            flicamera.lib.LibFLIDevice.read_frame = read_frame_mock
+
         for devname in devices:
-            device = MockFLIDevice(devname, **devices[devname]["params"])
+            device = MockFLIDevice(
+                devname,
+                exposure_params=devices[devname].get("exposures", {}),
+                status_params=devices[devname].get("params", {}),
+            )
             camera_system.lib.libc.devices.append(device)
 
         camera_system.setup()
@@ -65,7 +93,12 @@ class MockFLIDevice(object):
         "lr_y": 512,
     }
 
-    def __init__(self, name, **kwargs):
+    def __init__(
+        self,
+        name: str,
+        status_params: dict[str, Any] = {},
+        exposure_params: list[dict[str, Any]] = [],
+    ):
 
         global DEV_COUNTER
 
@@ -74,10 +107,14 @@ class MockFLIDevice(object):
 
         self.name = name
 
+        self.state: dict[str, Any]
         self.reset_defaults()
-        self.state.update(kwargs)
+        self.state.update(status_params)
 
-        self.image = None
+        self._exposure_params: list[dict[str, Any]] = exposure_params
+        self._exposure_idx: int = 0
+
+        self.image: numpy.ndarray | None = None
         self.row = 0
 
     def reset_defaults(self):
@@ -85,6 +122,71 @@ class MockFLIDevice(object):
 
         self.state = self._defaults.copy()
         self.row = 0
+
+    def prepare_image(self):
+        """Creates the image that will be fetched."""
+
+        # Default values
+        exposure_params: dict[str, Any] = dict(
+            seed=None,
+            shape=[
+                self.state["lr_x"] - self.state["ul_x"],
+                self.state["lr_y"] - self.state["ul_y"],
+            ],
+            sources=False,
+            noise=False,
+            apply_poison_noise=False,
+        )
+        if len(self._exposure_params) == 0:
+            # If the simulation configuration doesn't include an "exposures"
+            # section, just add some default noise.
+            exposure_params["noise"] = {
+                "distribution": "gaussian",
+                "mean": 400,
+                "stddev": 10.0,
+            }
+        else:
+            exposure_params.update(self._exposure_params[self._exposure_idx])
+
+        image = numpy.ndarray(exposure_params["shape"][::-1], dtype="float32")
+
+        if exposure_params["noise"]:
+            image += make_noise_image(image.shape, **exposure_params["noise"])
+
+        if exposure_params["sources"]:
+            n_sources = exposure_params["sources"]["n_sources"]
+            if isinstance(n_sources, list):
+                n_sources = numpy.random.randint(*n_sources)
+            source_table = make_random_gaussians_table(
+                n_sources=n_sources,
+                param_ranges=exposure_params["sources"]["param_ranges"],
+                seed=exposure_params["seed"],
+            )
+            image += make_gaussian_sources_image(
+                image.shape,
+                source_table=source_table,
+            )
+
+        if exposure_params["apply_poison_noise"]:
+            image = apply_poisson_noise(image, seed=exposure_params["seed"])
+
+        self.image = image.astype("uint16")
+
+    def clear_image(self):
+        """Clears the image. Called when the buffer has been read."""
+
+        self.image = None
+        self.state.update(
+            {
+                "exposure_time_left": 0,
+                "exposure_time": 0,
+                "exposure_status": "idle",
+                "exposure_start_time": 0,
+            }
+        )
+
+        if len(self._exposure_params) > 0:
+            self._exposure_idx = (self._exposure_idx + 1) % len(self._exposure_params)
 
 
 class MockLibFLI(ctypes.CDLL):
@@ -256,6 +358,8 @@ class MockLibFLI(ctypes.CDLL):
 
         device.row = 0  # Reset readout row
 
+        device.prepare_image()  # Prepare image
+
         return self.restype(0)
 
     def FLICancelExposure(self, dev):
@@ -282,6 +386,16 @@ class MockLibFLI(ctypes.CDLL):
 
         return self.restype(0)
 
+    def _get_image(self, dev):
+        """Return the whole image. Used for the ``fast_read`` mode."""
+
+        device = self._get_device(dev)
+
+        image = device.image.copy()
+        device.clear_image()
+
+        return image
+
     def FLIGrabRow(self, dev, array_ptr, col_size):
 
         device = self._get_device(dev)
@@ -296,14 +410,6 @@ class MockLibFLI(ctypes.CDLL):
 
         if time_left.value > 0:
             return self.restype(-errno.ENXIO)
-
-        if device.row == 0 and device.image is None:
-
-            n_rows = device.state["lr_y"] - device.state["ul_y"]
-            n_cols = device.state["lr_x"] - device.state["ul_x"]
-
-            image = numpy.zeros((n_rows, n_cols), dtype=numpy.uint16) + 500
-            device.image = numpy.random.poisson(image)
 
         # This is a hack ... but there doesn't seem to be another way to access
         # the memory address. In principle byref(img_ptr.contents, offset)
@@ -322,6 +428,9 @@ class MockLibFLI(ctypes.CDLL):
 
             (ctypes.c_uint16).from_address(address).value = device.image[device.row, ii]
 
-        device.row += 1
+        if device.image.shape[0] == device.row:
+            device.clear_image()
+        else:
+            device.row += 1
 
         return self.restype(0)

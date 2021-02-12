@@ -49,7 +49,7 @@ def libfli(mock_libfli, config):
 
     for camera in config["cameras"]:
         libfli.libc.devices.append(  # type:ignore
-            MockFLIDevice(camera, **config["cameras"][camera])
+            MockFLIDevice(camera, status_params=config["cameras"][camera])
         )
 
     yield libfli
@@ -77,7 +77,7 @@ async def camera_system(mock_libfli, config):
     camera_system.lib.libc.devices = []  # type: ignore
 
     for camera in config["cameras"]:
-        device = MockFLIDevice(camera, **config["cameras"][camera])
+        device = MockFLIDevice(camera, status_params=config["cameras"][camera])
         camera_system.lib.libc.devices.append(device)
 
     camera_system.setup()
