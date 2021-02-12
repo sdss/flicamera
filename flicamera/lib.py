@@ -13,7 +13,6 @@ from __future__ import annotations
 import ctypes
 import os
 import pathlib
-import unittest.mock
 from ctypes import (
     POINTER,
     byref,
