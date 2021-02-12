@@ -140,12 +140,12 @@ simulation:
               shape: [2048, 2048]
               noise:
                 distribution: gaussian
-                mean: 400.
-                stddev: 10.
+                mean: 1000.
+                stddev: 20.
               sources:
-                n_sources: [29, 30]
+                n_sources: [0, 20]
                 param_ranges:
-                  amplitude: [500, 20000]
+                  amplitude: [1500, 30000]
                   x_mean: [0, 2048]
                   y_mean: [0, 2048]
                   x_stddev: [1, 5]
