@@ -84,8 +84,11 @@ async def get_mock_camera_system(
             camera_system.lib.libc.devices.append(device)
 
         camera_system.setup()
-        for camera in devices:
-            await camera_system.add_camera(uid=camera)
+        for camera_name in devices:
+            await camera_system.add_camera(
+                name=camera_name,
+                uid=devices[camera_name].get("uid", None),
+            )
 
         return camera_system
 
