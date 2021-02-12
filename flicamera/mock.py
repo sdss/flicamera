@@ -166,8 +166,8 @@ class MockFLIDevice(object):
                 # section, just add some default noise.
                 exposure_params["noise"] = {
                     "distribution": "gaussian",
-                    "mean": 400,
-                    "stddev": 10.0,
+                    "mean": 1000,
+                    "stddev": 20.0,
                 }
             else:
                 this_exposure = self._exposure_params[self._exposure_idx]
