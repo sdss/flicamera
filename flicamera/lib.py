@@ -391,7 +391,7 @@ class LibFLI(ctypes.CDLL):
         self.domain = flidomain_t(FLIDOMAIN_USB | FLIDEVICE_CAMERA)
 
         if not shared_object:
-            if not simulation_mode:
+            if not simulation_mode:  # pragma: no cover
                 workdir = pathlib.Path(__file__).parent
                 shared_object_list = list(workdir.glob("libfli*.so"))
                 if len(shared_object_list) == 0:
