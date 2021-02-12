@@ -19,7 +19,6 @@ import click
 from click_default_group import DefaultGroup
 
 from basecam.exposure import ImageNamer
-from clu.command import TimedCommand
 from sdsstools import get_logger, read_yaml_file
 from sdsstools._vendor.color_print import color_text
 from sdsstools.daemonizer import DaemonGroup, cli_coro
@@ -228,25 +227,10 @@ async def actor(obj, host, port, actor_name):
             log_dir = actor_params["log_dir"].format(actor_name=actor_params["name"])
             actor_params["log_dir"] = log_dir
 
-        # By default the image namer writes to ./ For production we want to
-        # write to /data but we'll define that in the config file.
-        data_dir = actor_params.pop("data_dir", "./")
-        image_name = actor_params.pop("image_name", "{camera.name}-{num:04d}.fits")
-
-        FLICamera.image_namer.dirname = data_dir
-        FLICamera.image_namer.basename = image_name
-
-        # We need to change the image namer of any already connected camera.
-        for camera in fli.cameras:
-            camera.image_namer.basename = image_name
-            camera.image_namer.dirname = data_dir
-            camera.image_namer.camera = camera
-
         if obj["cameras"]:
             actor_params.update({"default_cameras": list(obj["cameras"])})
 
         actor = await FLIActor(fli, **actor_params).start()
-        actor.timed_commands.append(TimedCommand("status", delay=60))
 
         await actor.run_forever()
 
@@ -289,7 +273,8 @@ async def expose(obj, exptime, outfile, overwrite):
 
         log.debug("starting camera exposure ... ")
         exposures = await asyncio.gather(
-            *[camera.expose(exptime) for camera in fli.cameras], return_exceptions=False
+            *[camera.expose(exptime) for camera in fli.cameras],
+            return_exceptions=False,
         )
 
         log.debug("writing images to disk ... ")
@@ -297,7 +282,12 @@ async def expose(obj, exptime, outfile, overwrite):
         for exposure in exposures:
             if outfile:
                 outfile = outfile.format(camera=exposure.camera)
-                writers.append(exposure.write(filename=outfile, overwrite=overwrite))
+                writers.append(
+                    exposure.write(
+                        filename=outfile,
+                        overwrite=overwrite,
+                    )
+                )
             else:
                 writers.append(exposure.write(overwrite=overwrite))
 

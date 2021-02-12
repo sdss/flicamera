@@ -11,7 +11,7 @@ from __future__ import annotations
 import asyncio
 import time
 
-from typing import Any, Optional
+from typing import Any, Optional, Type
 
 import astropy.time
 
@@ -169,7 +169,7 @@ class FLICameraSystem(CameraSystem):
 
     def __init__(self, *args, simulation_mode=False, **kwargs):
 
-        self.camera_class = kwargs.pop("camera_system", FLICamera)
+        self.camera_class: Type[FLICamera] = kwargs.pop("camera_system", FLICamera)
         self.lib = LibFLI(simulation_mode=simulation_mode)
 
         super().__init__(*args, **kwargs)
