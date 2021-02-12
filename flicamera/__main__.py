@@ -231,11 +231,14 @@ async def actor(obj, host, port, actor_name):
         # By default the image namer writes to ./ For production we want to
         # write to /data but we'll define that in the config file.
         data_dir = actor_params.pop("data_dir", "./")
+        image_name = actor_params.pop("image_name", "{camera.name}-{num:04d}.fits")
 
         FLICamera.image_namer.dirname = data_dir
+        FLICamera.image_namer.basename = image_name
 
         # We need to change the image namer of any already connected camera.
         for camera in fli.cameras:
+            camera.image_namer.basename = image_name
             camera.image_namer.dirname = data_dir
             camera.image_namer.camera = camera
 
