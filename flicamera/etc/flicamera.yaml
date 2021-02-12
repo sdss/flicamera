@@ -122,14 +122,15 @@ simulation:
     default:
       fast_read: true
       devices:
-        ML12345:
+        gfa0:
+          uid: ML0112718
           params:
             temperature:
               CCD: -25
               base: -10
             cooler_power: 60
-            serial: ML12345
-            model: 'MicroLine ML50100'
+            serial: ML0112718
+            model: 'MicroLine ML4240'
             ul_x: 0
             ul_y: 0
             lr_x: 2048
