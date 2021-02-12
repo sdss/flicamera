@@ -12,9 +12,12 @@ import ctypes
 import errno
 import time
 import unittest.mock
+from glob import glob
 
 from typing import Any
 
+import astropy.io.fits
+import astropy.table
 import numpy
 from photutils.datasets import (
     apply_poisson_noise,
@@ -42,7 +45,19 @@ async def get_mock_camera_system(
     camera_config: dict[str, Any] = {},
     fast_read: bool = True,
 ) -> FLICameraSystem:
-    """Returns a camera system with mock devices attached."""
+    """Returns a camera system with mock devices attached.
+
+    Parameters
+    ----------
+    devices
+        A dictionary of mocked physical devices. See the documentation for details
+        on the format.
+    camera_config
+        Camera configuration to be passed to `.FLICameraSystem`.
+    fast_read
+        If `True`, skips reading the mocked image row by row. This is significantly
+        faster for large images.
+    """
 
     with unittest.mock.patch("ctypes.cdll.LoadLibrary", MockLibFLI):
 
@@ -97,7 +112,7 @@ class MockFLIDevice(object):
         self,
         name: str,
         status_params: dict[str, Any] = {},
-        exposure_params: list[dict[str, Any]] = [],
+        exposure_params: str | list[dict[str, Any]] = [],
     ):
 
         global DEV_COUNTER
@@ -111,7 +126,11 @@ class MockFLIDevice(object):
         self.reset_defaults()
         self.state.update(status_params)
 
-        self._exposure_params: list[dict[str, Any]] = exposure_params
+        self._exposure_params: list[str] | list[dict[str, Any]]
+        if isinstance(exposure_params, str):
+            self._exposure_params = list(sorted(glob(exposure_params)))
+        else:
+            self._exposure_params = exposure_params
         self._exposure_idx: int = 0
 
         self.image: numpy.ndarray | None = None
@@ -137,16 +156,25 @@ class MockFLIDevice(object):
             noise=False,
             apply_poison_noise=False,
         )
-        if len(self._exposure_params) == 0:
-            # If the simulation configuration doesn't include an "exposures"
-            # section, just add some default noise.
-            exposure_params["noise"] = {
-                "distribution": "gaussian",
-                "mean": 400,
-                "stddev": 10.0,
-            }
-        else:
-            exposure_params.update(self._exposure_params[self._exposure_idx])
+
+        if isinstance(self._exposure_params, list):
+            if len(self._exposure_params) == 0:
+                # If the simulation configuration doesn't include an "exposures"
+                # section, just add some default noise.
+                exposure_params["noise"] = {
+                    "distribution": "gaussian",
+                    "mean": 400,
+                    "stddev": 10.0,
+                }
+            else:
+                this_exposure = self._exposure_params[self._exposure_idx]
+
+                # If str, file is the image to return
+                if isinstance(this_exposure, str):
+                    data = astropy.io.fits.getdata(this_exposure)
+                    return data
+
+                exposure_params.update(this_exposure)
 
         image = numpy.ndarray(exposure_params["shape"][::-1], dtype="float32")
 
@@ -154,14 +182,19 @@ class MockFLIDevice(object):
             image += make_noise_image(image.shape, **exposure_params["noise"])
 
         if exposure_params["sources"]:
-            n_sources = exposure_params["sources"]["n_sources"]
-            if isinstance(n_sources, list):
-                n_sources = numpy.random.randint(*n_sources)
-            source_table = make_random_gaussians_table(
-                n_sources=n_sources,
-                param_ranges=exposure_params["sources"]["param_ranges"],
-                seed=exposure_params["seed"],
-            )
+            if "source_table" in exposure_params["sources"]:
+                source_table = astropy.table.Table.read(
+                    exposure_params["sources"]["source_table"]
+                )
+            else:
+                n_sources = exposure_params["sources"]["n_sources"]
+                if isinstance(n_sources, list):
+                    n_sources = numpy.random.randint(*n_sources)
+                source_table = make_random_gaussians_table(
+                    n_sources=n_sources,
+                    param_ranges=exposure_params["sources"]["param_ranges"],
+                    seed=exposure_params["seed"],
+                )
             image += make_gaussian_sources_image(
                 image.shape,
                 source_table=source_table,

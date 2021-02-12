@@ -1214,7 +1214,7 @@ docs = ["Sphinx", "sphinx-copybutton", "m2r2", "sphinx-click"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "2ffe7a149cd4af229b77db8918d00462e2bf8024161d4e5912f09e3af73d73cc"
+content-hash = "64b93f71204a491ca6e702583d9b7cb2b95d992ba94a8eb51cba7ec4a702c2ea"
 
 [metadata.files]
 aio-pika = [
