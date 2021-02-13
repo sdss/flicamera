@@ -118,7 +118,7 @@ def flicamera(ctx, cameras, config_path, simulate, simulation_profile, verbose):
     """Command Line Interface for Finger Lakes Instrumentation cameras."""
 
     if verbose:
-        log.set_level(logging.NOTSET)
+        log.set_level(logging.DEBUG)
     else:
         log.set_level(logging.WARNING)
 
@@ -136,7 +136,7 @@ def flicamera(ctx, cameras, config_path, simulate, simulation_profile, verbose):
         if "cameras" in config:
             camera_config = config["cameras"].copy()
         else:
-            camera_config = config.copy()
+            camera_config = config.copy()  # type: ignore
         log_file = config.get("log_file", None)
         if log_file:
             log_file = log_file.format(hostname=socket.getfqdn())
@@ -202,32 +202,30 @@ def flicamera(ctx, cameras, config_path, simulate, simulation_profile, verbose):
 async def actor(obj, host, port, actor_name):
     """Start/stop the actor as a daemon."""
 
+    if obj["config"] and "actor" in obj["config"]:
+        actor_params = obj["config"]["actor"]
+    else:
+        actor_params = {}
+
+    actor_params["version"] = __version__
+    actor_params["verbose"] = obj["verbose"]
+
+    if actor_name:
+        actor_params["name"] = actor_name
+    if host:
+        actor_params["host"] = host
+    if port:
+        actor_params["port"] = port
+
+    if "log_dir" in actor_params:
+        log_dir = actor_params["log_dir"].format(actor_name=actor_params["name"])
+        actor_params["log_dir"] = log_dir
+
+    if obj["cameras"]:
+        actor_params.update({"default_cameras": list(obj["cameras"])})
+
     async with obj["camera_system"] as fli:
-
-        if obj["config"] and "actor" in obj["config"]:
-            actor_params = obj["config"]["actor"]
-        else:
-            actor_params = {}
-
-        actor_params["version"] = __version__
-        actor_params["verbose"] = obj["verbose"]
-
-        if actor_name:
-            actor_params["name"] = actor_name
-        if host:
-            actor_params["host"] = host
-        if port:
-            actor_params["port"] = port
-
-        if "log_dir" in actor_params:
-            log_dir = actor_params["log_dir"].format(actor_name=actor_params["name"])
-            actor_params["log_dir"] = log_dir
-
-        if obj["cameras"]:
-            actor_params.update({"default_cameras": list(obj["cameras"])})
-
         actor = await FLIActor(fli, **actor_params).start()
-
         await actor.run_forever()
 
 
