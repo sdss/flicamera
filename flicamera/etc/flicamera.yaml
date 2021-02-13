@@ -2,6 +2,9 @@ actor:
   name: flicamera
   host: 127.0.0.1
   port: 19995
+  tron:
+    host: localhost
+    port: 6093
   data_dir: '/data/{camera.name[0]}cam/{int(date.mjd)}'
   image_name: '{camera.name[0]}img-{camera.name}-{num:04d}.fits'
   log_dir: '/data/logs/actors/{actor_name}/'
