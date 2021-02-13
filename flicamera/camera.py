@@ -174,7 +174,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
         self._device.set_binning(hbin, vbin)
 
 
-class FLICameraSystem(CameraSystem):
+class FLICameraSystem(CameraSystem[FLICamera]):
     """FLI camera system."""
 
     __version__ = flicamera.__version__
