@@ -1,6 +1,7 @@
 # flicamera
 
 ![Versions](https://img.shields.io/badge/python->3.7-blue)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Documentation Status](https://readthedocs.org/projects/sdss-flicamera/badge/?version=latest)](https://sdss-flicamera.readthedocs.io/en/latest/?badge=latest)
 [![Tests Status](https://github.com/sdss/flicamera/workflows/Test/badge.svg)](https://github.com/sdss/flicamera/actions)
 [![Build Status](https://github.com/sdss/flicamera/workflows/Build/badge.svg)](https://github.com/sdss/flicamera/actions)
