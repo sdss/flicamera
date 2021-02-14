@@ -179,7 +179,7 @@ class MockFLIDevice(object):
 
                 exposure_params.update(this_exposure)
 
-        image = numpy.ndarray(exposure_params["shape"][::-1], dtype="float32")
+        image = numpy.zeros(exposure_params["shape"][::-1], dtype="float32")
 
         if exposure_params["noise"]:
             image += make_noise_image(image.shape, **exposure_params["noise"])
