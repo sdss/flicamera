@@ -8,7 +8,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Union
+from typing import Any, List, Tuple, Union
 
 from basecam.exposure import Exposure
 from basecam.models import (
@@ -28,7 +28,7 @@ import flicamera
 __all__ = ["flicamera_model"]
 
 
-MacroCardReturnType = list[Union[tuple[str, Any], tuple[str, Any, str], Card]]
+MacroCardReturnType = List[Union[Tuple[str, Any], Tuple[str, Any, str], Card]]
 
 
 def pvt2pos(tup):
