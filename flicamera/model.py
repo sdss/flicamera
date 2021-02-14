@@ -47,7 +47,7 @@ class TronModelCards(MacroCard):
             return default
 
         try:
-            value = self.model[key][idx]
+            value = self.model[key].value[idx]
             if cnv:
                 value = cnv(value)
             return value
