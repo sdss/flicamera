@@ -8,7 +8,10 @@
 
 from __future__ import annotations
 
-from typing import Any, List, Tuple, Union
+import abc
+from lib2to3.pytree import Base
+
+from typing import Any, List, Optional, Tuple, Union
 
 from basecam.exposure import Exposure
 from basecam.models import (
@@ -39,15 +42,35 @@ def pvt2pos(tup):
 # TODO: this should be moved to CLU.
 
 
-class TronModelCards(MacroCard):
+class TronModelCards(MacroCard, metaclass=abc.ABCMeta):
     model = None
+    model_name: Optional[str] = None
+
+    def macro(self, exposure: Exposure, context: dict[str, Any] = {}):
+
+        try:
+            self.model = context["__actor__"].tron.models[self.model_name]
+        except (KeyError, AttributeError):
+            self.model = None
+
+        return self._cards(exposure, context=context)
+
+    @abc.abstractmethod
+    def _cards(
+        self,
+        exposure: Exposure,
+        context: dict[str, Any],
+    ) -> MacroCardReturnType:
+        raise NotImplementedError
 
     def get(self, key, idx=0, default="NaN", cnv=None):
         if not self.model:
             return default
 
         try:
-            value = self.model[key].value[idx]
+            value = self.model[key].value
+            if idx is not None:
+                value = value[idx]
             if cnv:
                 value = cnv(value)
             return value
@@ -55,21 +78,13 @@ class TronModelCards(MacroCard):
             return default
 
 
-class TCCCards(TronModelCards):
-    """Return a list of Cards describing the TCC state."""
+class APOTCCCards(TronModelCards):
+    """Return a list of Cards describing the APO TCC state."""
 
-    name = "TCC Cards"
+    name = "APO TCC Cards"
+    model_name = "tcc"
 
-    def macro(self, exposure: Exposure, context: dict[str, Any] = {}):
-        if not isinstance(exposure.camera, flicamera.camera.FLICamera):
-            return ()
-
-        if exposure.camera.observatory == "APO":
-            return self._apo_macro(exposure, context=context)
-        else:
-            return ()
-
-    def _apo_macro(
+    def _cards(
         self,
         exposure: Exposure,
         context: dict[str, Any] = {},
@@ -223,6 +238,120 @@ class TCCCards(TronModelCards):
         return cards
 
 
+class LampCards(TronModelCards):
+    """ Return a list of Cards describing the MCP state. """
+
+    name = "Lamp Cards"
+    model_name = "mcp"
+
+    def _cnvLampCard(self, lamps):
+        """Convert the MCP lamp keyword to what we want.
+
+        ``lamps`` here are a list of True/False for each lamp.
+        """
+        conv = []
+        for ll in lamps:
+            try:
+                conv.append(str(int(ll)))
+            except Exception:
+                conv.append("X")
+        return " ".join(conv)
+
+    def _cnvFFSCard(self, petals):
+        """Convert the mcp.ffsStatus keyword to what we want.
+
+        ``petals`` is a list of ``"01"`` or ``"10"`` for open and closed respectively.
+        """
+        ffDict = {"01": "1", "10": "0"}
+        return " ".join([str(ffDict.get(p, "X")) for p in petals])
+
+    def _cards(
+        self,
+        exposure: Exposure,
+        context: dict[str, Any] = {},
+    ) -> MacroCardReturnType:
+
+        cards: MacroCardReturnType = []
+
+        for lamp_key in ("ffLamp", "neLamp", "hgCdLamp"):
+            card_name = lamp_key[:-4].upper()
+            card = (
+                card_name,
+                self.get(
+                    lamp_key,
+                    idx=None,
+                    cnv=self._cnvLampCard,
+                    default="X X X X",
+                ),
+                f"{card_name} lamps 1:on 0:0ff",
+            )
+            cards.append(card)
+
+        cards.append(
+            (
+                "FFS",
+                self.get(
+                    "ffsStatus",
+                    idx=None,
+                    cnv=self._cnvFFSCard,
+                    default="X X X X X X X X",
+                ),
+                "Flatfield Screen 1:closed 0:open",
+            )
+        )
+
+        return cards
+
+
+class APOCards(TronModelCards):
+    """ Return a list of Cards describing the APO actor state. """
+
+    name = "Lamp Cards"
+    model_name = "apo"
+
+    def _cards(
+        self,
+        exposure: Exposure,
+        context: dict[str, Any] = {},
+    ) -> MacroCardReturnType:
+
+        cards: MacroCardReturnType = []
+
+        cards.append(
+            (
+                "V_APO",
+                self.get("version", default="Unknown"),
+                "Version of the current apoActor",
+            )
+        )
+
+        keys = (
+            ("pressure", None, float),
+            ("windd", None, float),
+            ("winds", None, float),
+            ("gustd", None, float),
+            ("gusts", None, float),
+            ("airTempPT", "airtemp", float),
+            ("dpTempPT", "dewpoint", float),
+            ("truss25m", "trustemp", float),
+            # ('dpErrPT', None, str),
+            ("humidity", None, float),
+            ("dusta", None, float),
+            ("dustb", None, float),
+            ("windd25m", None, float),
+            ("winds25m", None, float),
+        )
+
+        for key_name, card_name, cnv in keys:
+            if not card_name:
+                card_name = key_name
+            card_name = card_name.upper()
+            card = (card_name, self.get(key_name, default="NaN"))
+            cards.append(card)
+
+        return cards
+
+
 window_group = CardGroup(
     [
         Card(
@@ -320,7 +449,9 @@ apo_raw_header_model = HeaderModel(
             "Observatory",
             default="",
         ),
-        TCCCards(),
+        APOTCCCards() if flicamera.OBSERVATORY == "APO" else None,
+        LampCards() if flicamera.OBSERVATORY == "APO" else None,
+        APOCards() if flicamera.OBSERVATORY == "APO" else None,
     ]
 )
 

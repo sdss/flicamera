@@ -21,7 +21,13 @@ pytestmark = [pytest.mark.asyncio]
 @pytest.fixture
 def actor():
     class Tron:
-        models = {"tcc": {"objSys": TronKey("objSys", ["ICRS"])}}
+        models = {
+            "tcc": {"objSys": TronKey("objSys", ["ICRS"])},
+            "mcp": {
+                "ffsStatus": TronKey("ffsStatus", ["01", "10", "01", "BAD"]),
+                "ffLamp": TronKey("ffLamp", [True, False, "BAD"]),
+            },
+        }
 
     class Actor:
         tron = Tron()

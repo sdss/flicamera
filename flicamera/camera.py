@@ -42,7 +42,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
         self.gain: float = self.camera_params.get("gain", -999)
         self.read_noise: float = self.camera_params.get("read_noise", -999)
 
-        self.observatory: str = os.environ.get("OBSERVATORY", "UNKNOWN").upper()
+        self.observatory: str = flicamera.OBSERVATORY
         if self.observatory in flicamera.config["pixel_scale"]:
             self.pixel_scale: float = flicamera.config["pixel_scale"][self.observatory]
         else:

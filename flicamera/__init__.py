@@ -14,5 +14,7 @@ config = get_config(
     config_file=os.path.join(os.path.dirname(__file__), "etc/flicamera.yaml"),
 )
 
+OBSERVATORY = os.environ.get("OBSERVATORY", "UNKNOWN")
+
 from .camera import *
 from .lib import LibFLI
