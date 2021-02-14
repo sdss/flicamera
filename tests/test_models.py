@@ -13,9 +13,17 @@ import pytest
 from clu.legacy import TronKey
 
 from flicamera.camera import FLICamera
+from flicamera.model import APOCards, APOTCCCards, LampCards, flicamera_model
 
 
 pytestmark = [pytest.mark.asyncio]
+
+
+@pytest.fixture(autouse=True)
+async def set_obervatory(camera_system):
+    camera_system.cameras[0].observatory = "APO"
+    flicamera_model[0].header_model += [APOTCCCards(), LampCards(), APOCards()]
+    yield
 
 
 @pytest.fixture
@@ -38,8 +46,6 @@ def actor():
 async def test_tcc_model(camera_system):
 
     camera = camera_system.cameras[0]
-    camera.observatory = "APO"
-
     exposure = await camera.expose(0.1)
 
     header = exposure.to_hdu()[1].header
@@ -50,7 +56,6 @@ async def test_tcc_model(camera_system):
 async def test_tcc_model_objsys_mount(camera_system, actor):
 
     camera = camera_system.cameras[0]
-    camera.observatory = "APO"
 
     actor.tron.models["tcc"]["objSys"].value = ["Mount"]
 
@@ -69,7 +74,6 @@ async def test_tcc_model_objsys_mount(camera_system, actor):
 async def test_tcc_model_objsys_icrs(camera_system, actor):
 
     camera = camera_system.cameras[0]
-    camera.observatory = "APO"
 
     actor.tron.models["tcc"]["objSys"].value = ["ICRS"]
     actor.tron.models["tcc"]["objNetPos"] = TronKey("objNetPos", [(121.0, 0.0, 1.0)])

@@ -91,15 +91,6 @@ class APOTCCCards(TronModelCards):
 
         cards: MacroCardReturnType = []
 
-        if (
-            "__actor__" not in context
-            or not hasattr(context["__actor__"], "tron")
-            or context["__actor__"].tron is None
-        ):
-            self.model = None
-        else:
-            self.model = context["__actor__"].tron.models["tcc"]
-
         objSysName = self.get("objSys", 0, default="UNKNOWN")
         cards.append(("OBJSYS", objSysName, "The TCC objSys"))
 
