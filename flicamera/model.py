@@ -9,7 +9,6 @@
 from __future__ import annotations
 
 import abc
-from lib2to3.pytree import Base
 
 from typing import Any, List, Optional, Tuple, Union
 
