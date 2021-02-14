@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import warnings
 
-from typing import Any, Optional
+from typing import Any, Dict, Optional
 
 from basecam.actor import CameraActor
 from clu.command import TimedCommand
@@ -27,7 +27,7 @@ class FLIActor(CameraActor):
         *args,
         data_dir: Optional[str] = None,
         image_name: Optional[str] = None,
-        tron: Optional[dict[str, Any]] = None,
+        tron: Optional[Dict[str, Any]] = None,
         **kwargs,
     ):
 

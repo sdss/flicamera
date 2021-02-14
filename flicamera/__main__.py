@@ -13,7 +13,7 @@ import logging
 import os
 import socket
 
-from typing import Any
+from typing import Any, Dict, Union
 
 import click
 from click_default_group import DefaultGroup
@@ -146,7 +146,7 @@ def flicamera(ctx, cameras, config_path, simulate, simulation_profile, verbose):
 
     include = cameras or None
 
-    simulate_config: bool | dict[str, Any]
+    simulate_config: Union[bool, Dict[str, Any]]
     if simulate is True:
         if not config:
             raise RuntimeError("Cannot simulate without a configuration file.")

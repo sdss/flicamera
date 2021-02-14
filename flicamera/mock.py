@@ -14,7 +14,7 @@ import time
 import unittest.mock
 from glob import glob
 
-from typing import Any
+from typing import Any, Dict, List, Optional, Union
 
 import astropy.io.fits
 import astropy.table
@@ -41,8 +41,8 @@ def read_frame_mock(self):
 
 
 async def get_mock_camera_system(
-    devices: dict[str, Any],
-    camera_config: dict[str, Any] = {},
+    devices: Dict[str, Any],
+    camera_config: Dict[str, Any] = {},
     fast_read: bool = True,
 ) -> FLICameraSystem:
     """Returns a camera system with mock devices attached.
@@ -114,8 +114,8 @@ class MockFLIDevice(object):
     def __init__(
         self,
         name: str,
-        status_params: dict[str, Any] = {},
-        exposure_params: str | list[dict[str, Any]] = [],
+        status_params: Dict[str, Any] = {},
+        exposure_params: Union[str, List[Dict[str, Any]]] = [],
     ):
 
         global DEV_COUNTER
@@ -125,18 +125,18 @@ class MockFLIDevice(object):
 
         self.name = name
 
-        self.state: dict[str, Any]
+        self.state: Dict[str, Any]
         self.reset_defaults()
         self.state.update(status_params)
 
-        self._exposure_params: list[str] | list[dict[str, Any]]
+        self._exposure_params: Union[List[str], List[Dict[str, Any]]]
         if isinstance(exposure_params, str):
             self._exposure_params = list(sorted(glob(exposure_params)))
         else:
             self._exposure_params = exposure_params
         self._exposure_idx: int = 0
 
-        self.image: numpy.ndarray | None = None
+        self.image: Optional[numpy.ndarray] = None
         self.row = 0
 
     def reset_defaults(self):
@@ -149,7 +149,7 @@ class MockFLIDevice(object):
         """Creates the image that will be fetched."""
 
         # Default values
-        exposure_params: dict[str, Any] = dict(
+        exposure_params: Dict[str, Any] = dict(
             seed=None,
             shape=[
                 self.state["lr_x"] - self.state["ul_x"],
@@ -231,7 +231,7 @@ class MockLibFLI(ctypes.CDLL):
     def __init__(self, dlpath: str):
 
         self.dlpath: str = dlpath
-        self.devices: list[MockFLIDevice] = []
+        self.devices: List[MockFLIDevice] = []
 
         self.restype = flicamera.lib.chk_err
 

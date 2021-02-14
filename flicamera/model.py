@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import abc
 
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from basecam.exposure import Exposure
 from basecam.models import (
@@ -45,7 +45,7 @@ class TronModelCards(MacroCard, metaclass=abc.ABCMeta):
     model = None
     model_name: Optional[str] = None
 
-    def macro(self, exposure: Exposure, context: dict[str, Any] = {}):
+    def macro(self, exposure: Exposure, context: Dict[str, Any] = {}):
 
         try:
             self.model = context["__actor__"].tron.models[self.model_name]
@@ -58,7 +58,7 @@ class TronModelCards(MacroCard, metaclass=abc.ABCMeta):
     def _cards(
         self,
         exposure: Exposure,
-        context: dict[str, Any],
+        context: Dict[str, Any],
     ) -> MacroCardReturnType:
         raise NotImplementedError
 
@@ -86,7 +86,7 @@ class APOTCCCards(TronModelCards):
     def _cards(
         self,
         exposure: Exposure,
-        context: dict[str, Any] = {},
+        context: Dict[str, Any] = {},
     ) -> MacroCardReturnType:
 
         cards: MacroCardReturnType = []
@@ -258,7 +258,7 @@ class LampCards(TronModelCards):
     def _cards(
         self,
         exposure: Exposure,
-        context: dict[str, Any] = {},
+        context: Dict[str, Any] = {},
     ) -> MacroCardReturnType:
 
         cards: MacroCardReturnType = []
@@ -302,7 +302,7 @@ class APOCards(TronModelCards):
     def _cards(
         self,
         exposure: Exposure,
-        context: dict[str, Any] = {},
+        context: Dict[str, Any] = {},
     ) -> MacroCardReturnType:
 
         cards: MacroCardReturnType = []

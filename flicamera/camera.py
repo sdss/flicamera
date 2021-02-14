@@ -11,7 +11,7 @@ from __future__ import annotations
 import asyncio
 import time
 
-from typing import Any, Optional, Type
+from typing import Any, Dict, List, Optional, Tuple, Type
 
 import astropy.time
 
@@ -60,7 +60,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
         if self._device is None:
             raise CameraConnectionError(f"cannot find camera with serial {serial}.")
 
-    def _status_internal(self) -> dict[str, Any]:
+    def _status_internal(self) -> Dict[str, Any]:
         """Gets a dictionary with the status of the camera.
 
         Returns
@@ -140,7 +140,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
 
         self._device.set_temperature(temperature)
 
-    async def _get_image_area_internal(self) -> tuple[int, int, int, int]:
+    async def _get_image_area_internal(self) -> Tuple[int, int, int, int]:
         """Internal method to return the image area."""
 
         area = self._device.area
@@ -152,7 +152,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
 
     async def _set_image_area_internal(
         self,
-        area: Optional[tuple[int, int, int, int]] = None,
+        area: Optional[Tuple[int, int, int, int]] = None,
     ):
         """Internal method to set the image area."""
 
@@ -162,7 +162,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
 
         self._device.set_image_area(area)
 
-    async def _get_binning_internal(self) -> tuple[int, int]:
+    async def _get_binning_internal(self) -> Tuple[int, int]:
         """Internal method to return the binning."""
 
         return (self._device.hbin, self._device.vbin)
@@ -187,7 +187,7 @@ class FLICameraSystem(CameraSystem[FLICamera]):
 
         super().__init__(*args, **kwargs)
 
-    def list_available_cameras(self) -> list[str]:
+    def list_available_cameras(self) -> List[str]:
 
         # These are camera devices, not UIDs. They can change as cameras
         # are replugged or moved to a different computer.

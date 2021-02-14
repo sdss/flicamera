@@ -25,7 +25,7 @@ from ctypes import (
     c_void_p,
 )
 
-from typing import Optional
+from typing import Dict, Optional, Tuple
 
 import numpy
 
@@ -496,10 +496,10 @@ class LibFLIDevice(object):
             self.vbin: int
 
             # The image area (ul_x, ul_y, lr_x, lr_y)
-            self.area: tuple[int, int, int, int]
+            self.area: Tuple[int, int, int, int]
 
             self.shutter = False
-            self._temperature: dict[str, float] = {"CCD": 0.0, "base": 0.0}
+            self._temperature: Dict[str, float] = {"CCD": 0.0, "base": 0.0}
 
             self.open()
 
@@ -618,7 +618,7 @@ class LibFLIDevice(object):
 
         self.libc.FLISetExposureTime(self.dev, int(exp_time * 1000.0))
 
-    def set_image_area(self, area: Optional[tuple[int, int, int, int]] = None):
+    def set_image_area(self, area: Optional[Tuple[int, int, int, int]] = None):
         r"""Sets the area of the image to exposure.
 
         Parameters
@@ -670,7 +670,7 @@ class LibFLIDevice(object):
 
         self.area = (ul_x - v_ul_x, ul_y - v_ul_y, lr_x - v_ul_x, lr_y - v_ul_y)
 
-    def get_visible_area(self) -> tuple[int, int, int, int]:
+    def get_visible_area(self) -> Tuple[int, int, int, int]:
         """Returns the visible area.
 
         Returns
