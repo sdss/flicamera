@@ -8,6 +8,8 @@
 
 from __future__ import annotations
 
+import warnings
+
 from typing import Any, Optional
 
 from basecam.actor import CameraActor
@@ -15,6 +17,7 @@ from clu.command import TimedCommand
 from clu.legacy import TronConnection
 
 from flicamera.camera import FLICamera, FLICameraSystem
+from flicamera.lib import FLIWarning
 
 
 class FLIActor(CameraActor):
@@ -52,7 +55,22 @@ class FLIActor(CameraActor):
             camera.fits_model.context.update({"__actor__": self})
 
         if tron:
-            self.tron = TronConnection(tron["host"], tron["port"])
+            try:
+                import actorkeys  # type: ignore  # noqa
+
+                self.tron = TronConnection(
+                    tron["host"],
+                    tron["port"],
+                    models=tron["models"],
+                    log=self.log,
+                )
+            except ImportError:
+                warnings.warn(
+                    "Failed connecting to Tron. actorkeys is not present.",
+                    FLIWarning,
+                )
+                self.tron = None
+
         else:
             self.tron = None
 
@@ -62,8 +80,16 @@ class FLIActor(CameraActor):
         """Reconnects the camera system if no cameras are connected."""
 
         await super().start()
+
         if self.tron:
-            await self.tron.start()
+            try:
+                await self.tron.start()
+            except OSError:
+                warnings.warn(
+                    "Failed connecting to Tron. This may affect some functionality.",
+                    FLIWarning,
+                )
+                self.tron = None
 
         if self.camera_system.running or len(self.camera_system.cameras) > 0:
             return self
