@@ -70,7 +70,6 @@ async def test_tcc_model_objsys_mount(camera_system, actor):
     assert header["RA"] == "NaN"
 
 
-@pytest.mark.xfail
 async def test_tcc_model_objsys_icrs(camera_system, actor):
 
     camera = camera_system.cameras[0]
