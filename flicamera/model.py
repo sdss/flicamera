@@ -388,9 +388,13 @@ window_group = CardGroup(
 
 apo_raw_header_model = HeaderModel(
     [
+        "CAMNAME",
         "VCAM",
         "IMAGETYP",
         "EXPTIME",
+        "EXPTIMEN",
+        "STACK",
+        "STACKFUN",
         Card(
             "TIMESYS",
             "TAI",
@@ -407,9 +411,6 @@ apo_raw_header_model = HeaderModel(
             "Degrees C",
             default=-999.0,
         ),
-        "STACK",
-        "STACKFUN",
-        "EXPTIMEN",
         window_group,
         Card(
             "GAIN",
