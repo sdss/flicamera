@@ -386,7 +386,7 @@ window_group = CardGroup(
 )
 
 
-apo_raw_header_model = HeaderModel(
+raw_header_model = HeaderModel(
     [
         "CAMNAME",
         "VCAM",
@@ -450,7 +450,7 @@ flicamera_model = FITSModel(
     [
         Extension(
             data=None,
-            header_model=apo_raw_header_model,
+            header_model=raw_header_model,
             name="raw",
             compressed="GZIP_2",
         )
