@@ -23,7 +23,6 @@ from photutils.datasets import (
     apply_poisson_noise,
     make_gaussian_sources_image,
     make_noise_image,
-    make_random_gaussians_table,
 )
 
 import flicamera.lib
@@ -93,6 +92,45 @@ async def get_mock_camera_system(
         return camera_system
 
 
+def get_source_table(
+    param_ranges: dict[str, Any],
+    n_sources: int = 1,
+) -> astropy.table.Table:
+    """Returns a table of sources."""
+
+    def get_random_range(param):
+        if isinstance(param_ranges[param], list):
+            return numpy.random.uniform(
+                param_ranges[param][0],
+                param_ranges[param][1],
+                n_sources,
+            )
+        else:
+            return [param_ranges[param]] * n_sources
+
+    source_table = astropy.table.Table()
+    source_table["amplitude"] = get_random_range("amplitude")
+    source_table["x_mean"] = get_random_range("x_mean")
+    source_table["y_mean"] = get_random_range("y_mean")
+    source_table["theta"] = get_random_range("theta")
+
+    stddev = param_ranges.get("stddev", None)
+    if stddev is not None:
+        stddev_dev = param_ranges.get("stddev_dev", 0.0)
+        if isinstance(stddev, list):
+            stddev = numpy.random.uniform(*stddev, n_sources)
+            stddev_source = numpy.random.normal(stddev, stddev_dev)
+        else:
+            stddev_source = numpy.random.normal(stddev, stddev_dev, n_sources)
+        source_table["x_stddev"] = stddev_source
+        source_table["y_stddev"] = stddev_source
+    else:
+        source_table["x_stddev"] = get_random_range("x_stddev")
+        source_table["y_stddev"] = get_random_range("y_stddev")
+
+    return source_table
+
+
 class MockFLIDevice(object):
     """A mock FLI device."""
 
@@ -130,11 +168,8 @@ class MockFLIDevice(object):
         self.state.update(status_params)
 
         self._exposure_params: Union[List[str], List[Dict[str, Any]]]
-        if isinstance(exposure_params, str):
-            self._exposure_params = list(sorted(glob(exposure_params)))
-        else:
-            self._exposure_params = exposure_params
         self._exposure_idx: int = 0
+        self.set_exposure_params(exposure_params)
 
         self.image: Optional[numpy.ndarray] = None
         self.row = 0
@@ -144,6 +179,15 @@ class MockFLIDevice(object):
 
         self.state = self._defaults.copy()
         self.row = 0
+
+    def set_exposure_params(self, exposure_params: Union[str, List[Dict[str, Any]]]):
+        """Sets the exposure simulation parameters."""
+
+        if isinstance(exposure_params, str):
+            self._exposure_params = list(sorted(glob(exposure_params)))
+        else:
+            self._exposure_params = exposure_params
+        self._exposure_idx = 0
 
     def prepare_image(self):
         """Creates the image that will be fetched."""
@@ -180,6 +224,8 @@ class MockFLIDevice(object):
                 exposure_params.update(this_exposure)
 
         image = numpy.zeros(exposure_params["shape"][::-1], dtype="float32")
+        if "seed" in exposure_params and exposure_params["seed"] is not None:
+            numpy.random.seed(exposure_params["seed"])
 
         if exposure_params["noise"]:
             image += make_noise_image(image.shape, **exposure_params["noise"])
@@ -193,18 +239,20 @@ class MockFLIDevice(object):
                 n_sources = exposure_params["sources"]["n_sources"]
                 if isinstance(n_sources, list):
                     n_sources = numpy.random.randint(*n_sources)
-                source_table = make_random_gaussians_table(
-                    n_sources=n_sources,
-                    param_ranges=exposure_params["sources"]["param_ranges"],
-                    seed=exposure_params["seed"],
-                )
-            image += make_gaussian_sources_image(
+                param_ranges = exposure_params["sources"]["param_ranges"]
+                source_table = get_source_table(param_ranges, n_sources)
+
+            source_image = make_gaussian_sources_image(
                 image.shape,
                 source_table=source_table,
             )
+            source_image *= self.state["exposure_time"] / 1000.0
+            image += source_image
 
-        if exposure_params["apply_poison_noise"]:
-            image = apply_poisson_noise(image, seed=exposure_params["seed"])
+            if exposure_params["apply_poison_noise"]:
+                image = apply_poisson_noise(image, seed=exposure_params["seed"])
+
+        image[image > 2 ** 16] = 2 ** 16 - 1
 
         self.image = image.astype("uint16")
 

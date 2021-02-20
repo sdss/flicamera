@@ -154,10 +154,10 @@ simulation:
               sources:
                 n_sources: [0, 20]
                 param_ranges:
-                  amplitude: [1500, 30000]
+                  amplitude: [1000, 10000]
                   x_mean: [0, 2048]
                   y_mean: [0, 2048]
-                  x_stddev: [1, 5]
-                  y_stddev: [1, 5]
+                  stddev: 2.3
+                  stddev_dev: 1
                   theta: [0, 3.141592]
               apply_poison_noise: true
