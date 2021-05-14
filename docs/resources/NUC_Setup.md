@@ -66,7 +66,7 @@ replacing `sdss-gfaX` with the correct NUC hostname. For the LCO-bound NUCs, rep
 
 - Make sure firewall is disabled with `sudo ufw disable`.
 
-- Add this key to `/home/sdss/.ssh/authorized_keys` and make the file read-only (`chmod 600 .ssh/authorized_keys`):
+- Add this key to `/home/sdss/.ssh/authorized_keys` and make the file read-only (`chmod 600 .ssh/authorized_keys`, `chmod 700 .ssh`, `chmod go-w ~`):
 
 ```text
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDBA+fGJtEZWD99GUAQESwg3PzsLMG2/TvBVQMnr5eXr59ZeO6gi89Ezi1y9Tni8pf0rPsNFr5iHgahi+OeHtSvc+hW2MieKe7xu8hEt5+pLdNnvoiBXGwW12aut+nbYEcdIsttUEqnNp7iJoAf9SWfFnIdhy6ArHeWWT83UHXIs+k3q5jdMIynFlvJxLfpR1n1t9Wq9c0+x6XxnJ6Q6ewQoPViiN885/tJq+4CB/TG+kbf5A8l3UyCTNt7YmWls6djrQtRZmDAzUSWJYA//3ebx9RH7ZmkTRTLPM/et98oec7BztKG+b5wGPqPCT/6XP3ofoHc+wvn8r8w85PmQVGwBBnDKBJu3L2ucPHJjm/YRMuPodR5wnKyZfZtrbbnXi/DajItYHaC6u4wAeMYC75zlyGL6Ev3yYDgJZ3BM69kUnjAWRM2JUVHQUWVSRl06QX+A07y2wckjF0md3oPluV5uTHLnp606Y4DCjI8slJDNZWLyNt/lBCvrimOTPQAMlU= albireo@albireopro.lan
