@@ -21,7 +21,7 @@ network:
       dhcp4: no
       dhcp6: no
       addresses:
-        - 10.25.10.21/16
+        - 10.25.1.121/16
       gateway4: 10.25.1.252
       nameservers:
         addresses: [192.41.211.10, 192.41.211.11]
