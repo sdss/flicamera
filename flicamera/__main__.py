@@ -43,7 +43,9 @@ class FLICameraWrapper(object):
 
     async def __aenter__(self):
 
-        if self.kwargs["simulate_config"] is False:
+        simulate_config = self.kwargs.pop("simulate_config", {})
+
+        if not simulate_config:
             config_path = self.kwargs.pop("config_path", None)
 
             self.camera_system = FLICameraSystem(*self.args, **self.kwargs)
@@ -51,7 +53,7 @@ class FLICameraWrapper(object):
 
             if config_path:
                 self.camera_system.logger.debug(
-                    f"Loading configuration file " f"{config_path}"
+                    f"Loading configuration file {config_path}"
                 )
 
             await self.camera_system.start_camera_poller()
@@ -59,7 +61,7 @@ class FLICameraWrapper(object):
         else:
             self.camera_system = await get_mock_camera_system(
                 camera_config=self.kwargs["camera_config"],
-                **self.kwargs["simulate_config"],
+                **simulate_config,
             )
 
         if "verbose" in self.kwargs and self.kwargs["verbose"] is False:
