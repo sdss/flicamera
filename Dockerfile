@@ -22,6 +22,9 @@ EXPOSE 19995
 # Default actor name. Can be overriden when running the container.
 ENV ACTOR_NAME=flicamera
 
+# Connect repo to package
+LABEL org.opencontainers.image.source https://github.com/sdss/flicamera
+
 # Need to use --host 0.0.0.0 because the container won't listen to 127.0.0.1
 # See https://bit.ly/2HUwEms
 ENTRYPOINT flicamera actor --host 0.0.0.0 \
