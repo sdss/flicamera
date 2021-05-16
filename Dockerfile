@@ -12,6 +12,7 @@ RUN apt-get -y install libusb-1.0-0 python3 python3-pip
 COPY . flicamera
 
 RUN rm -f flicamera/libfli*.so
+RUN pip3 install -U pip setuptools wheel
 RUN cd flicamera && pip3 install .
 
 # This is the default port but the real port can be changed when
