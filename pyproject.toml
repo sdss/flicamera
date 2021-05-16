@@ -102,5 +102,5 @@ omit = [
 
 [build-system]
 # Add setuptools so that we can do pip install -e . after running create_setup.py
-requires = ["poetry-core>=1.0.0", "setuptools>=53.0.0"]
+requires = ["poetry-core>=1.0.0", "setuptools>=56.2.0"]
 build-backend = "poetry.core.masonry.api"

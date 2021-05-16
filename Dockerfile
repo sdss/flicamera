@@ -6,13 +6,13 @@ WORKDIR /opt
 
 # Need to install libusb
 RUN apt-get -y update
-RUN apt-get -y install libusb-1.0-0 python3 python3-pip
+RUN apt-get -y install libusb-1.0-0 libusb-1.0-0-dev python3 python3-pip
 
 # This Dockerfile is meant to be run with context the root of flicamera
 COPY . flicamera
 
 RUN rm -f flicamera/libfli*.so
-RUN pip3 install -U pip setuptools wheel
+RUN pip3 install -U pip wheel setuptools
 RUN cd flicamera && pip3 install .
 
 # This is the default port but the real port can be changed when
