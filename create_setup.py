@@ -37,7 +37,7 @@ try:
     from poetry.__version__ import __version__
 except (ImportError, ModuleNotFoundError) as ee:
     raise ImportError(
-        "install poetry by doing pip install poetry to use this script: {ee}"
+        f"install poetry by doing pip install poetry to use this script: {ee}"
     )
 
 
