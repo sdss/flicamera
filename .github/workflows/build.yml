@@ -2,7 +2,7 @@ name: Build
 on:
   push:
     paths:
-      - build.py'
+      - build.py
   pull_request:
 
 jobs:
