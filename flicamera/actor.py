@@ -21,6 +21,8 @@ from flicamera.lib import FLIWarning
 
 
 class FLIActor(CameraActor):
+    """Flicamera actor."""
+
     def __init__(
         self,
         camera_system: FLICameraSystem,
@@ -32,7 +34,7 @@ class FLIActor(CameraActor):
     ):
 
         self.camera_system = camera_system
-        super().__init__(camera_system, *args, **kwargs)
+        super().__init__(camera_system, *args, validate=False, **kwargs)
 
         # The default image namer writes to ./ For production we want to write to /data.
         _data_dir: str = data_dir or "./"
