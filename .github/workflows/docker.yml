@@ -47,6 +47,7 @@ jobs:
         with:
           push: true
           file: etc/Dockerfile
+          context: .
           tags: ghcr.io/${{ steps.set-tags.outputs.TAGS }}
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
