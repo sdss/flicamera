@@ -10,7 +10,11 @@ from __future__ import annotations
 
 import pytest
 
+import clu.legacy.types.pvt
 from clu.legacy import TronKey
+from clu.legacy.types.keys import Key
+from clu.legacy.types.messages import Keyword
+from clu.legacy.types.types import PVT, Bool, Enum, String
 
 from flicamera.camera import FLICamera
 from flicamera.model import APOCards, APOTCCCards, LampCards, flicamera_model
@@ -30,11 +34,13 @@ async def set_obervatory(camera_system):
 def actor():
     class Tron:
         models = {
-            "tcc": {"objSys": TronKey("objSys", ["ICRS"])},
-            "mcp": {
-                "ffsStatus": TronKey("ffsStatus", ["01", "10", "01", "BAD"]),
-                "ffLamp": TronKey("ffLamp", [True, False, "BAD"]),
-            },
+            "tcc": {
+                "objSys": TronKey(
+                    "objSys",
+                    Key("objSys", Enum("ICRS", "FK5", name="sys")),
+                    Keyword("objSys", [String("ICRS")]),
+                )
+            }
         }
 
     class Actor:
@@ -75,7 +81,21 @@ async def test_tcc_model_objsys_icrs(camera_system, actor):
     camera = camera_system.cameras[0]
 
     actor.tron.models["tcc"]["objSys"].value = ["ICRS"]
-    actor.tron.models["tcc"]["objNetPos"] = TronKey("objNetPos", [(121.0, 0.0, 1.0)])
+    actor.tron.models["tcc"]["objNetPos"] = TronKey(
+        "objNetPos",
+        Key(
+            "objNetPos",
+            PVT(name="az"),
+            PVT(name="alt"),
+        ),
+        Keyword(
+            "objNetPos",
+            [
+                clu.legacy.types.pvt.PVT(pos=121.0, vel=0.0, t=1.0),
+                clu.legacy.types.pvt.PVT(pos=0.0, vel=0.0, t=1.0),
+            ],
+        ),
+    )
 
     FLICamera.fits_model.context.update({"__actor__": actor})
     camera.fits_model.context.update({"__actor__": actor})

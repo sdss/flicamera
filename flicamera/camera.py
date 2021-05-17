@@ -108,7 +108,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
         device.start_exposure(frametype)
 
         exposure.obstime = astropy.time.Time.now()
-        self._notify(CameraEvent.EXPOSURE_INTEGRATING)
+        self.notify(CameraEvent.EXPOSURE_INTEGRATING)
 
         start_time = time.time()
 
@@ -121,7 +121,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
             time_left = device.get_exposure_time_left() / 1000.0
 
             if time_left == 0:
-                self._notify(CameraEvent.EXPOSURE_READING)
+                self.notify(CameraEvent.EXPOSURE_READING)
                 array = await self.loop.run_in_executor(None, device.read_frame)
                 exposure.data = array
                 return exposure
