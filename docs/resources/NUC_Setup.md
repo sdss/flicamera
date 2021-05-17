@@ -6,6 +6,12 @@
 
 - Create a user `sdss` and select the same password for all the NUCs.
 
+- Make the `sdss` user a superuser (`sudo usermod -aG sudo`). Also add this line to `/etc/sudoers` to allow rebooting without password:
+
+```text
+%sudo   ALL=(ALL:ALL) NOPASSWD: /sbin/reboot
+```
+
 - Enable `openssh` to allow incoming ssh connections on port 22.
 
 - During the installation, do **not** install docker from snap.
