@@ -14,7 +14,7 @@ import clu.legacy.types.pvt
 from clu.legacy import TronKey
 from clu.legacy.types.keys import Key
 from clu.legacy.types.messages import Keyword
-from clu.legacy.types.types import PVT, Bool, Enum, String
+from clu.legacy.types.types import PVT, Enum, String
 
 from flicamera.camera import FLICamera
 from flicamera.model import APOCards, APOTCCCards, LampCards, flicamera_model
