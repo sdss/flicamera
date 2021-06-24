@@ -132,7 +132,6 @@ For more examples and ideas, visit:
 
 ```text
 [Service]
-ExecStart=
 ExecStart=/usr/bin/dockerd
 ```
 
