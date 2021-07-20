@@ -62,9 +62,10 @@ taskipy = ">=1.1.2"
 autopep8 = ">=1.5.4"
 Sphinx = ">=4.0.0"
 sphinx-copybutton = ">=0.3.1"
-m2r2 = ">=0.2.5"
 sphinx-click = ">=2.3.0"
-black = {version = "^20.8b1", allow-prereleases = true}
+black = {version = ">=20.8b1", allow-prereleases = true}
+myst-parser = {version = ">=0.14.0"}
+furo = ">=2021.7.5-beta.38"
 
 [tool.black]
 line-length = 88
