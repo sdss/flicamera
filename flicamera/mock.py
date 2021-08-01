@@ -477,7 +477,7 @@ class MockLibFLI(ctypes.CDLL):
 
         device = self._get_device(dev)
 
-        assert device and device.image
+        assert device is not None and device.image is not None
 
         image = device.image.copy()
         device.clear_image()
@@ -499,7 +499,7 @@ class MockLibFLI(ctypes.CDLL):
         if time_left.value > 0:
             return self.restype(-errno.ENXIO)
 
-        assert device and device.image
+        assert device is not None and device.image is not None
 
         # This is a hack ... but there doesn't seem to be another way to access
         # the memory address. In principle byref(img_ptr.contents, offset)
