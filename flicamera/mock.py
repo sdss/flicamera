@@ -118,7 +118,7 @@ def get_source_table(
     if stddev is not None:
         stddev_dev = param_ranges.get("stddev_dev", 0.0)
         if isinstance(stddev, list):
-            stddev = numpy.random.uniform(*stddev, n_sources)
+            stddev = numpy.random.uniform(*stddev, n_sources)  # type: ignore
             stddev_source = numpy.random.normal(stddev, stddev_dev)
         else:
             stddev_source = numpy.random.normal(stddev, stddev_dev, n_sources)
@@ -251,6 +251,8 @@ class MockFLIDevice(object):
 
             if exposure_params["apply_poison_noise"]:
                 image = apply_poisson_noise(image, seed=exposure_params["seed"])
+
+        assert isinstance(image, numpy.ndarray)
 
         image[image > 2 ** 16] = 2 ** 16 - 1
 
@@ -475,6 +477,8 @@ class MockLibFLI(ctypes.CDLL):
 
         device = self._get_device(dev)
 
+        assert device and device.image
+
         image = device.image.copy()
         device.clear_image()
 
@@ -494,6 +498,8 @@ class MockLibFLI(ctypes.CDLL):
 
         if time_left.value > 0:
             return self.restype(-errno.ENXIO)
+
+        assert device and device.image
 
         # This is a hack ... but there doesn't seem to be another way to access
         # the memory address. In principle byref(img_ptr.contents, offset)

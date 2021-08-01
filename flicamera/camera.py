@@ -31,8 +31,8 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
     """A FLI camera."""
 
     camera_system: FLICameraSystem
+    _device: LibFLIDevice
 
-    _device: Optional[LibFLIDevice] = None
     fits_model = flicamera_model
 
     def __init__(self, *args, **kwargs):
@@ -55,10 +55,12 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
         if serial is None:
             raise CameraConnectionError("unknown serial number.")
 
-        self._device = self.camera_system.lib.get_camera(serial)
+        _device = self.camera_system.lib.get_camera(serial)
 
-        if self._device is None:
+        if _device is None:
             raise CameraConnectionError(f"cannot find camera with serial {serial}.")
+
+        self._device = _device
 
     def _status_internal(self) -> Dict[str, Any]:
         """Gets a dictionary with the status of the camera.
