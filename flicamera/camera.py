@@ -62,6 +62,10 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
 
         self._device = _device
 
+        temp_setpoint = self.camera_params.get("temperature_setpoint", False)
+        if temp_setpoint:
+            asyncio.create_task(self.set_temperature(temp_setpoint))
+
     def _status_internal(self) -> Dict[str, Any]:
         """Gets a dictionary with the status of the camera.
 

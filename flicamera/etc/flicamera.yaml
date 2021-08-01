@@ -105,24 +105,28 @@ cameras:
     autoconnect: true
     gain: 0.59
     read_noise: 10.7
+    temperature_setpoint: -10.
   fvc1:
     uid: ML7734916
     serial: ML7734916
     autoconnect: true
     gain: 0.64
     read_noise: 12.3
+    temperature_setpoint: -10.
   fvc2:
     uid: ML3321819
     serial: ML3321819
     autoconnect: true
     gain: 0.60
     read_noise: 10.0
+    temperature_setpoint: -10.
   fvc3:
     uid: ML3331819
     serial: ML3331819
     autoconnect: true
     gain: 0.58
     read_noise: 10.3
+    temperature_setpoint: -10.
 
 log_file: '/data/logs/flicamera/{hostname}/flicamera.log'
 
