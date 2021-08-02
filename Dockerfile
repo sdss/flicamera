@@ -27,5 +27,7 @@ LABEL org.opencontainers.image.source https://github.com/sdss/flicamera
 
 # Need to use --host 0.0.0.0 because the container won't listen to 127.0.0.1
 # See https://bit.ly/2HUwEms
-ENTRYPOINT flicamera actor --host 0.0.0.0 \
+# Also, set umask to 775 to create new directories and files with
+# group write permissions.
+ENTRYPOINT umask 775 && flicamera actor --host 0.0.0.0 \
            --actor-name $ACTOR_NAME start --debug
