@@ -29,5 +29,5 @@ LABEL org.opencontainers.image.source https://github.com/sdss/flicamera
 # See https://bit.ly/2HUwEms
 # Also, set umask to 775 to create new directories and files with
 # group write permissions.
-ENTRYPOINT umask 775 && flicamera actor --host 0.0.0.0 \
+ENTRYPOINT umask ug=rwx,o=rx && flicamera actor --host 0.0.0.0 \
            --actor-name $ACTOR_NAME start --debug
