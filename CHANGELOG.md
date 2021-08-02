@@ -7,10 +7,12 @@
 * Add mostly complete header datamodel.
 * Update configuration file with real S/N for all GFA and FVC. Set the correct image names and directory names.
 * Add option to simulate cameras and exposures.
+* Set temperature setpoint to -10C for FVC when camera is connected.
 
 ### ✨ Improved
 
 * Use `furo` and `myst-parser` for documentation.
+* Set umask to `002` in the Dockerfile so that new images get `rw` permissions when created on an NFS mount.
 
 ### 🧹 Clean
 
