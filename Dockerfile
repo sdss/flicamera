@@ -8,12 +8,22 @@ WORKDIR /opt
 RUN apt-get -y update
 RUN apt-get -y install libusb-1.0-0 libusb-1.0-0-dev python3 python3-pip
 
-# This Dockerfile is meant to be run with context the root of flicamera
+# Uncomment this and comment COPY below to use a local version of basecam.
+# Run from the root of flicamera with docker build -f Dockerfile ..
+# COPY ./flicamera flicamera
+
+# Normal mode
 COPY . flicamera
 
 RUN rm -f flicamera/libfli*.so
 RUN pip3 install -U pip wheel setuptools
 RUN cd flicamera && pip3 install .
+
+# Uncomment this to use a local version of basecam.
+# RUN cd ..
+# COPY ./basecam basecam
+# RUN pip3 uninstall -y sdss-basecam
+# RUN cd basecam && pip3 install -U .
 
 # This is the default port but the real port can be changed when
 # starting the service.
