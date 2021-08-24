@@ -111,14 +111,14 @@ cameras:
   #   autoconnect: true
   #   gain: 1.46
   #   read_noise: 14.9
-  # fvc0:
-  #   uid: ML5774418
-  #   serial: ML5774418
-  #   autoconnect: true
-  #   gain: 0.59
-  #   read_noise: 10.7
-  #   temperature_setpoint: -10.
   fvcn:
+    uid: ML3331819
+    serial: ML3331819
+    autoconnect: true
+    gain: 0.58
+    read_noise: 10.3
+    temperature_setpoint: -10.
+  fvclab:
     uid: ML7734916
     serial: ML7734916
     autoconnect: true
@@ -126,19 +126,19 @@ cameras:
     read_noise: 12.3
     temperature_setpoint: -10.
     observatory: APO
+  # fvc1:
+  #   uid: ML5774418
+  #   serial: ML5774418
+  #   autoconnect: true
+  #   gain: 0.59
+  #   read_noise: 10.7
+  #   temperature_setpoint: -10.
   # fvc2:
   #   uid: ML3321819
   #   serial: ML3321819
   #   autoconnect: true
   #   gain: 0.60
   #   read_noise: 10.0
-  #   temperature_setpoint: -10.
-  # fvc3:
-  #   uid: ML3331819
-  #   serial: ML3331819
-  #   autoconnect: true
-  #   gain: 0.58
-  #   read_noise: 10.3
   #   temperature_setpoint: -10.
 
 log_file: '/data/logs/flicamera/{hostname}/flicamera.log'
