@@ -10,7 +10,7 @@ RUN apt-get -y install libusb-1.0-0 libusb-1.0-0-dev python3 python3-pip
 
 # Uncomment this and comment COPY below to use a local version of basecam.
 # Run from the root of flicamera with docker build -f Dockerfile ..
-COPY ./flicamera/main flicamera
+# COPY ./flicamera/main flicamera
 
 # Normal mode
 COPY . flicamera
