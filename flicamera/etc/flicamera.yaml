@@ -3,7 +3,7 @@ actor:
   host: 127.0.0.1
   port: 19995
   tron:
-    host: localhost
+    host: sdss5-hub
     port: 6093
     models: [tcc, mcp, apo]
   data_dir: '/data/{camera.name[0]}cam/{int(date.mjd)}'
