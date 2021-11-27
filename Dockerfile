@@ -31,6 +31,7 @@ EXPOSE 19995
 
 # Default actor name. Can be overriden when running the container.
 ENV ACTOR_NAME=flicamera
+ENV PYTHONPATH=/home/sdss5/software/actorkeys/sdss5/python
 
 # Connect repo to package
 LABEL org.opencontainers.image.source https://github.com/sdss/flicamera
