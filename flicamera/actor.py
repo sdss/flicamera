@@ -60,6 +60,11 @@ class FLIActor(CameraActor):
             try:
                 import actorkeys  # type: ignore  # noqa
 
+                tron_host = tron["host"]
+                tron_port = tron["port"]
+
+                self.log.debug(f"Connecting to Tron on ({tron_host}, {tron_port})")
+
                 self.tron = TronConnection(
                     tron["host"],
                     tron["port"],
@@ -86,6 +91,7 @@ class FLIActor(CameraActor):
         if self.tron:
             try:
                 await self.tron.start()
+                self.log.debug("Connection to Tron established.")
             except OSError:
                 warnings.warn(
                     "Failed connecting to Tron. This may affect some functionality.",
