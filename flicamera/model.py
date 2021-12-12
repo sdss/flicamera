@@ -229,7 +229,7 @@ class APOTCCCards(TronModelCards):
 
 
 class LampCards(TronModelCards):
-    """ Return a list of Cards describing the MCP state. """
+    """Return a list of Cards describing the MCP state."""
 
     name = "Lamp Cards"
     model_name = "mcp"
@@ -294,7 +294,7 @@ class LampCards(TronModelCards):
 
 
 class APOCards(TronModelCards):
-    """ Return a list of Cards describing the APO actor state. """
+    """Return a list of Cards describing the APO actor state."""
 
     name = "Lamp Cards"
     model_name = "apo"
@@ -338,6 +338,61 @@ class APOCards(TronModelCards):
             card_name = card_name.upper()
             card = (card_name, self.get(key_name, default="NaN"))
             cards.append(card)
+
+        return cards
+
+
+class FPSCards(TronModelCards):
+    """Return a list of Cards describing the FPS actor state."""
+
+    name = "FPS Cards"
+    model_name = "jaeger"
+
+    def _cards(
+        self,
+        exposure: Exposure,
+        context: Dict[str, Any] = {},
+    ) -> MacroCardReturnType:
+
+        cards: MacroCardReturnType = []
+
+        cards += [
+            (
+                "CARTID",
+                "FPS-N",
+                "Cart ID",
+            ),
+            (
+                "CONFIGID",
+                self.get("configuration_loaded", 0, cnv=int),
+                "Configuration ID",
+            ),
+            (
+                "DESIGNID",
+                self.get("configuration_loaded", 1, cnv=float),
+                "Configuration ID",
+            ),
+            (
+                "FIELDID",
+                self.get("configuration_loaded", 2, cnv=float),
+                "Field ID",
+            ),
+            (
+                "RAFIELD",
+                self.get("configuration_loaded", 3, cnv=float),
+                "Field right ascension",
+            ),
+            (
+                "DECFIELD",
+                self.get("configuration_loaded", 4, cnv=float),
+                "Field declination",
+            ),
+            (
+                "FIELDPA",
+                self.get("configuration_loaded", 5, cnv=float),
+                "Field position angle",
+            ),
+        ]
 
         return cards
 
@@ -443,6 +498,7 @@ raw_header_model = HeaderModel(
         APOTCCCards() if flicamera.OBSERVATORY == "APO" else None,
         LampCards() if flicamera.OBSERVATORY == "APO" else None,
         APOCards() if flicamera.OBSERVATORY == "APO" else None,
+        FPSCards(),
     ]
 )
 
