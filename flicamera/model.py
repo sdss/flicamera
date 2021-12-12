@@ -369,12 +369,12 @@ class FPSCards(TronModelCards):
             ),
             (
                 "DESIGNID",
-                self.get("configuration_loaded", 1, cnv=float),
+                self.get("configuration_loaded", 1, cnv=int),
                 "Configuration ID",
             ),
             (
                 "FIELDID",
-                self.get("configuration_loaded", 2, cnv=float),
+                self.get("configuration_loaded", 2, cnv=int),
                 "Field ID",
             ),
             (
