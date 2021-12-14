@@ -182,7 +182,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
 class FLICameraSystem(CameraSystem[FLICamera]):
     """FLI camera system."""
 
-    __version__ = flicamera.__version__
+    __version__ = flicamera.__version__  # type: ignore
 
     camera_class = FLICamera
 
