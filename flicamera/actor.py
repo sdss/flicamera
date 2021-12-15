@@ -38,7 +38,7 @@ class FLIActor(CameraActor):
 
         # The default image namer writes to ./ For production we want to write to /data.
         _data_dir: str = data_dir or "./"
-        _image_name: str = image_name or "{camera.name}-{num:04d}.fits.gz"
+        _image_name: str = image_name or "{camera.name}-{num:04d}.fits"
 
         FLICamera.image_namer.dirname = _data_dir
         FLICamera.image_namer.basename = _image_name

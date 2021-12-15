@@ -504,12 +504,11 @@ raw_header_model = HeaderModel(
 
 flicamera_model = FITSModel(
     [
-        Extension(name="primary"),
         Extension(
             data=None,
             header_model=raw_header_model,
             name="raw",
-            compressed=False,
-        ),
+            compressed="GZIP_2",
+        )
     ]
 )
