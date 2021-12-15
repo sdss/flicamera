@@ -1028,7 +1028,7 @@ typing-extensions = {version = "^3.7.4", markers = "python_version <= \"3.7\""}
 type = "git"
 url = "https://github.com/sdss/basecam.git"
 reference = "main"
-resolved_reference = "48290520a0e9d360afb60480f8a56e478302c910"
+resolved_reference = "54f04ec0b88161354fd54f1620477f258f71b2ef"
 
 [[package]]
 name = "sdss-clu"
