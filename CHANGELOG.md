@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.1 - Decemeber 14, 2021
+
+### ✨ Improved
+
+* Used in conjunction with `basecam >=0.5.3` fixed the issue with compressed extensions not being read by some software.
+* Added FPS cards to headers.
+* Improvements to `Dockerfile`.
+
+
 ## 0.2.0 - August 2, 2021
 
 ### 🚀 New
