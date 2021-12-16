@@ -302,7 +302,7 @@ pyflakes = ">=2.4.0,<2.5.0"
 
 [[package]]
 name = "fonttools"
-version = "4.28.3"
+version = "4.28.4"
 description = "Tools to manipulate font files"
 category = "dev"
 optional = false
@@ -1010,22 +1010,29 @@ numpy = ">=1.16.5"
 
 [[package]]
 name = "sdss-basecam"
-version = "0.5.3"
+version = "0.5.4-alpha.0"
 description = "A base library for camera wrapping and actor."
 category = "main"
 optional = false
-python-versions = ">=3.7,<4.0"
+python-versions = "^3.7"
+develop = false
 
 [package.dependencies]
-astropy = ">=4.0,<5.0"
-numpy = ">=1.17,<2.0"
-sdss-clu = ">=1.0.1,<2.0.0"
+astropy = "^4.0"
+numpy = "^1.17"
+sdss-clu = "^1.0.1"
 sdsstools = ">=0.4.0"
-typing-extensions = {version = ">=3.7.4,<4.0.0", markers = "python_version <= \"3.7\""}
+typing-extensions = {version = "^3.7.4", markers = "python_version <= \"3.7\""}
+
+[package.source]
+type = "git"
+url = "https://github.com/sdss/basecam.git"
+reference = "main"
+resolved_reference = "327e49645c29c60b8a5390fedec64ccc4b93ed07"
 
 [[package]]
 name = "sdss-clu"
-version = "1.5.4"
+version = "1.5.5"
 description = "A new protocol for SDSS actors."
 category = "main"
 optional = false
@@ -1361,7 +1368,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "85ef807de74bbdeb84dbaf42d9f725151faa65526a4652ad17b4d9141a4ff710"
+content-hash = "0eb35f09e17dcb606a7c29e7e08ee35b3e1d07b3d35f177f69258112141a1b21"
 
 [metadata.files]
 aio-pika = [
@@ -1523,8 +1530,8 @@ flake8 = [
     {file = "flake8-4.0.1.tar.gz", hash = "sha256:806e034dda44114815e23c16ef92f95c91e4c71100ff52813adf7132a6ad870d"},
 ]
 fonttools = [
-    {file = "fonttools-4.28.3-py3-none-any.whl", hash = "sha256:ca6ecc67e5a5620d31754f92147f22f48fd5461fd3fafe6afe031aa9ee079b0f"},
-    {file = "fonttools-4.28.3.zip", hash = "sha256:edb48922873d3fda489ab400bd40888ac239ae8070b53f494b839bcdff0d01f6"},
+    {file = "fonttools-4.28.4-py3-none-any.whl", hash = "sha256:9934e3587dd5abf4e7f1d7176bcf0373db3f0ed728edf79791a9d2a7e664aac9"},
+    {file = "fonttools-4.28.4.zip", hash = "sha256:581a682a7102a41421e7e484303572c565c1b8e52b1cc9fecd3c159dbe9a02f4"},
 ]
 furo = [
     {file = "furo-2021.11.23-py3-none-any.whl", hash = "sha256:6d396451ad1aadce380c662fca9362cb10f4fd85f296d74fe3ca32006eb641d7"},
@@ -2165,13 +2172,10 @@ scipy = [
     {file = "scipy-1.6.1-cp39-cp39-win_amd64.whl", hash = "sha256:a5193a098ae9f29af283dcf0041f762601faf2e595c0db1da929875b7570353f"},
     {file = "scipy-1.6.1.tar.gz", hash = "sha256:c4fceb864890b6168e79b0e714c585dbe2fd4222768ee90bc1aa0f8218691b11"},
 ]
-sdss-basecam = [
-    {file = "sdss-basecam-0.5.3.tar.gz", hash = "sha256:59b4788b44d54ab583959f549bed1d0cbc0d5c47e1a9188ecc562e73e45c96dd"},
-    {file = "sdss_basecam-0.5.3-py3-none-any.whl", hash = "sha256:d214f2ccdb9c9816e8f9e25f4709bc2c0d61f524e1b1b6ab99b1ae3146fd33b0"},
-]
+sdss-basecam = []
 sdss-clu = [
-    {file = "sdss-clu-1.5.4.tar.gz", hash = "sha256:8bb657ebc0491e87aa2a65a19c2b8a7732722c6717fd86a9c7fbbebd2f985103"},
-    {file = "sdss_clu-1.5.4-py3-none-any.whl", hash = "sha256:7dceeeb43357a6aeb1385995a5956d3e7f7f85e3f958bd4f44a0f6e41bbc6de2"},
+    {file = "sdss-clu-1.5.5.tar.gz", hash = "sha256:21a5e164ed45fd210b5d33bd645ead1887596646c9b208f828ba1f962f70123d"},
+    {file = "sdss_clu-1.5.5-py3-none-any.whl", hash = "sha256:a078c9771259b025c59375806026db20f56a86af0b5f62fb681ce31f21aa45ff"},
 ]
 sdsstools = [
     {file = "sdsstools-0.4.13-py3-none-any.whl", hash = "sha256:758ce248bf5794cfd62eacf053f2cda2e05d3aeb561919b9db5811d76d2aed59"},

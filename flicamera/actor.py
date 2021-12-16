@@ -66,6 +66,7 @@ class FLIActor(CameraActor):
                 self.log.debug(f"Connecting to Tron on ({tron_host}, {tron_port})")
 
                 self.tron = TronConnection(
+                    f"flicamera.{self.name}",
                     tron["host"],
                     tron["port"],
                     models=tron["models"],
