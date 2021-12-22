@@ -1,10 +1,10 @@
 [[package]]
 name = "aio-pika"
-version = "6.8.0"
+version = "6.8.1"
 description = "Wrapper for the aiormq for asyncio and humans."
 category = "main"
 optional = false
-python-versions = ">3.5.*, <4"
+python-versions = ">=3.5, <4"
 
 [package.dependencies]
 aiormq = ">=3.2.3,<4"
@@ -302,7 +302,7 @@ pyflakes = ">=2.4.0,<2.5.0"
 
 [[package]]
 name = "fonttools"
-version = "4.28.4"
+version = "4.28.5"
 description = "Tools to manipulate font files"
 category = "dev"
 optional = false
@@ -618,7 +618,7 @@ python-versions = "*"
 
 [[package]]
 name = "myst-parser"
-version = "0.16.0"
+version = "0.16.1"
 description = "An extended commonmark compliant parser, with bridges to docutils & sphinx."
 category = "dev"
 optional = false
@@ -709,7 +709,7 @@ ptyprocess = ">=0.5"
 
 [[package]]
 name = "photutils"
-version = "1.2.0"
+version = "1.3.0"
 description = "An Astropy package for source detection and photometry"
 category = "main"
 optional = false
@@ -1114,7 +1114,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "sphinx"
-version = "4.3.1"
+version = "4.3.2"
 description = "Python documentation generator"
 category = "dev"
 optional = false
@@ -1140,7 +1140,7 @@ sphinxcontrib-serializinghtml = ">=1.1.5"
 
 [package.extras]
 docs = ["sphinxcontrib-websupport"]
-lint = ["flake8 (>=3.5.0)", "isort", "mypy (>=0.900)", "docutils-stubs", "types-typed-ast", "types-pkg-resources", "types-requests"]
+lint = ["flake8 (>=3.5.0)", "isort", "mypy (>=0.920)", "docutils-stubs", "types-typed-ast", "types-pkg-resources", "types-requests"]
 test = ["pytest", "pytest-cov", "html5lib", "cython", "typed-ast"]
 
 [[package]]
@@ -1372,8 +1372,8 @@ content-hash = "0eb35f09e17dcb606a7c29e7e08ee35b3e1d07b3d35f177f69258112141a1b21
 
 [metadata.files]
 aio-pika = [
-    {file = "aio-pika-6.8.0.tar.gz", hash = "sha256:1d4305a5f78af3857310b4fe48348cdcf6c097e0e275ea88c2cd08570531a369"},
-    {file = "aio_pika-6.8.0-py3-none-any.whl", hash = "sha256:e69afef8695f47c5d107bbdba21bdb845d5c249acb3be53ef5c2d497b02657c0"},
+    {file = "aio-pika-6.8.1.tar.gz", hash = "sha256:c2b2b46949a34252ff0e64c3bc208eef1893e5791b51aeefabf1676788d56b66"},
+    {file = "aio_pika-6.8.1-py3-none-any.whl", hash = "sha256:059ab8ecc03d73997f64ed28df7269105984232174d0e6406389c4e8ed30941c"},
 ]
 aiormq = [
     {file = "aiormq-3.3.1-py3-none-any.whl", hash = "sha256:e584dac13a242589aaf42470fd3006cb0dc5aed6506cbd20357c7ec8bbe4a89e"},
@@ -1530,8 +1530,8 @@ flake8 = [
     {file = "flake8-4.0.1.tar.gz", hash = "sha256:806e034dda44114815e23c16ef92f95c91e4c71100ff52813adf7132a6ad870d"},
 ]
 fonttools = [
-    {file = "fonttools-4.28.4-py3-none-any.whl", hash = "sha256:9934e3587dd5abf4e7f1d7176bcf0373db3f0ed728edf79791a9d2a7e664aac9"},
-    {file = "fonttools-4.28.4.zip", hash = "sha256:581a682a7102a41421e7e484303572c565c1b8e52b1cc9fecd3c159dbe9a02f4"},
+    {file = "fonttools-4.28.5-py3-none-any.whl", hash = "sha256:edf251d5d2cc0580d5f72de4621c338d8c66c5f61abb50cf486640f73c8194d5"},
+    {file = "fonttools-4.28.5.zip", hash = "sha256:545c05d0f7903a863c2020e07b8f0a57517f2c40d940bded77076397872d14ca"},
 ]
 furo = [
     {file = "furo-2021.11.23-py3-none-any.whl", hash = "sha256:6d396451ad1aadce380c662fca9362cb10f4fd85f296d74fe3ca32006eb641d7"},
@@ -1838,8 +1838,8 @@ mypy-extensions = [
     {file = "mypy_extensions-0.4.3.tar.gz", hash = "sha256:2d82818f5bb3e369420cb3c4060a7970edba416647068eb4c5343488a6c604a8"},
 ]
 myst-parser = [
-    {file = "myst-parser-0.16.0.tar.gz", hash = "sha256:be31e426d9f0698dbac879bb9a41afe555fa9c4a9e659a82887a1e1e195c9f92"},
-    {file = "myst_parser-0.16.0-py3-none-any.whl", hash = "sha256:80fe8ed6dea7c8566699c9bbc36c36ead3cbdb63e9121f71e8b86f56d6afd8c3"},
+    {file = "myst-parser-0.16.1.tar.gz", hash = "sha256:a6473b9735c8c74959b49b36550725464f4aecc4481340c9a5f9153829191f83"},
+    {file = "myst_parser-0.16.1-py3-none-any.whl", hash = "sha256:617a90ceda2162ebf81cd13ad17d879bd4f49e7fb5c4f177bb905272555a2268"},
 ]
 numpy = [
     {file = "numpy-1.21.1-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:38e8648f9449a549a7dfe8d8755a5979b45b3538520d1e735637ef28e8c2dc50"},
@@ -1896,24 +1896,19 @@ pexpect = [
     {file = "pexpect-4.8.0.tar.gz", hash = "sha256:fc65a43959d153d0114afe13997d439c22823a27cefceb5ff35c2178c6784c0c"},
 ]
 photutils = [
-    {file = "photutils-1.2.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:e9b730d6a31532e464914dc0960a8e22693858fb20b315366b013cf28b022a25"},
-    {file = "photutils-1.2.0-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:3cb8483d717baf217ecd316ec882da3bb5ce99033fe0f359a0ebb2a555cec8e7"},
-    {file = "photutils-1.2.0-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:05d91d90e9667587d816bb6752689fb4d7d4cc2ae0a13d50ca128df95c0cf9a4"},
-    {file = "photutils-1.2.0-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:500b93bc648ba4aad643972d86e911c33bed02129c191354b914062afff7d210"},
-    {file = "photutils-1.2.0-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:3d1b160c33f9ac09df2fb1278c752905219e7c81dc887fe5c943193e029f7bc2"},
-    {file = "photutils-1.2.0-cp37-cp37m-win32.whl", hash = "sha256:e44e3b0eef95bc31664a786dbeb0daf4569fa84fe9f9765b68e93b923d74a333"},
-    {file = "photutils-1.2.0-cp37-cp37m-win_amd64.whl", hash = "sha256:4aad3322214e31627d4ddc7e78499571ea4a02054a2c3f54504c95dd9be22ef4"},
-    {file = "photutils-1.2.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:fa65716526fc371f10362381deb134f73fa56211bdaabed75cea1a0c78680508"},
-    {file = "photutils-1.2.0-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:699cafb1e761c5396937f016e3e237bb93c92fb28572ed5729088fb66e59fce0"},
-    {file = "photutils-1.2.0-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:6cae27f9c7c441ede39dd9ea6c9c12fdebfe5aa25768ca26d0ffcc7b01b34507"},
-    {file = "photutils-1.2.0-cp38-cp38-win32.whl", hash = "sha256:d32656fdd65bdd7dd2ffbe745d7a1c83531bef99626c2ecbbf7bb312ec5c1795"},
-    {file = "photutils-1.2.0-cp38-cp38-win_amd64.whl", hash = "sha256:ae0161aee33954eaf17afc993503ad59d3be571f9e1d47eab27b3abd785cf05b"},
-    {file = "photutils-1.2.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:ff13042e0e3a55e49f2b244c8a0e22f2cf19d9f195263c3150f6e46a37022c45"},
-    {file = "photutils-1.2.0-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:a7be401f94927c0f950f160910c747fb118b7065ec2fed92c5c107df9a3f3435"},
-    {file = "photutils-1.2.0-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:54c5f923de49cd4c32e56eac64aaec0fba5578ed94df0ac389daabeedf48805e"},
-    {file = "photutils-1.2.0-cp39-cp39-win32.whl", hash = "sha256:a7761cfafba8965930ef65484683f5d90d0a8a6964e17e80c17d142cf9113eac"},
-    {file = "photutils-1.2.0-cp39-cp39-win_amd64.whl", hash = "sha256:50c0f98cba96b5aa1c788ae929b7a32692756f940bf8c196b39e1a6c3720fcec"},
-    {file = "photutils-1.2.0.tar.gz", hash = "sha256:8a060a09bf30f26157531d19f5aeedb1b5ec49ce379eb7df0dade460e76ffd25"},
+    {file = "photutils-1.3.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:e11045e5b8c8e00c9bf34241d3ef288d6e6fe94dc67f2bcf378468384173379a"},
+    {file = "photutils-1.3.0-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:43c09ff55e045640b114d5a8774c56a7d191fc140eec04e097a365c8679aaf6e"},
+    {file = "photutils-1.3.0-cp310-cp310-win_amd64.whl", hash = "sha256:e4ebb4ebccd4e5d99617d1a2823d08d360e827abd255a836199f43fdccdc352a"},
+    {file = "photutils-1.3.0-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:2adaa51ea1c83ad12961eec29b229c54595a9d67023c07a58cb06c6b52508c84"},
+    {file = "photutils-1.3.0-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:78229fbc63a2d9436014caafdd384f3376e069ce6d8a805ad53a20c7e103b2ec"},
+    {file = "photutils-1.3.0-cp37-cp37m-win_amd64.whl", hash = "sha256:836769b43eca921ee89b3708ed3996f92c3ca326ba9926f9c4e7574a28f44f88"},
+    {file = "photutils-1.3.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:588a0098f50acbd112d0aff36b8c781b96508b76b87e4531331ce41df5f1917e"},
+    {file = "photutils-1.3.0-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:132c3b72dfb4cc892607ae283a47e567951911bb07a31a60c7e139e873ffef45"},
+    {file = "photutils-1.3.0-cp38-cp38-win_amd64.whl", hash = "sha256:667cc1751993531a34c454e0f169d021f90c69a376c05894c42839bbf0fa298d"},
+    {file = "photutils-1.3.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:93bffdb264c46abef4646504bdba85adadc520570b1d77dcd9781914f91451a3"},
+    {file = "photutils-1.3.0-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:10a85fba348d9d5c8af34f4f4482e00fe456ecfa3368f08c349149591ee8790d"},
+    {file = "photutils-1.3.0-cp39-cp39-win_amd64.whl", hash = "sha256:f78e747a2da764f3e8193224a6dae7bcb156f22efa7f6365539c7dc0ce5f0997"},
+    {file = "photutils-1.3.0.tar.gz", hash = "sha256:b6fae658413ac41f01cd980bedf2fb38af343e9bef0c91762cdc28afa6920da9"},
 ]
 pickleshare = [
     {file = "pickleshare-0.7.5-py2.py3-none-any.whl", hash = "sha256:9649af414d74d4df115d5d718f82acb59c9d418196b7b4290ed47a12ce62df56"},
@@ -2202,8 +2197,8 @@ soupsieve = [
     {file = "soupsieve-2.3.1.tar.gz", hash = "sha256:b8d49b1cd4f037c7082a9683dfa1801aa2597fb11c3a1155b7a5b94829b4f1f9"},
 ]
 sphinx = [
-    {file = "Sphinx-4.3.1-py3-none-any.whl", hash = "sha256:048dac56039a5713f47a554589dc98a442b39226a2b9ed7f82797fcb2fe9253f"},
-    {file = "Sphinx-4.3.1.tar.gz", hash = "sha256:32a5b3e9a1b176cc25ed048557d4d3d01af635e6b76c5bc7a43b0a34447fbd45"},
+    {file = "Sphinx-4.3.2-py3-none-any.whl", hash = "sha256:6a11ea5dd0bdb197f9c2abc2e0ce73e01340464feaece525e64036546d24c851"},
+    {file = "Sphinx-4.3.2.tar.gz", hash = "sha256:0a8836751a68306b3fe97ecbe44db786f8479c3bf4b80e3a7f5c838657b4698c"},
 ]
 sphinx-click = [
     {file = "sphinx-click-3.0.2.tar.gz", hash = "sha256:29896dd12bfaacb566a8c7af2e2b675d010d69b0c5aad3b52495d4842358b15b"},
