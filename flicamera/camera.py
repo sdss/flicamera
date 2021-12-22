@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import asyncio
 import time
+import warnings
 
 from typing import Any, Dict, List, Optional, Tuple, Type
 
@@ -20,7 +21,7 @@ from basecam.exceptions import CameraConnectionError, ExposureError
 from basecam.mixins import CoolerMixIn, ExposureTypeMixIn, ImageAreaMixIn
 
 import flicamera
-from flicamera.lib import LibFLI, LibFLIDevice
+from flicamera.lib import FLIError, FLIWarning, LibFLI, LibFLIDevice
 from flicamera.model import flicamera_model
 
 
@@ -66,7 +67,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
         if temp_setpoint:
             asyncio.create_task(self.set_temperature(temp_setpoint))
 
-    def _status_internal(self) -> Dict[str, Any]:
+    def _status_internal(self) -> Dict[str, Any] | None:
         """Gets a dictionary with the status of the camera.
 
         Returns
@@ -77,7 +78,17 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
         """
 
         device = self._device
-        device._update_temperature()
+
+        try:
+            device._update_temperature()
+        except FLIError as err:
+            if "No such device" in str(err):
+                warnings.warn("Camera disconnected", FLIWarning)
+                asyncio.create_task(self.camera_system.remove_camera(uid=self.uid))
+                return None
+            raise
+        except Exception:
+            raise
 
         return dict(
             model=device.model,
