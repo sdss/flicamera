@@ -370,12 +370,12 @@ class FPSCards(TronModelCards):
             (
                 "DESIGNID",
                 self.get("configuration_loaded", 1, cnv=int),
-                "Configuration ID",
+                "Design ID associated with CONFIGID",
             ),
             (
                 "FIELDID",
                 self.get("configuration_loaded", 2, cnv=int),
-                "Field ID",
+                "Field ID associated with CONFIGID",
             ),
             (
                 "RAFIELD",
