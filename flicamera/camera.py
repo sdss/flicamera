@@ -212,7 +212,10 @@ class FLICameraSystem(CameraSystem[FLICamera]):
         # Get the serial number as UID.
         serial_numbers = []
         for device_id in devices_id:
-            device = LibFLIDevice(device_id, self.lib.libc)
-            serial_numbers.append(device.serial)
+            try:
+                device = LibFLIDevice(device_id, self.lib.libc)
+                serial_numbers.append(device.serial)
+            except FLIError:
+                continue
 
         return serial_numbers
