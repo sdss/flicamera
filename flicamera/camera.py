@@ -125,7 +125,6 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
         device.start_exposure(frametype)
 
         exposure.obstime = astropy.time.Time.now()
-        self.notify(CameraEvent.EXPOSURE_INTEGRATING)
 
         start_time = time.time()
 
