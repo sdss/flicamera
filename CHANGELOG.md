@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.2 - January 7, 2022
+
+### ✨ Improved
+
+* Avoid duplicated `integrating` messages.
+* Better handling of some exceptions when camera disconnects.
+* Improve FPS card descriptions.
+* Improve connection to Tron.
+
+
 ## 0.2.1 - Decemeber 14, 2021
 
 ### ✨ Improved
