@@ -71,7 +71,8 @@ class FLICameraWrapper(object):
 
     async def __aexit__(self, *excinfo):
 
-        assert self.camera_system and self.camera_system.cameras
+        if not self.camera_system or not self.camera_system.cameras:
+            return
 
         for camera in self.camera_system.cameras:
             await camera.disconnect()
