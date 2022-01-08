@@ -1078,18 +1078,25 @@ numpy = ">=1.16.5"
 
 [[package]]
 name = "sdss-basecam"
-version = "0.5.4"
+version = "0.5.5-alpha.0"
 description = "A base library for camera wrapping and actor."
 category = "main"
 optional = false
-python-versions = ">=3.7,<4.0"
+python-versions = "^3.7,<4.0"
+develop = false
 
 [package.dependencies]
-astropy = ">=4.0,<5.0"
-numpy = ">=1.17,<2.0"
-sdss-clu = ">=1.0.1,<2.0.0"
+astropy = "^4.0"
+numpy = "^1.17"
+sdss-clu = "^1.0.1"
 sdsstools = ">=0.4.0"
-typing-extensions = {version = ">=3.7.4,<4.0.0", markers = "python_version <= \"3.7\""}
+typing-extensions = {version = "^3.7.4", markers = "python_version <= \"3.7\""}
+
+[package.source]
+type = "git"
+url = "https://github.com/sdss/basecam.git"
+reference = "main"
+resolved_reference = "a5e45f179ee8c585ce2590a78ae235bc772ac98d"
 
 [[package]]
 name = "sdss-clu"
@@ -1445,7 +1452,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7,<4.0"
-content-hash = "092399958a2347d310d126fb5e8d66d729b7878ef02b5a1ca041c10e8b62c0cc"
+content-hash = "12f2eb2c529e6cd9f2c42d5d25c704ad3a3f06ebd5837b89dd20f1f76b4b6125"
 
 [metadata.files]
 aio-pika = [
@@ -2248,10 +2255,7 @@ scipy = [
     {file = "scipy-1.6.1-cp39-cp39-win_amd64.whl", hash = "sha256:a5193a098ae9f29af283dcf0041f762601faf2e595c0db1da929875b7570353f"},
     {file = "scipy-1.6.1.tar.gz", hash = "sha256:c4fceb864890b6168e79b0e714c585dbe2fd4222768ee90bc1aa0f8218691b11"},
 ]
-sdss-basecam = [
-    {file = "sdss-basecam-0.5.4.tar.gz", hash = "sha256:2b61e04c4e00c5d274242d72cfe6ca1e0d33181059754bdc759a7b90840f9619"},
-    {file = "sdss_basecam-0.5.4-py3-none-any.whl", hash = "sha256:2f71de975737dbea6e85d11b5388fac92cdfb778a7cd5e24dc7bec0d565bb054"},
-]
+sdss-basecam = []
 sdss-clu = [
     {file = "sdss-clu-1.5.6.tar.gz", hash = "sha256:0701ce732feccb691fb50cb42faa3604862d2a390748ee5f3ccf8af5e401223c"},
     {file = "sdss_clu-1.5.6-py3-none-any.whl", hash = "sha256:519c586c2802b91b5760bc4d20323b96f5d1967e44fe7a77ec963411f3b85a45"},
