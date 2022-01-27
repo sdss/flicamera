@@ -118,6 +118,7 @@ cameras:
     gain: 0.58
     read_noise: 10.3
     temperature_setpoint: -10.
+    write_snapshot: false
   fvc2n:
     uid: ML3321819
     serial: ML3321819
@@ -125,6 +126,7 @@ cameras:
     gain: 0.60
     read_noise: 10.0
     temperature_setpoint: -10.
+    write_snapshot: false
   fvclab:
     uid: ML7734916
     serial: ML7734916
@@ -132,6 +134,7 @@ cameras:
     gain: 0.64
     read_noise: 12.3
     temperature_setpoint: -10.
+    write_snapshot: false
     observatory: APO
   # fvc2n:
   #   uid: ML5774418
@@ -139,6 +142,7 @@ cameras:
   #   autoconnect: true
   #   gain: 0.59
   #   read_noise: 10.7
+  #   write_snapshot: false
   #   temperature_setpoint: -10.
 
 log_file: '/data/logs/flicamera/{hostname}/flicamera.log'

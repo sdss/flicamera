@@ -110,6 +110,11 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
     async def _post_process_internal(self, exposure: Exposure, **kwargs) -> Exposure:
         """Post-processes the image. Creates a snapshot image."""
 
+        write_snapshot: bool = self.camera_params.get("write_snapshot", True)
+
+        if write_snapshot is False:
+            return exposure
+
         exposure_copy = copy(exposure)
 
         assert exposure_copy.data is not None and exposure_copy.filename is not None
