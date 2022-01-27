@@ -9,8 +9,10 @@
 from __future__ import annotations
 
 import asyncio
+import pathlib
 import time
 import warnings
+from copy import copy
 
 from typing import Any, Dict, List, Optional, Tuple, Type
 
@@ -104,6 +106,24 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
             exposure_time_left=device.get_exposure_time_left(),
             cooler_power=device.get_cooler_power(),
         )
+
+    async def _post_process_internal(self, exposure: Exposure, **kwargs) -> Exposure:
+        """Post-processes the image. Creates a snapshot image."""
+
+        exposure_copy = copy(exposure)
+
+        assert exposure_copy.data is not None and exposure_copy.filename is not None
+        exposure_copy.data = exposure_copy.data[::4, ::4]
+
+        fpath = pathlib.Path(exposure_copy.filename)
+        exposure_copy.filename = str(fpath.parent / f"{fpath.stem}-snap{fpath.suffix}")
+
+        try:
+            await exposure_copy.write()
+        except Exception as err:
+            warnings.warn(f"Failed writing snapshot to disk: {err}", FLIWarning)
+
+        return exposure
 
     async def _expose_internal(self, exposure: Exposure, **kwargs) -> Exposure:
         """Internal method to handle camera exposures."""
