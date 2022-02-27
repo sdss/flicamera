@@ -36,8 +36,6 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
     camera_system: FLICameraSystem
     _device: LibFLIDevice
 
-    fits_model = flicamera_model
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -49,6 +47,10 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
             self.pixel_scale: float = flicamera.config["pixel_scale"][self.observatory]
         else:
             self.pixel_scale: float = -999.0
+
+        self.fits_model = flicamera_model
+        if self.name.startswith("fvc"):
+            self.fits_model[0].compressed = "RICE_1"
 
     async def _connect_internal(self, **conn_params):
         """Internal method to connect the camera."""
