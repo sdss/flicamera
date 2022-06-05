@@ -156,7 +156,9 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
                 self.session_metadata.bias_image = None
             return exposure
 
-        if not self.session_metadata.bias_image:
+        find_calibrations: bool = self.camera_params.get("find_calibrations", True)
+
+        if find_calibrations is True and not self.session_metadata.bias_image:
             # Get all the images written by this camera for this MJD.
             # TODO: move this to basecam as ImageNamer.get_all()
             dirpath = self.image_namer.get_dirname()

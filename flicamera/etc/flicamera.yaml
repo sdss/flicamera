@@ -22,6 +22,7 @@ cameras:
     gain: 1.15
     read_noise: 17.5
     observatory: APO
+    find_calibrations: false
     sextant: 1
   gfa2n:
     uid: ML0122718
@@ -30,6 +31,7 @@ cameras:
     gain: 1.48
     read_noise: 15.2
     observatory: APO
+    find_calibrations: false
     sextant: 2
   gfa3n:
     uid: ML0132718
@@ -38,6 +40,7 @@ cameras:
     gain: 1.45
     read_noise: 15.2
     observatory: APO
+    find_calibrations: false
     sextant: 3
   gfa4n:
     uid: ML0142718
@@ -46,6 +49,7 @@ cameras:
     gain: 1.11
     read_noise: 15.0
     observatory: APO
+    find_calibrations: false
     sextant: 4
   gfa5n:
     uid: ML0192718
@@ -54,6 +58,7 @@ cameras:
     gain: 1.47
     read_noise: 15.9
     observatory: APO
+    find_calibrations: false
     sextant: 5
   gfa6n:
     uid: ML0182718
@@ -62,6 +67,7 @@ cameras:
     gain: 1.18
     read_noise: 14.8
     observatory: APO
+    find_calibrations: false
     sextant: 6
   # gfa6:
   #   uid: ML0182718
@@ -119,6 +125,8 @@ cameras:
     read_noise: 10.3
     temperature_setpoint: -10.
     write_snapshot: false
+    observatory: APO
+    find_calibrations: false
   fvc2n:
     uid: ML3321819
     serial: ML3321819
