@@ -1,5 +1,12 @@
 # Changelog
 
+## Next version
+
+## 🏷️ Changed
+
+* Output image directory now uses SJD (SDSS JD) from `sdsstools.time.get_sjd()` instead of the usual MJD.
+
+
 ## 0.3.0 - June 4, 2022
 
 ### ✨ Improved
