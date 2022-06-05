@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.3.0 - June 4, 2022
+
+### ✨ Improved
+
+* Skip disconnect if no cameras are connected.
+* Use RICE_1 compression for the FVC.
+* Add `Dockerfile_test` to create docker image using local versions of `basecam` and `flicamera`.
+
+### 🔧 Fixed
+
+* Do not fail if exposure time is 0.0.
+
+
 ## 0.2.2 - January 7, 2022
 
 ### ✨ Improved

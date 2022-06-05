@@ -1086,7 +1086,7 @@ numpy = ">=1.16.5"
 
 [[package]]
 name = "sdss-basecam"
-version = "0.5.5-alpha.0"
+version = "0.6.1a0"
 description = "A base library for camera wrapping and actor."
 category = "main"
 optional = false
@@ -1104,7 +1104,7 @@ typing-extensions = {version = "^3.7.4", markers = "python_version <= \"3.7\""}
 type = "git"
 url = "https://github.com/sdss/basecam.git"
 reference = "main"
-resolved_reference = "bb0b4a7d16f685b95e8d5eaf5209c3fe8cd795f2"
+resolved_reference = "1ac57fc954f85163ce7ea4011be112e76c2c01a6"
 
 [[package]]
 name = "sdss-clu"
