@@ -13,21 +13,35 @@ import pathlib
 import time
 import warnings
 from copy import copy
+from dataclasses import dataclass
 
 from typing import Any, Dict, List, Optional, Tuple, Type
 
 import astropy.time
+from astropy.io import fits
 
 from basecam import BaseCamera, CameraEvent, CameraSystem, Exposure
 from basecam.exceptions import CameraConnectionError, ExposureError
 from basecam.mixins import CoolerMixIn, ExposureTypeMixIn, ImageAreaMixIn
+from sdsstools.time import get_sjd
 
-import flicamera
+from flicamera import OBSERVATORY
+from flicamera import __version__ as flicamera_version
+from flicamera import config
 from flicamera.lib import FLIError, FLIWarning, LibFLI, LibFLIDevice
 from flicamera.model import flicamera_model
 
 
-__all__ = ["FLICameraSystem", "FLICamera"]
+__all__ = ["FLICameraSystem", "FLICamera", "SessionMetadata"]
+
+
+@dataclass
+class SessionMetadata:
+    """A dataclass with information about the current session."""
+
+    mjd: int
+    bias_image: pathlib.Path | None = None
+    last_exposure: pathlib.Path | None = None
 
 
 class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
@@ -42,11 +56,13 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
         self.gain: float = self.camera_params.get("gain", -999)
         self.read_noise: float = self.camera_params.get("read_noise", -999)
 
-        self.observatory: str = flicamera.OBSERVATORY
-        if self.observatory in flicamera.config["pixel_scale"]:
-            self.pixel_scale: float = flicamera.config["pixel_scale"][self.observatory]
+        self.observatory: str = self.camera_params.get("observatory", OBSERVATORY)
+        if self.observatory in config["pixel_scale"]:
+            self.pixel_scale: float = config["pixel_scale"][self.observatory]
         else:
             self.pixel_scale: float = -999.0
+
+        self.session_metadata: SessionMetadata | None = None
 
         self.fits_model = flicamera_model
         if self.name.startswith("fvc"):
@@ -114,21 +130,57 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
 
         write_snapshot: bool = self.camera_params.get("write_snapshot", True)
 
-        if write_snapshot is False:
+        if write_snapshot is True:
+
+            snapshot = copy(exposure)
+
+            assert snapshot.data is not None and snapshot.filename is not None
+            snapshot.data = snapshot.data[::4, ::4]
+
+            fpath = pathlib.Path(snapshot.filename)
+            snapshot.filename = str(fpath.parent / f"{fpath.stem}-snap{fpath.suffix}")
+
+            try:
+                await snapshot.write()
+            except Exception as err:
+                warnings.warn(f"Failed writing snapshot to disk: {err}", FLIWarning)
+
+        # Find calibration images
+        current_mjd = get_sjd(self.observatory.upper())
+        if self.session_metadata is None or self.session_metadata.mjd != current_mjd:
+            self.session_metadata = SessionMetadata(current_mjd)
+
+        if exposure.image_type and exposure.image_type.lower() == "bias":
+            # It will be set as the session_metadata image next time we expose.
+            if self.session_metadata:
+                self.session_metadata.bias_image = None
             return exposure
 
-        exposure_copy = copy(exposure)
+        if not self.session_metadata.bias_image:
+            # Get all the images written by this camera for this MJD.
+            # TODO: move this to basecam as ImageNamer.get_all()
+            dirpath = self.image_namer.get_dirname()
+            basename = self.image_namer.basename.format(camera=self)
+            basename = basename.replace("{num:04d}", "[0-9]*")
+            images = sorted(dirpath.glob(basename), reverse=True)
 
-        assert exposure_copy.data is not None and exposure_copy.filename is not None
-        exposure_copy.data = exposure_copy.data[::4, ::4]
+            for image in images:
+                header = fits.getheader(image, 1)
+                if header.get("IMAGETYP", None) == "bias":
+                    self.session_metadata.bias_image = image
+                    break
 
-        fpath = pathlib.Path(exposure_copy.filename)
-        exposure_copy.filename = str(fpath.parent / f"{fpath.stem}-snap{fpath.suffix}")
+        if not exposure.fits_model:
+            return exposure
 
-        try:
-            await exposure_copy.write()
-        except Exception as err:
-            warnings.warn(f"Failed writing snapshot to disk: {err}", FLIWarning)
+        bias_image = self.session_metadata.bias_image
+        exposure.fits_model[0].header_model.append(
+            (
+                "BIASFILE",
+                bias_image.name if bias_image else "",
+                "Bias file associated with this image",
+            )
+        )
 
         return exposure
 
@@ -219,7 +271,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
 class FLICameraSystem(CameraSystem[FLICamera]):
     """FLI camera system."""
 
-    __version__ = flicamera.__version__  # type: ignore
+    __version__ = flicamera_version  # type: ignore
 
     camera_class = FLICamera
 

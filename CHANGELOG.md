@@ -2,7 +2,12 @@
 
 ## Next version
 
-## 🏷️ Changed
+### 🚀 New
+
+* Added header keyword `BIASFILE` with the most recently taken bias image (on the same SJD).
+* Added header keyword `SJD` with the SDSS custom Julian Day.
+
+### 🏷️ Changed
 
 * Output image directory now uses SJD (SDSS JD) from `sdsstools.time.get_sjd()` instead of the usual MJD.
 

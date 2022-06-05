@@ -5,6 +5,7 @@ LABEL maintainer="gallegoj@uw.edu"
 WORKDIR /opt
 
 # Need to install libusb
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get -y update
 RUN apt-get -y install libusb-1.0-0 libusb-1.0-0-dev python3 python3-pip git gzip
 

@@ -23,6 +23,7 @@ from basecam.models import (
     WCSCards,
 )
 from clu.legacy.types.pvt import PVT
+from sdsstools.time import get_sjd
 
 import flicamera
 
@@ -62,7 +63,7 @@ class TronModelCards(MacroCard, metaclass=abc.ABCMeta):
     ) -> MacroCardReturnType:
         raise NotImplementedError
 
-    def get(self, key, idx=0, default="NaN", cnv=None):
+    def get(self, key, idx: int | None = 0, default="NaN", cnv=None):
         if not self.model:
             return default
 
@@ -454,6 +455,12 @@ raw_header_model = HeaderModel(
             "TIMESYS",
             "TAI",
             "Time reference system",
+        ),
+        Card(
+            "SJD",
+            value=get_sjd,
+            comment="SDSS custom Julian Day",
+            fargs=("{__camera__.observatory}",),
         ),
         Card(
             "DATE-OBS",
