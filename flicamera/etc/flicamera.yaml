@@ -69,54 +69,78 @@ cameras:
     observatory: APO
     find_calibrations: false
     sextant: 6
-  # gfa6:
-  #   uid: ML0182718
-  #   serial: ML0182718
-  #   autoconnect: true
-  #   gain: 1.18
-  #   read_noise: 14.8
-  # gfa7:
-  #   uid: ML0192718
-  #   serial: ML0192718
-  #   autoconnect: true
-  #   gain: 1.47
-  #   read_noise: 15.9
-  # gfa8:
-  #   uid: ML0024718
-  #   serial: ML0024718
-  #   autoconnect: true
-  #   gain: 1.51
-  #   read_noise: 15.2
-  # gfa9:
-  #   uid: ML0034718
-  #   serial: ML0034718
-  #   autoconnect: true
-  #   gain: 1.44
-  #   read_noise: 15.0
-  # gfa10:
-  #   uid: ML0202718
-  #   serial: ML0202718
-  #   autoconnect: true
-  #   gain: 1.50
-  #   read_noise: 16.7
-  # gfa11:
-  #   uid: ML0102718
-  #   serial: ML0102718
-  #   autoconnect: true
-  #   gain: 1.53
-  #   read_noise: 15.5
-  # gfa12:
-  #   uid: ML0014718
-  #   serial: ML0014718
-  #   autoconnect: true
-  #   gain: 1.49
-  #   read_noise: 14.7
-  # gfa13:
-  #   uid: ML0044718
-  #   serial: ML0044718
-  #   autoconnect: true
-  #   gain: 1.46
-  #   read_noise: 14.9
+  gfaXn:
+    uid: ML0044718
+    serial: ML0044718
+    autoconnect: true
+    gain: 1.46
+    read_noise: 14.9
+    observatory: APO
+    find_calibrations: false
+    sextant: -1
+  gfa1s:
+    uid: ML0172718
+    serial: ML0172718
+    autoconnect: true
+    gain: 1.46
+    read_noise: 17.2
+    observatory: LCO
+    find_calibrations: false
+    sextant: 1
+  gfa2s:
+    uid: ML0024718
+    serial: ML0024718
+    autoconnect: true
+    gain: 1.51
+    read_noise: 15.2
+    observatory: LCO
+    find_calibrations: false
+    sextant: 2
+  gfa3s:
+    uid: ML0034718
+    serial: ML0034718
+    autoconnect: true
+    gain: 1.44
+    read_noise: 15.0
+    observatory: LCO
+    find_calibrations: false
+    sextant: 3
+  gfa4s:
+    uid: ML0202718
+    serial: ML0202718
+    autoconnect: true
+    gain: 1.50
+    read_noise: 16.7
+    observatory: LCO
+    find_calibrations: false
+    sextant: 4
+  gfa5s:
+    uid: ML0102718
+    serial: ML0102718
+    autoconnect: true
+    gain: 1.53
+    read_noise: 15.5
+    observatory: LCO
+    find_calibrations: false
+    sextant: 5
+  gfa6s:
+    uid: ML0014718
+    serial: ML0014718
+    autoconnect: true
+    gain: 1.49
+    read_noise: 14.7
+    observatory: LCO
+    find_calibrations: false
+    sextant: 6
+  gfaXs:
+    uid: ML0162718
+    serial: ML0162718
+    autoconnect: true
+    gain: 0.91
+    read_noise: 16.3
+    observatory: LCO
+    find_calibrations: false
+    sextant: -1
   fvc1n:
     uid: ML3331819
     serial: ML3331819
@@ -135,6 +159,15 @@ cameras:
     read_noise: 10.0
     temperature_setpoint: -10.
     write_snapshot: false
+  fvc1s:
+    uid: ML5774418
+    serial: ML5774418
+    autoconnect: true
+    gain: 0.59
+    read_noise: 10.7
+    temperature_setpoint: -10.
+    write_snapshot: false
+    observatory: LCO
   fvclab:
     uid: ML7734916
     serial: ML7734916
@@ -144,14 +177,6 @@ cameras:
     temperature_setpoint: -10.
     write_snapshot: false
     observatory: LCO
-  # fvc2n:
-  #   uid: ML5774418
-  #   serial: ML5774418
-  #   autoconnect: true
-  #   gain: 0.59
-  #   read_noise: 10.7
-  #   write_snapshot: false
-  #   temperature_setpoint: -10.
 
 log_file: '/data/logs/flicamera/{hostname}/flicamera.log'
 

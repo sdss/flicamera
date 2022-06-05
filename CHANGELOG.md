@@ -2,6 +2,10 @@
 
 ## Next version
 
+### 🚀 New
+
+* Added GFAs for LCO.
+
 ### ✨ Improved
 
 * Allow to skip finding calibration files to save time. In this case `BIASFILE=""`.
