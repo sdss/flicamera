@@ -1,11 +1,11 @@
 ---
-
 cameras:
-    'FLI-3':
-        uid: ML1234
-        serial: ML1234
-        temperature:
-            CCD: 25
-            base: 20
-        exposure_time_left: 0
-        model: 'MicroLine ML50100'
+  'FLI-3':
+    uid: ML1234
+    serial: ML1234
+    temperature:
+      CCD: 25
+      base: 20
+    exposure_time_left: 0
+    model: 'MicroLine ML50100'
+    observatory: APO

@@ -25,7 +25,9 @@ from basecam.exceptions import CameraConnectionError, ExposureError
 from basecam.mixins import CoolerMixIn, ExposureTypeMixIn, ImageAreaMixIn
 from sdsstools.time import get_sjd
 
-import flicamera
+from flicamera import OBSERVATORY
+from flicamera import __version__ as flicamera_version
+from flicamera import config
 from flicamera.lib import FLIError, FLIWarning, LibFLI, LibFLIDevice
 from flicamera.model import flicamera_model
 
@@ -54,9 +56,9 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
         self.gain: float = self.camera_params.get("gain", -999)
         self.read_noise: float = self.camera_params.get("read_noise", -999)
 
-        self.observatory: str = flicamera.OBSERVATORY
-        if self.observatory in flicamera.config["pixel_scale"]:
-            self.pixel_scale: float = flicamera.config["pixel_scale"][self.observatory]
+        self.observatory: str = self.camera_params.get("observatory", OBSERVATORY)
+        if self.observatory in config["pixel_scale"]:
+            self.pixel_scale: float = config["pixel_scale"][self.observatory]
         else:
             self.pixel_scale: float = -999.0
 
@@ -269,7 +271,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
 class FLICameraSystem(CameraSystem[FLICamera]):
     """FLI camera system."""
 
-    __version__ = flicamera.__version__  # type: ignore
+    __version__ = flicamera_version  # type: ignore
 
     camera_class = FLICamera
 
