@@ -56,7 +56,7 @@ class FLICameraWrapper(object):
                     f"Loading configuration file {config_path}"
                 )
 
-            await self.camera_system.start_camera_poller()
+            await self.camera_system.start_camera_poller(interval=5)
             await asyncio.sleep(0.1)  # Some time to allow camera to connect.
         else:
             self.camera_system = await get_mock_camera_system(
