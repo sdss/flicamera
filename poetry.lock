@@ -1086,7 +1086,7 @@ numpy = ">=1.16.5"
 
 [[package]]
 name = "sdss-basecam"
-version = "0.6.0"
+version = "0.6.1"
 description = "A base library for camera wrapping and actor."
 category = "main"
 optional = false
@@ -1487,7 +1487,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7,<4.0"
-content-hash = "cbafd6e945526a5dc4bd9d34bb17fff7337f0112f63b747ce7b06d00b7d58916"
+content-hash = "2cef7285526ac684c870b8b6f0df6424d728a9c3d9fc31ae2fba67ced86a22c9"
 
 [metadata.files]
 aio-pika = [
@@ -2274,8 +2274,8 @@ scipy = [
     {file = "scipy-1.6.1.tar.gz", hash = "sha256:c4fceb864890b6168e79b0e714c585dbe2fd4222768ee90bc1aa0f8218691b11"},
 ]
 sdss-basecam = [
-    {file = "sdss-basecam-0.6.0.tar.gz", hash = "sha256:f460d8eade8ea017512bf08fa3bf5163c242da4e716d8b602bd9998a5edb0007"},
-    {file = "sdss_basecam-0.6.0-py3-none-any.whl", hash = "sha256:9ee27e93b2b41c03ac177629233f1436eb29a1185da7af9da60b9fcf044ee63f"},
+    {file = "sdss-basecam-0.6.1.tar.gz", hash = "sha256:79c1e25c36d82a93514e2d082e725c2f38260f37b80b4db30c343f267a501206"},
+    {file = "sdss_basecam-0.6.1-py3-none-any.whl", hash = "sha256:b3eec6b93cbcc507330acaaf9c051ebb827702e3b45abb35656a0e9f7337dbf1"},
 ]
 sdss-clu = [
     {file = "sdss-clu-1.6.2.tar.gz", hash = "sha256:172f599caafc35b76b71433297b2dd29a5298f51f3e225ca4893dd5547a3f011"},
