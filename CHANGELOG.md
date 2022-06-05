@@ -10,6 +10,10 @@
 
 * Allow to skip finding calibration files to save time. In this case `BIASFILE=""`.
 
+### 🔧 Fixed
+
+* Forced `sdsstools>=0.5.2` to fix the calculation of SJD.
+
 
 ## 0.4.0 - June 5, 2022
 

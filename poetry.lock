@@ -1141,11 +1141,11 @@ sdsstools = ">=0.4.13"
 
 [[package]]
 name = "sdsstools"
-version = "0.5.1"
+version = "0.5.2"
 description = "Small tools for SDSS products"
 category = "main"
 optional = false
-python-versions = ">=3.6,<4.0"
+python-versions = ">=3.6.2"
 
 [package.dependencies]
 daemonocle = ">=1.0.2,<2.0.0"
@@ -1511,7 +1511,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7,<4.0"
-content-hash = "338f65542ccf12d26fbaaee053d44b673d7dbb0f2bd7b31b2b7b0e3e055dea59"
+content-hash = "0e85044d611adf3cf0228bb864834b5dfc4c0f113fe21a384ac1b29a4b1e42a4"
 
 [metadata.files]
 aio-pika = [
@@ -2324,8 +2324,8 @@ sdss-clu = [
     {file = "sdss_clu-1.6.2-py3-none-any.whl", hash = "sha256:3d58f24f5f441c1f2904d49edbd0ed0875a413b044c6355dedd2ef9127c6acd5"},
 ]
 sdsstools = [
-    {file = "sdsstools-0.5.1-py3-none-any.whl", hash = "sha256:28887a6c5dc6c06f484ff914ca72fe4fdfb3a251116fe8b59d2ff9c1728024c8"},
-    {file = "sdsstools-0.5.1.tar.gz", hash = "sha256:04a70be1f310b793c13ae036f32b06eac788164e335432aaef250ae196718b5e"},
+    {file = "sdsstools-0.5.2-py3-none-any.whl", hash = "sha256:32ac1ddfb626e16d76850bb62f44b81714fe7ad734d5716921e68c5bc0f844d9"},
+    {file = "sdsstools-0.5.2.tar.gz", hash = "sha256:c0df32a8bcca6cf6925b8bc2a25d1db01c6501b274aa66fe06195f03261e89e1"},
 ]
 semantic-version = [
     {file = "semantic_version-2.10.0-py2.py3-none-any.whl", hash = "sha256:de78a3b8e0feda74cabc54aab2da702113e33ac9d9eb9d2389bcf1f58b7d9177"},
