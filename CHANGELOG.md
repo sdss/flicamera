@@ -4,7 +4,8 @@
 
 ### 🚀 New
 
-* Added header value `BIASFILE` with the most recently taken bias image (on the same SJD).
+* Added header keyword `BIASFILE` with the most recently taken bias image (on the same SJD).
+* Added header keyword `SJD` with the SDSS custom Julian Day.
 
 ### 🏷️ Changed
 
