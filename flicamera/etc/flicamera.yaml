@@ -135,7 +135,7 @@ cameras:
     read_noise: 12.3
     temperature_setpoint: -10.
     write_snapshot: false
-    observatory: APO
+    observatory: LCO
   # fvc2n:
   #   uid: ML5774418
   #   serial: ML5774418

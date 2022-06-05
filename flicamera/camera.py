@@ -13,21 +13,33 @@ import pathlib
 import time
 import warnings
 from copy import copy
+from dataclasses import dataclass
 
 from typing import Any, Dict, List, Optional, Tuple, Type
 
 import astropy.time
+from astropy.io import fits
 
 from basecam import BaseCamera, CameraEvent, CameraSystem, Exposure
 from basecam.exceptions import CameraConnectionError, ExposureError
 from basecam.mixins import CoolerMixIn, ExposureTypeMixIn, ImageAreaMixIn
+from sdsstools.time import get_sjd
 
 import flicamera
 from flicamera.lib import FLIError, FLIWarning, LibFLI, LibFLIDevice
 from flicamera.model import flicamera_model
 
 
-__all__ = ["FLICameraSystem", "FLICamera"]
+__all__ = ["FLICameraSystem", "FLICamera", "SessionMetadata"]
+
+
+@dataclass
+class SessionMetadata:
+    """A dataclass with information about the current session."""
+
+    mjd: int
+    bias_image: pathlib.Path | None = None
+    last_exposure: pathlib.Path | None = None
 
 
 class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
@@ -47,6 +59,8 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
             self.pixel_scale: float = flicamera.config["pixel_scale"][self.observatory]
         else:
             self.pixel_scale: float = -999.0
+
+        self.session_metadata: SessionMetadata | None = None
 
         self.fits_model = flicamera_model
         if self.name.startswith("fvc"):
@@ -129,6 +143,45 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
             await exposure_copy.write()
         except Exception as err:
             warnings.warn(f"Failed writing snapshot to disk: {err}", FLIWarning)
+
+        # Remove bias.
+        if not self.camera_params.get("process_image", False) or exposure.data is None:
+            return exposure
+
+        current_mjd = get_sjd(self.observatory.upper())
+        if self.session_metadata is None or self.session_metadata.mjd != current_mjd:
+            self.session_metadata = SessionMetadata(current_mjd)
+
+        if exposure.image_type and exposure.image_type.lower() == "bias":
+            # It will be set as the session_metadata image next time we expose.
+            if self.session_metadata:
+                self.session_metadata.bias_image = None
+            return exposure
+
+        if not self.session_metadata.bias_image:
+            # Get all the images written by this camera for this MJD.
+            # TODO: move this to basecam as ImageNamer.get_all()
+            dirpath = self.image_namer.get_dirname()
+            basename = self.image_namer.basename.format(camera=self, num="[0-9]*")
+            images = sorted(dirpath.glob(basename), reverse=True)
+
+            for image in images:
+                header = fits.getheader(image, 1)
+                if header.get("IMAGETYP", None) == "bias":
+                    self.session_metadata.bias_image = image
+                    break
+
+        if not self.session_metadata.bias_image:
+            warnings.warn("Cannot find bias image to subtract.", FLIWarning)
+            return exposure
+
+        bias = fits.open(self.session_metadata.bias_image)
+        datab = exposure.data.copy() - bias[1].data
+        headerb = bias[1].header.copy()
+        headerb["BIASFILE"] = str(self.session_metadata.bias_image.name)
+
+        bias_hdu = fits.ImageHDU(data=datab, header=headerb, name="REDUX")
+        exposure.add_hdu(bias_hdu)
 
         return exposure
 
