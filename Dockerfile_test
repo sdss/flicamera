@@ -1,3 +1,7 @@
+# Must be run with the context of the parent directory which must contain
+# a checkout of both basecam and flicamera, e.g.
+# docker build -t ghcr.io/sdss/flicamera:latest -f Dockerfile_test ..
+
 FROM ubuntu:20.04
 
 LABEL maintainer="gallegoj@uw.edu"
@@ -8,11 +12,16 @@ WORKDIR /opt
 RUN apt-get -y update
 RUN apt-get -y install libusb-1.0-0 libusb-1.0-0-dev python3 python3-pip git gzip
 
-COPY . flicamera
+COPY ./flicamera flicamera
 
 RUN rm -f flicamera/libfli*.so
 RUN pip3 install -U pip wheel setuptools
 RUN cd flicamera && pip3 install .
+
+RUN cd ..
+COPY ./basecam basecam
+RUN pip3 uninstall -y sdss-basecam
+RUN cd basecam && pip3 install -U .
 
 # This is the default port but the real port can be changed when
 # starting the service.
