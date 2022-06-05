@@ -63,7 +63,7 @@ class TronModelCards(MacroCard, metaclass=abc.ABCMeta):
     ) -> MacroCardReturnType:
         raise NotImplementedError
 
-    def get(self, key, idx=0, default="NaN", cnv=None):
+    def get(self, key, idx: int | None = 0, default="NaN", cnv=None):
         if not self.model:
             return default
 
