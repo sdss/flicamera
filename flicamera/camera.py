@@ -135,7 +135,7 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
     async def _expose_internal(self, exposure: Exposure, **kwargs) -> Exposure:
         """Internal method to handle camera exposures."""
 
-        if not exposure.exptime:
+        if exposure.exptime is None:
             raise ExposureError("Exposure time not set.")
 
         TIMEOUT = 5
