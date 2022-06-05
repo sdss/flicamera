@@ -423,7 +423,7 @@ class LibFLI(ctypes.CDLL):
         list_ = []
         ii = 0
         while ptr[ii]:
-            list_.append(ptr[ii])
+            list_.append(ptr[ii].decode().split(";")[0])
             ii += 1
 
         return list_
@@ -440,12 +440,11 @@ class LibFLI(ctypes.CDLL):
         names_ptr = POINTER(ctypes.c_char_p)()
         self.libc.FLIList(self.domain, byref(names_ptr))
 
-        cameras = [
-            name.decode().split(";")[0] for name in self._convert_to_list(names_ptr)
-        ]
+        cameras = self._convert_to_list(names_ptr)
 
         # Free the list
-        self.libc.FLIFreeList(names_ptr)
+        if names_ptr:
+            self.libc.FLIFreeList(names_ptr)
 
         return cameras
 
