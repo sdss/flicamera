@@ -2,7 +2,11 @@
 
 ## Next version
 
-## 🏷️ Changed
+### 🚀 New
+
+* Added header value `BIASFILE` with the most recently taken bias image (on the same SJD).
+
+### 🏷️ Changed
 
 * Output image directory now uses SJD (SDSS JD) from `sdsstools.time.get_sjd()` instead of the usual MJD.
 

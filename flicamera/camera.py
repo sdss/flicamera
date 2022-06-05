@@ -128,26 +128,22 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
 
         write_snapshot: bool = self.camera_params.get("write_snapshot", True)
 
-        if write_snapshot is False:
-            return exposure
+        if write_snapshot is True:
 
-        exposure_copy = copy(exposure)
+            snapshot = copy(exposure)
 
-        assert exposure_copy.data is not None and exposure_copy.filename is not None
-        exposure_copy.data = exposure_copy.data[::4, ::4]
+            assert snapshot.data is not None and snapshot.filename is not None
+            snapshot.data = snapshot.data[::4, ::4]
 
-        fpath = pathlib.Path(exposure_copy.filename)
-        exposure_copy.filename = str(fpath.parent / f"{fpath.stem}-snap{fpath.suffix}")
+            fpath = pathlib.Path(snapshot.filename)
+            snapshot.filename = str(fpath.parent / f"{fpath.stem}-snap{fpath.suffix}")
 
-        try:
-            await exposure_copy.write()
-        except Exception as err:
-            warnings.warn(f"Failed writing snapshot to disk: {err}", FLIWarning)
+            try:
+                await snapshot.write()
+            except Exception as err:
+                warnings.warn(f"Failed writing snapshot to disk: {err}", FLIWarning)
 
-        # Remove bias.
-        if not self.camera_params.get("process_image", False) or exposure.data is None:
-            return exposure
-
+        # Find calibration images
         current_mjd = get_sjd(self.observatory.upper())
         if self.session_metadata is None or self.session_metadata.mjd != current_mjd:
             self.session_metadata = SessionMetadata(current_mjd)
@@ -162,7 +158,8 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
             # Get all the images written by this camera for this MJD.
             # TODO: move this to basecam as ImageNamer.get_all()
             dirpath = self.image_namer.get_dirname()
-            basename = self.image_namer.basename.format(camera=self, num="[0-9]*")
+            basename = self.image_namer.basename.format(camera=self)
+            basename = basename.replace("{num:04d}", "[0-9]*")
             images = sorted(dirpath.glob(basename), reverse=True)
 
             for image in images:
@@ -171,17 +168,17 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
                     self.session_metadata.bias_image = image
                     break
 
-        if not self.session_metadata.bias_image:
-            warnings.warn("Cannot find bias image to subtract.", FLIWarning)
+        if not exposure.fits_model:
             return exposure
 
-        bias = fits.open(self.session_metadata.bias_image)
-        datab = exposure.data.copy() - bias[1].data
-        headerb = bias[1].header.copy()
-        headerb["BIASFILE"] = str(self.session_metadata.bias_image.name)
-
-        bias_hdu = fits.ImageHDU(data=datab, header=headerb, name="REDUX")
-        exposure.add_hdu(bias_hdu)
+        bias_image = self.session_metadata.bias_image
+        exposure.fits_model[0].header_model.append(
+            (
+                "BIASFILE",
+                bias_image.name if bias_image else "",
+                "Bias file associated with this image",
+            )
+        )
 
         return exposure
 
