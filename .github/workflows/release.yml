@@ -27,7 +27,7 @@ jobs:
           prerelease: false
 
       - name: Install libusb
-        run: sudo apt-get install -ylibusb-1.0-0 libusb-1.0-0-dev python3 python3-pip git gzip
+        run: sudo apt-get install -y libusb-1.0-0 libusb-1.0-0-dev python3 python3-pip git gzip
 
       - name: Set up Python
         uses: actions/setup-python@v2
