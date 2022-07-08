@@ -16,11 +16,11 @@ pixel_scale:
 
 cameras:
   gfa1n:
-    uid: ML0112718
-    serial: ML0112718
+    uid: ML0162718
+    serial: ML0162718
     autoconnect: true
-    gain: 1.15
-    read_noise: 17.5
+    gain: 0.91
+    read_noise: 16.3
     observatory: APO
     find_calibrations: false
     sextant: 1
@@ -61,15 +61,6 @@ cameras:
     find_calibrations: false
     sextant: 5
   gfa6n:
-    uid: ML0182718
-    serial: ML0182718
-    autoconnect: true
-    gain: 1.18
-    read_noise: 14.8
-    observatory: APO
-    find_calibrations: false
-    sextant: 6
-  gfaXn:
     uid: ML0044718
     serial: ML0044718
     autoconnect: true
@@ -77,7 +68,25 @@ cameras:
     read_noise: 14.9
     observatory: APO
     find_calibrations: false
-    sextant: -1
+    sextant: 6
+  # gfa1n:  # FAILED
+  #   uid: ML0112718
+  #   serial: ML0112718
+  #   autoconnect: true
+  #   gain: 1.15
+  #   read_noise: 17.5
+  #   observatory: APO
+  #   find_calibrations: false
+  #   sextant: 1
+  # gfa6n:  # FAILED
+  #   uid: ML0182718
+  #   serial: ML0182718
+  #   autoconnect: true
+  #   gain: 1.18
+  #   read_noise: 14.8
+  #   observatory: APO
+  #   find_calibrations: false
+  #   sextant: 6
   gfa1s:
     uid: ML0172718
     serial: ML0172718
@@ -132,15 +141,6 @@ cameras:
     observatory: LCO
     find_calibrations: false
     sextant: 6
-  gfaXs:
-    uid: ML0162718
-    serial: ML0162718
-    autoconnect: true
-    gain: 0.91
-    read_noise: 16.3
-    observatory: LCO
-    find_calibrations: false
-    sextant: -1
   fvc1n:
     uid: ML3331819
     serial: ML3331819

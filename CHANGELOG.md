@@ -5,6 +5,7 @@
 ### 🚀 New
 
 * Added GFAs for LCO.
+* Updated the APO cameras after GFA-1 and GFA-6 were replaced.
 
 ### ✨ Improved
 
