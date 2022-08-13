@@ -16,6 +16,7 @@ from basecam.actor import CameraActor
 from clu.command import TimedCommand
 from clu.legacy import TronConnection
 
+from flicamera import OBSERVATORY
 from flicamera.camera import FLICamera, FLICameraSystem
 from flicamera.lib import FLIWarning
 
@@ -32,6 +33,8 @@ class FLIActor(CameraActor):
         tron: Optional[Dict[str, Any]] = None,
         **kwargs,
     ):
+
+        self.observatory = OBSERVATORY
 
         self.camera_system = camera_system
         super().__init__(camera_system, *args, validate=False, **kwargs)

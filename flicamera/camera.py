@@ -176,13 +176,15 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
             return exposure
 
         bias_image = self.session_metadata.bias_image
-        exposure.fits_model[0].header_model.append(
-            (
-                "BIASFILE",
-                bias_image.name if bias_image else "",
-                "Bias file associated with this image",
+        card_names = [card.name.upper() for card in exposure.fits_model[0].header_model]
+        if "BIASFILE" not in card_names:
+            exposure.fits_model[0].header_model.append(
+                (
+                    "BIASFILE",
+                    bias_image.name if bias_image else "",
+                    "Bias file associated with this image",
+                )
             )
-        )
 
         return exposure
 
