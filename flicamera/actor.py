@@ -65,11 +65,14 @@ class FLIActor(CameraActor):
 
                 self.log.debug(f"Connecting to Tron on ({tron_host}, {tron_port})")
 
+                observatory_models = tron.get("observatory_models", {})
+                models = tron["models"] + observatory_models.get(self.observatory, [])
+
                 self.tron = TronConnection(
                     f"flicamera.{self.name}",
                     tron["host"],
                     tron["port"],
-                    models=tron["models"],
+                    models=models,
                     log=self.log,
                 )
             except ImportError:

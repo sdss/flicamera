@@ -229,6 +229,152 @@ class APOTCCCards(TronModelCards):
         return cards
 
 
+class LCOTCCCards(TronModelCards):
+    """Return a list of Cards describing the LCO TCC state."""
+
+    name = "LCO TCC Cards"
+    model_name = "lcotcc"
+
+    def _cards(
+        self,
+        exposure: Exposure,
+        context: Dict[str, Any] = {},
+    ) -> MacroCardReturnType:
+
+        cards: MacroCardReturnType = []
+
+        objSysName = self.get("objSys", 0, default="UNKNOWN")
+        cards.append(("OBJSYS", objSysName, "The TCC objSys"))
+
+        # ObjSys
+        if objSysName in ("None", "Mount", "Obs", "Phys", "Inst"):
+            cards += [
+                ("RA", "NaN", "Telescope is not tracking the sky"),
+                ("DEC", "NaN", "Telescope is not tracking the sky"),
+                ("RADEG", "NaN", "Telescope is not tracking the sky"),
+                ("DECDEG", "NaN", "Telescope is not tracking the sky"),
+                ("SPA", "NaN", "Telescope is not tracking the sky"),
+            ]
+        else:
+            cards += [
+                (
+                    "RA",
+                    self.get("obaxePosjNetPos", 0, cnv=pvt2pos),
+                    "RA of telescope boresight (deg)",
+                ),
+                (
+                    "DEC",
+                    self.get("axePos", 1, cnv=pvt2pos),
+                    "Dec of telescope boresight (deg)",
+                ),
+                (
+                    "RADEG",
+                    self.get("objPos", 0, cnv=pvt2pos),
+                    "RA of telescope pointing (deg)",
+                ),
+                (
+                    "DECDEG",
+                    self.get("objPos", 1, cnv=pvt2pos),
+                    "Dec of telescope pointing (deg)",
+                ),
+            ]
+
+        cards.append(
+            (
+                "AIRMASS",
+                self.get("airmass", 0, cnv=float),
+                "Airmass",
+            )
+        )
+
+        # Rotator
+        cards.append(
+            (
+                "HA",
+                self.get("tccHA", 0, cnv=float),
+                "HA axis pos. (approx, deg)",
+            )
+        )
+
+        cards.append(
+            (
+                "IPA",
+                self.get("axePos", 0, cnv=float),
+                "Rotator axis pos. (approx, deg)",
+            )
+        )
+
+        # Focus / M2
+        cards.append(
+            (
+                "FOCUS",
+                self.get("secFocus", 0, cnv=float),
+                "User-specified focus offset (um)",
+            )
+        )
+
+        orient_names = ("piston", "xtilt", "ytilt", "xtran", "ytran", "zrot")
+        for ii in range(len(orient_names)):
+            cards.append(
+                (
+                    "M2" + orient_names[ii].upper(),
+                    self.get("secOrient", ii, cnv=float),
+                    "TCC SecOrient",
+                )
+            )
+
+        # Temperatures
+        cards.append(
+            (
+                "T_OUT",
+                self.get("tccTemps", 0, cnv=float),
+                "Outside temperature deg C.",
+            )
+        )
+
+        cards.append(
+            (
+                "T_IN",
+                self.get("tccTemps", 1, cnv=float),
+                "Inside temperature deg C.",
+            )
+        )
+
+        cards.append(
+            (
+                "T_PRIM",
+                self.get("tccTemps", 2, cnv=float),
+                "Primary mirror temperature deg C.",
+            )
+        )
+
+        cards.append(
+            (
+                "T_CELL",
+                self.get("tccTemps", 3, cnv=float),
+                "Cell temperature deg C.",
+            )
+        )
+
+        cards.append(
+            (
+                "T_FLOOR",
+                self.get("tccTemps", 4, cnv=float),
+                "Floor temperature deg C.",
+            )
+        )
+
+        cards.append(
+            (
+                "T_TRUSS",
+                self.get("secTrussTemp", 0, cnv=float),
+                "Truss temperature deg C. Used for automatic focus correction",
+            )
+        )
+
+        return cards
+
+
 class LampCards(TronModelCards):
     """Return a list of Cards describing the MCP state."""
 
@@ -360,7 +506,7 @@ class FPSCards(TronModelCards):
         cards += [
             (
                 "CARTID",
-                "FPS-N",
+                "FPS-" + ("N" if flicamera.OBSERVATORY == "APO" else "S"),
                 "Cart ID",
             ),
             (
@@ -442,78 +588,86 @@ window_group = CardGroup(
 )
 
 
-raw_header_model = HeaderModel(
-    [
-        "CAMNAME",
-        "VCAM",
-        "IMAGETYP",
-        "EXPTIME",
-        "EXPTIMEN",
-        "STACK",
-        "STACKFUN",
-        Card(
-            "TIMESYS",
-            "TAI",
-            "Time reference system",
-        ),
-        Card(
-            "SJD",
-            value=get_sjd,
-            comment="SDSS custom Julian Day",
-            fargs=("{__camera__.observatory}",),
-        ),
-        Card(
-            "DATE-OBS",
-            "{__exposure__.obstime.tai}",
-            "Time of the start of the exposure [TAI]",
-        ),
-        Card(
-            "CCDTEMP",
-            "{__camera__.status[temperature_ccd]}",
-            "Degrees C",
-            default=-999.0,
-        ),
-        window_group,
-        Card(
-            "GAIN",
-            "{__camera__.gain}",
-            "The CCD gain [e-/ADUs]",
-            default=-999.0,
-            type=float,
-        ),
-        Card(
-            "READNOIS",
-            "{__camera__.read_noise}",
-            "The CCD read noise [ADUs]",
-            default=-999.0,
-            type=float,
-        ),
-        Card(
-            "PIXELSC",
-            "{__camera__.pixel_scale}",
-            "Scale of unbinned pixel on sky [arcsec/pix]",
-            default=-999.0,
-            type=float,
-        ),
-        WCSCards(),
-        Card(
-            "OBSERVAT",
-            "{__camera__.observatory}",
-            "Observatory",
-            default="",
-        ),
-        APOTCCCards() if flicamera.OBSERVATORY == "APO" else None,
-        LampCards() if flicamera.OBSERVATORY == "APO" else None,
-        APOCards() if flicamera.OBSERVATORY == "APO" else None,
-        FPSCards(),
+models = [
+    "CAMNAME",
+    "VCAM",
+    "IMAGETYP",
+    "EXPTIME",
+    "EXPTIMEN",
+    "STACK",
+    "STACKFUN",
+    Card(
+        "TIMESYS",
+        "TAI",
+        "Time reference system",
+    ),
+    Card(
+        "SJD",
+        value=get_sjd,
+        comment="SDSS custom Julian Day",
+        fargs=("{__camera__.observatory}",),
+    ),
+    Card(
+        "DATE-OBS",
+        "{__exposure__.obstime.tai}",
+        "Time of the start of the exposure [TAI]",
+    ),
+    Card(
+        "CCDTEMP",
+        "{__camera__.status[temperature_ccd]}",
+        "Degrees C",
+        default=-999.0,
+    ),
+    window_group,
+    Card(
+        "GAIN",
+        "{__camera__.gain}",
+        "The CCD gain [e-/ADUs]",
+        default=-999.0,
+        type=float,
+    ),
+    Card(
+        "READNOIS",
+        "{__camera__.read_noise}",
+        "The CCD read noise [ADUs]",
+        default=-999.0,
+        type=float,
+    ),
+    Card(
+        "PIXELSC",
+        "{__camera__.pixel_scale}",
+        "Scale of unbinned pixel on sky [arcsec/pix]",
+        default=-999.0,
+        type=float,
+    ),
+    WCSCards(),
+    Card(
+        "OBSERVAT",
+        "{__camera__.observatory}",
+        "Observatory",
+        default="",
+    ),
+]
+
+if flicamera.OBSERVATORY == "APO":
+    models += [
+        APOTCCCards(),
+        LampCards(),
+        APOCards(),
     ]
-)
+elif flicamera.OBSERVATORY == "LCO":
+    models += [
+        LCOTCCCards(),
+    ]
+
+models.append(FPSCards())
+
 
 flicamera_model = FITSModel(
     [
         Extension(
             data=None,
-            header_model=raw_header_model,
+            header_model=HeaderModel(models),
             name="raw",
             compressed="GZIP_2",
         )
