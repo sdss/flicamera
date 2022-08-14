@@ -299,7 +299,7 @@ class LCOTCCCards(TronModelCards):
         cards.append(
             (
                 "IPA",
-                self.get("axePos", 0, cnv=float),
+                self.get("axePos", 2, cnv=float),
                 "Rotator axis pos. (approx, deg)",
             )
         )
