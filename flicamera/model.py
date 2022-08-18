@@ -247,45 +247,23 @@ class LCOTCCCards(TronModelCards):
         cards.append(("OBJSYS", objSysName, "The TCC objSys"))
 
         # ObjSys
-        if objSysName in ("None", "Mount", "Obs", "Phys", "Inst"):
-            cards += [
-                ("RA", "NaN", "Telescope is not tracking the sky"),
-                ("DEC", "NaN", "Telescope is not tracking the sky"),
-                ("RADEG", "NaN", "Telescope is not tracking the sky"),
-                ("DECDEG", "NaN", "Telescope is not tracking the sky"),
-                ("SPA", "NaN", "Telescope is not tracking the sky"),
-            ]
-        else:
-            cards += [
-                (
-                    "RA",
-                    self.get("obaxePosjNetPos", 0, cnv=pvt2pos),
-                    "RA of telescope boresight (deg)",
-                ),
-                (
-                    "DEC",
-                    self.get("axePos", 1, cnv=pvt2pos),
-                    "Dec of telescope boresight (deg)",
-                ),
-                (
-                    "RADEG",
-                    self.get("objPos", 0, cnv=pvt2pos),
-                    "RA of telescope pointing (deg)",
-                ),
-                (
-                    "DECDEG",
-                    self.get("objPos", 1, cnv=pvt2pos),
-                    "Dec of telescope pointing (deg)",
-                ),
-            ]
-
-        cards.append(
+        cards += [
+            (
+                "RA",
+                self.get("objNetPos", 0, cnv=pvt2pos),
+                "RA of telescope boresight (deg)",
+            ),
+            (
+                "DEC",
+                self.get("objNetPos", 1, cnv=pvt2pos),
+                "Dec of telescope boresight (deg)",
+            ),
             (
                 "AIRMASS",
                 self.get("airmass", 0, cnv=float),
                 "Airmass",
-            )
-        )
+            ),
+        ]
 
         # Rotator
         cards.append(
