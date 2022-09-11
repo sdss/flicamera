@@ -89,6 +89,7 @@ lines_after_imports = 2
 
 [tool.pytest.ini_options]
 addopts = "--cov flicamera --cov-report xml --cov-report html --cov-report term"
+asyncio_mode = "auto"
 
 [tool.coverage.run]
 branch = true
