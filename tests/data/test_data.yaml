@@ -9,3 +9,4 @@ cameras:
     exposure_time_left: 0
     model: 'MicroLine ML50100'
     observatory: APO
+    write_snapshot: false

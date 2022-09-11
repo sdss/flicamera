@@ -6,6 +6,8 @@
 # @Filename: test_camera.py
 # @License: BSD 3-clause (http://www.opensource.org/licenses/BSD-3-Clause)
 
+import pathlib
+
 import numpy
 import pytest
 
@@ -80,3 +82,19 @@ async def test_area(camera_system):
     exposure = await camera.expose(0.1)
 
     assert exposure.data.shape == (25, 50)
+
+
+@pytest.mark.asyncio
+async def test_expose_snapshot(camera_system, monkeypatch):
+
+    camera = camera_system.cameras[0]
+
+    monkeypatch.setitem(camera.camera_params, "write_snapshot", True)
+
+    exposure = await camera.expose(0.1)
+
+    filename = exposure.filename
+    snap_path = pathlib.Path(".") / (filename.split(".")[0] + "-snap.fits")
+
+    assert snap_path.exists()
+    snap_path.unlink()
