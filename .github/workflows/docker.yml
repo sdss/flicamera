@@ -27,7 +27,7 @@ jobs:
             BRANCH=$(echo ${GITHUB_REF#refs/heads/} | sed -r 's/[\/]/_/g')
             echo ::set-output name=TAGS::$USER/$APP:$BRANCH
           else
-            echo ::set-output name=TAGS::$USER/$APP:${GITHUB_REF#refs/tags/},$USER/$APP:latest
+            echo ::set-output name=TAGS::$USER/$APP:${GITHUB_REF#refs/tags/}
           fi
       - name: Show tags
         run: echo ${{ steps.set-tags.outputs.TAGS }}
