@@ -1,11 +1,12 @@
 # Changelog
 
-## Next version
+## 0.5.0, September 11, 2022
 
 ### 🚀 New
 
 * Added GFAs for LCO.
 * Updated the APO cameras after GFA-1 and GFA-6 were replaced.
+* Complete LCO header cards.
 
 ### ✨ Improved
 
@@ -14,6 +15,7 @@
 ### 🔧 Fixed
 
 * Forced `sdsstools>=0.5.2` to fix the calculation of SJD.
+* Avoid creating multiple `BIASFILE` header entries.
 
 
 ## 0.4.0 - June 5, 2022
