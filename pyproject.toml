@@ -34,18 +34,13 @@ generate-setup-file = false
 flicamera = "flicamera.__main__:main"
 
 [tool.poetry.dependencies]
-python = "^3.7,<4.0"
+python = "^3.8,<4.0"
 numpy = "^1.17.4"
-sdss-basecam = "^0.6.2"
-# sdss-basecam = {git = "https://github.com/sdss/basecam.git", branch = "main"}
+sdss-basecam = "^0.7.0"
 sdsstools = ">=0.5.2"
 click_default_group = "^1.2.2"
 photutils = "^1.0.2"
-astropy = [
-    {version = "^4.2", python = ">=3.7,<3.10"},
-    {version = "^5.0", python = ">=3.10"}
-]
-scipy = "^1.6.1"
+scipy = "^1.9.1"
 
 [tool.poetry.dev-dependencies]
 ipython = [
