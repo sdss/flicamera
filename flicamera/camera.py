@@ -150,6 +150,15 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
             except Exception as err:
                 warnings.warn(f"Failed writing snapshot to disk: {err}", FLIWarning)
 
+        # Trim image
+        if (
+            exposure.data is not None
+            and self.camera_params.get("trim", None) is not None
+        ):
+            trim_region = self.camera_params["trim"]
+            trim_slice = [slice(*trim_region[0]), slice(*trim_region[1])]
+            exposure.data = exposure.data[trim_slice[0], trim_slice[1]]
+
         # Find calibration images
         current_mjd = get_sjd(self.observatory.upper())
         if self.session_metadata is None or self.session_metadata.mjd != current_mjd:
