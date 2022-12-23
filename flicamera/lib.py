@@ -11,6 +11,7 @@
 from __future__ import annotations
 
 import ctypes
+import logging
 import os
 import pathlib
 from ctypes import (
@@ -24,8 +25,9 @@ from ctypes import (
     c_ulong,
     c_void_p,
 )
+from functools import partial
 
-from typing import Dict, Optional, Tuple
+from typing import Callable, Dict, Optional, Tuple
 
 import numpy
 
@@ -386,6 +388,7 @@ class LibFLI(ctypes.CDLL):
         shared_object: Optional[str] = None,
         debug: bool = False,
         simulation_mode: bool = False,
+        log: Callable[[str], None] | None = None,
     ):
 
         self.domain = flidomain_t(FLIDOMAIN_USB | FLIDEVICE_CAMERA)
@@ -410,6 +413,8 @@ class LibFLI(ctypes.CDLL):
             so_func = self.libc.__getattr__(funcname)
             so_func.argtypes = argtypes
             so_func.restype = chk_err
+
+        self.log = log or partial(logging.log, logging.DEBUG)
 
         if debug:
             self.set_debug(True)
@@ -453,7 +458,7 @@ class LibFLI(ctypes.CDLL):
 
         camera_names = self.list_cameras()
         for camera_name in camera_names:
-            fli_camera = LibFLIDevice(camera_name, self.libc)
+            fli_camera = LibFLIDevice(camera_name, self)
             if fli_camera.serial == serial:
                 return fli_camera
 
@@ -465,7 +470,7 @@ class LibFLIDevice(object):
 
     _instances = {}
 
-    def __new__(cls, name, libc):
+    def __new__(cls, name, lib):
 
         # Create a singleton to avoid opening the camera multiple times.
         if name not in cls._instances:
@@ -474,7 +479,7 @@ class LibFLIDevice(object):
 
         return cls._instances[name]
 
-    def __init__(self, name, libc):
+    def __init__(self, name, lib):
 
         if not self.is_open:
 
@@ -482,7 +487,9 @@ class LibFLIDevice(object):
             self._str_size = 100
 
             self.name = name if isinstance(name, str) else name.decode()
-            self.libc = libc
+
+            self.lib = lib
+            self.libc = lib.libc
 
             self.dev = flidev_t()
             self._model = ctypes.create_string_buffer(self._str_size)
@@ -556,10 +563,17 @@ class LibFLIDevice(object):
     def __del__(self):
         """Closes the device."""
 
+        self.disconnect()
+
+    def disconnect(self):
+        """Disconnects and frees the device."""
+
         self.libc.FLIUnlockDevice(self.dev)
 
         if self.is_open:
             self.libc.FLIClose(self.dev)
+
+        LibFLIDevice._instances.pop(self.name)
 
     def _update_temperature(self):
         """Gets the temperatures and updates the ``temperature`` dict."""

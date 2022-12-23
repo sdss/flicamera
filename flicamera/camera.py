@@ -285,6 +285,12 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
 
         self._device.set_binning(hbin, vbin)
 
+    async def disconnect(self) -> bool:
+        """Disconnects the camera."""
+
+        self._device.disconnect()
+        return await super().disconnect()
+
 
 class FLICameraSystem(CameraSystem[FLICamera]):
     """FLI camera system."""
@@ -296,7 +302,7 @@ class FLICameraSystem(CameraSystem[FLICamera]):
     def __init__(self, *args, simulation_mode=False, **kwargs):
 
         self.camera_class: Type[FLICamera] = kwargs.pop("camera_system", FLICamera)
-        self.lib = LibFLI(simulation_mode=simulation_mode)
+        self.lib = LibFLI(simulation_mode=simulation_mode, log=self.log)
 
         super().__init__(*args, **kwargs)
 
@@ -310,9 +316,10 @@ class FLICameraSystem(CameraSystem[FLICamera]):
         serial_numbers = []
         for device_id in devices_id:
             try:
-                device = LibFLIDevice(device_id, self.lib.libc)
+                device = LibFLIDevice(device_id, self.lib)
                 serial_numbers.append(device.serial)
-            except FLIError:
+            except FLIError as err:
+                warnings.warn(str(err), FLIWarning)
                 continue
 
         return serial_numbers
