@@ -568,7 +568,7 @@ class LibFLIDevice(object):
         if self.is_open:
             self.libc.FLIClose(self.dev)
 
-        LibFLIDevice._instances.pop(self.name)
+        LibFLIDevice._instances.pop(self.name, None)
 
     def _update_temperature(self):
         """Gets the temperatures and updates the ``temperature`` dict."""
