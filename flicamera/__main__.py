@@ -34,10 +34,12 @@ log = get_logger(NAME)
 class FLICameraWrapper(object):
     """A helper to store CameraSystem initialisation parameters."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, setup=True, **kwargs):
 
         self.args = args
         self.kwargs = kwargs
+
+        self.setup = setup
 
         self.camera_system = None
 
@@ -49,7 +51,9 @@ class FLICameraWrapper(object):
             config_path = self.kwargs.pop("config_path", None)
 
             self.camera_system = FLICameraSystem(*self.args, **self.kwargs)
-            self.camera_system.setup()
+
+            if self.setup:
+                self.camera_system.setup()
 
             if config_path:
                 self.camera_system.logger.debug(
@@ -172,6 +176,7 @@ def flicamera(ctx, cameras, config_path, simulate, simulation_profile, verbose):
         verbose=verbose,
         config_path=config_path,
         simulate_config=simulate_config,
+        setup=True,
     )
 
     # Store some of the options here for the daemon
@@ -229,7 +234,14 @@ async def actor(obj, host, port, actor_name):
     if obj["cameras"]:
         actor_params.update({"default_cameras": list(obj["cameras"])})
 
-    async with obj["camera_system"] as fli:
+    camera_system = obj["camera_system"]
+
+    # For the actor we prefer setup be run in FLIActor.start(). That way some
+    # things like the listener callbacks are available when the camera system
+    # starts detecting cameras.
+    camera_system.setup = False
+
+    async with camera_system as fli:
         actor = await FLIActor(fli, **actor_params).start()
         await actor.run_forever()
 

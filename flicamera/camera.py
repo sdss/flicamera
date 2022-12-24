@@ -300,14 +300,25 @@ class FLICameraSystem(CameraSystem[FLICamera]):
 
     camera_class = FLICamera
 
-    def __init__(self, *args, simulation_mode=False, **kwargs):
+    def __init__(self, *args, simulation_mode: bool = False, **kwargs):
 
         self.camera_class: Type[FLICamera] = kwargs.pop("camera_system", FLICamera)
-        self.lib = LibFLI(simulation_mode=simulation_mode, log=self.log)
-
         super().__init__(*args, **kwargs)
 
+        self.simulation_mode = simulation_mode
+        self.lib: LibFLI | None = None
+
+    def setup(self):
+        """Set up the camera system."""
+
+        self.lib = LibFLI(simulation_mode=self.simulation_mode, log=self.log)
+
+        return super().setup()
+
     def list_available_cameras(self) -> List[str]:
+
+        if self.lib is None:
+            return []
 
         # These are camera devices, not UIDs. They can change as cameras
         # are replugged or moved to a different computer.
