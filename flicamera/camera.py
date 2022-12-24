@@ -285,11 +285,12 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
 
         self._device.set_binning(hbin, vbin)
 
-    async def disconnect(self) -> bool:
+    async def _disconnect_internal(self) -> bool:
         """Disconnects the camera."""
 
         self._device.disconnect()
-        return await super().disconnect()
+
+        return True
 
 
 class FLICameraSystem(CameraSystem[FLICamera]):
