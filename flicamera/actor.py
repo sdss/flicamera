@@ -59,6 +59,8 @@ class FLIActor(CameraActor):
             camera.image_namer.camera = camera
             camera.fits_model.context.update({"__actor__": self})
 
+        self.listener.register_callback(self.event_listener)
+
         if tron:
             try:
                 import actorkeys  # type: ignore  # noqa
@@ -112,3 +114,13 @@ class FLIActor(CameraActor):
         self.camera_system.setup()
 
         return self
+
+    def event_listener(self, event: CameraSystemEvent | CameraEvent, payload):
+        """Listens to events from the camera system."""
+
+        if event == CameraEvent.CAMERA_CONNECTED:
+            name = payload["name"]
+            self.write("i", text=f"Camera connected: {name}")
+        elif event == CameraEvent.CAMERA_DISCONNECTED:
+            name = payload["name"]
+            self.write("i", text=f"Camera disconnected: {name}")
