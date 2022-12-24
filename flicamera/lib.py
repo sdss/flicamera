@@ -560,11 +560,6 @@ class LibFLIDevice(object):
 
         self.is_open = True
 
-    def __del__(self):
-        """Closes the device."""
-
-        self.disconnect()
-
     def disconnect(self):
         """Disconnects and frees the device."""
 
