@@ -8,12 +8,14 @@
 
 from __future__ import annotations
 
+import asyncio
 import warnings
 
 from typing import Any, Dict, Optional
 
 from basecam.actor import CameraActor
-from clu.command import TimedCommand
+from basecam.events import CameraEvent, CameraSystemEvent
+from clu import Command
 from clu.legacy import TronConnection
 
 from flicamera import OBSERVATORY
@@ -90,7 +92,7 @@ class FLIActor(CameraActor):
         else:
             self.tron = None
 
-        self.timed_commands.append(TimedCommand("status", delay=60))
+        asyncio.create_task(self._output_status())
 
     async def start(self):
         """Reconnects the camera system if no cameras are connected."""
@@ -114,6 +116,21 @@ class FLIActor(CameraActor):
         self.camera_system.setup()
 
         return self
+
+    async def _output_status(self):
+        """Outputs the camera status."""
+
+        while True:
+            # Only call status if there are cameras connected, to avoid raising
+            # unnecessary warnings.
+            if len(self.camera_system.cameras) > 0:
+                await Command(
+                    "status",
+                    actor=self,
+                    commander_id=f".{self.name}",
+                ).parse()
+
+            await asyncio.sleep(120)
 
     def event_listener(self, event: CameraSystemEvent | CameraEvent, payload):
         """Listens to events from the camera system."""
