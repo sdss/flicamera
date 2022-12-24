@@ -71,6 +71,9 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
     async def _connect_internal(self, **conn_params):
         """Internal method to connect the camera."""
 
+        if self.camera_system.lib is None:
+            raise CameraConnectionError("libfli is not available.")
+
         serial = conn_params.get("serial", conn_params.get("uid", self.uid))
 
         if serial is None:
