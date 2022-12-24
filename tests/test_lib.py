@@ -17,6 +17,7 @@ from flicamera.mock import MockLibFLI
 def test_libfi_load(libfli: MockLibFLI):
 
     assert isinstance(libfli, flicamera.lib.LibFLI)
+    assert isinstance(libfli.libc, MockLibFLI)
 
     # Test the mocking
     assert len(libfli.libc.devices) > 0
@@ -41,7 +42,7 @@ def test_get_camera(libfli, config):
 def test_bad_camera(libfli):
 
     with pytest.raises(flicamera.lib.FLIError):
-        flicamera.lib.LibFLIDevice("bad_name", libfli.libc)
+        flicamera.lib.LibFLIDevice("bad_name", libfli)
 
 
 def test_get_camera_bad_serial(libfli):

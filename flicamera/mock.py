@@ -64,6 +64,9 @@ async def get_mock_camera_system(
             simulation_mode=True,
             camera_config=camera_config,
         )
+        camera_system.setup()
+
+        assert camera_system.lib
 
         assert isinstance(camera_system.lib.libc, MockLibFLI)
         camera_system.lib.libc.devices = []
@@ -254,7 +257,7 @@ class MockFLIDevice(object):
 
         assert isinstance(image, numpy.ndarray)
 
-        image[image > 2 ** 16] = 2 ** 16 - 1
+        image[image > 2**16] = 2**16 - 1
 
         self.image = image.astype("uint16")
 
@@ -338,6 +341,14 @@ class MockLibFLI(ctypes.CDLL):
         return self.restype(-errno.ENXIO)
 
     def FLIClose(self, dev):
+
+        device = self._get_device(dev)
+        if not device:
+            return self.restype(-errno.ENXIO)
+
+        return self.restype(0)
+
+    def FLIUnlockDevice(self, dev):
 
         device = self._get_device(dev)
         if not device:

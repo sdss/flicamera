@@ -74,13 +74,16 @@ def cameras(libfli):
 async def camera_system(mock_libfli, config):
 
     camera_system = FLICameraSystem(camera_config=TEST_DATA, simulation_mode=True)
+    camera_system.setup()
+
+    assert camera_system.lib
+
     camera_system.lib.libc.devices = []  # type: ignore
 
     for camera in config["cameras"]:
         device = MockFLIDevice(camera, status_params=config["cameras"][camera])
         camera_system.lib.libc.devices.append(device)
 
-    camera_system.setup()
     for camera in config["cameras"]:
         await camera_system.add_camera(camera)
 
