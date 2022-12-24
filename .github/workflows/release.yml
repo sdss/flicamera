@@ -55,12 +55,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Create a Release
-        uses: elgohr/Github-Release-Action@v4
+      - name: Create Release
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          title: coordIO ${{ github.ref }}
+          tag_name: ${{ github.ref }}
+          release_name: flicamera ${{ github.ref }}
+          body: ''
+          draft: false
+          prerelease: false
 
       - name: Set up Python
         uses: actions/setup-python@v4
