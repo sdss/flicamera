@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.6.0, December 24, 2022
+
+### ✨ Improved
+
+* Allow to set an image area and trim region in the image parameters.
+* Use custom image areas for the FVC at APO and LCO.
+* Ensure that camera is closed and the handle released.
+* Output when a camera connects/disconnects to the actor users.
+* Only run timed status when cameras are connected, to avoid unnecessary warnings.
+* Ensure `libfli` is available when then actor starts.
+
+### ⚙️ Engineering
+
+* Do not update `latest` Docker image for tagged versions.
+* Update release workflow to build wheels for multiple architectures and versions.
+
+
 ## 0.5.0, September 11, 2022
 
 ### 🚀 New
