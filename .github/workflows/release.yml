@@ -34,11 +34,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip setuptools wheel twine
+          python -m pip install --upgrade pip setuptools wheel twine build
 
       - name: Build package
         run: |
-          python setup.py bdist_wheel
+          python -m build --wheel
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@master
@@ -69,11 +69,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip setuptools wheel twine
+          python -m pip install --upgrade pip setuptools wheel twine build
 
       - name: Build source package
         run: |
-          python setup.py sdist
+          python -m build --sdist
 
       - name: Build wheels
         uses: RalfG/python-wheels-manylinux-build@v0.6.0
