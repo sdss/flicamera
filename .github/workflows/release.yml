@@ -27,14 +27,14 @@ jobs:
         run: |
           python -m pip install --upgrade pip setuptools wheel twine build
 
-      - name: Build package
+      - name: Build wheels
         run: |
           pyproject-build -w
 
-      - name: Build package
+      - name: Build source
         if: ${{ matrix.python-version == '3.11' }}
         run: |
-          pyproject-build -w
+          pyproject-build -s
 
       - name: Publish wheels to PyPI
         env:
