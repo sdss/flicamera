@@ -73,10 +73,6 @@ jobs:
           python-versions: 'cp38-cp38 cp39-cp39 cp310-cp310 cp310-cp310 cp311-cp311'
           system-packages: 'libusbx libusbx-devel'
 
-      - name: Remove non-manylinux wheels
-        run: |
-          rm dist/*-linux_*.whl
-
       - name: Download macOS artifacts
         uses: actions/download-artifact@v3
         with:
