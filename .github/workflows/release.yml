@@ -29,7 +29,7 @@ jobs:
 
       - name: Build package
         run: |
-          python -m build --wheel
+          pyproject-build -s -w --wheel
 
       # Cannot upload to pypi here. The action only supports Linux.
       - name: Upload artifacts
