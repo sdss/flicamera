@@ -29,14 +29,14 @@ jobs:
 
       - name: Build package
         run: |
-          pyproject-build -s -w --wheel
+          pyproject-build -s -w
 
-      # Cannot upload to pypi here. The action only supports Linux.
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: macos-wheels-${{ matrix.python-version }}
-          path: dist/*.whl
+      - name: Publish wheels to PyPI
+        env:
+          TWINE_USERNAME: albireo
+          TWINE_PASSWORD: ${{ secrets.pypi_password }}
+        run: |
+          twine upload dist/*
 
   build_on_linux:
     name: Build for Linux and upload to PyPI
@@ -73,22 +73,13 @@ jobs:
           python-versions: 'cp38-cp38 cp39-cp39 cp310-cp310 cp310-cp310 cp311-cp311'
           system-packages: 'libusbx libusbx-devel'
 
-      - name: Download macOS artifacts
-        uses: actions/download-artifact@v3
-        with:
-          path: dist/
-
-      - name: Remove artifact directories
-        run: |
-          mv dist/macos-wheels-*/* dist/
-          rm -Rf dist/macos-wheels-*
-
       - name: List files
         run: |
           ls -la dist/
 
-      - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: __token__
-          password: ${{ secrets.pypi_password }}
+      - name: Publish wheels to PyPI
+        env:
+          TWINE_USERNAME: albireo
+          TWINE_PASSWORD: ${{ secrets.pypi_password }}
+        run: |
+          twine upload dist/*-manylinux*.whl
