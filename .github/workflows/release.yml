@@ -46,7 +46,6 @@ jobs:
   build_on_linux:
     name: Build for Linux and upload to PyPI
     runs-on: ubuntu-latest
-    needs: [build_on_macos]
 
     steps:
       - name: Checkout code
