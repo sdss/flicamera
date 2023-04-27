@@ -2140,14 +2140,14 @@ test = ["asv", "gmpy2", "mpmath", "pytest", "pytest-cov", "pytest-xdist", "sciki
 
 [[package]]
 name = "sdss-basecam"
-version = "0.7.1"
+version = "0.7.2"
 description = "A base library for camera wrapping and actor."
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "sdss_basecam-0.7.1-py3-none-any.whl", hash = "sha256:bd69daff2a8f0b0f377de27aa49ec3205ed824ab5ef224c115cb0c26e23c4bc7"},
-    {file = "sdss_basecam-0.7.1.tar.gz", hash = "sha256:a7e06b15a0da0a6cffb2ff1c2733378931f80508c90f33407feb2d3d3f489bba"},
+    {file = "sdss_basecam-0.7.2-py3-none-any.whl", hash = "sha256:8dca46ef3399f2525cacc1a621277b3feda0679e95af3af25128eac3b8e95f3c"},
+    {file = "sdss_basecam-0.7.2.tar.gz", hash = "sha256:6ecf04843dfbcfe727f2f6897c8879c5dfee28b317d61eb5f4b6ed62158f8fdc"},
 ]
 
 [package.dependencies]
@@ -2694,4 +2694,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8,<4.0"
-content-hash = "39a1fdaccba304ae8a021a88fc7d5a43c8538904dd796b2afb26a1ef255ec246"
+content-hash = "ce11e90fda3d3cfab2ca8a87da2fbb3bad86194e4382117cfa85f63040b6e55d"
