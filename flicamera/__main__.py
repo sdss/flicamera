@@ -35,7 +35,6 @@ class FLICameraWrapper(object):
     """A helper to store CameraSystem initialisation parameters."""
 
     def __init__(self, *args, setup=True, **kwargs):
-
         self.args = args
         self.kwargs = kwargs
 
@@ -44,7 +43,6 @@ class FLICameraWrapper(object):
         self.camera_system = None
 
     async def __aenter__(self):
-
         simulate_config = self.kwargs.pop("simulate_config", {})
 
         if not simulate_config:
@@ -74,7 +72,6 @@ class FLICameraWrapper(object):
         return self.camera_system
 
     async def __aexit__(self, *excinfo):
-
         if not self.camera_system or not self.camera_system.cameras:
             return
 
@@ -253,7 +250,6 @@ async def status(obj):
     """Returns the status of the connected cameras."""
 
     async with obj["camera_system"] as fli:
-
         if len(fli.cameras) == 0:
             log.error("No cameras connected.")
             return click.Abort()
@@ -281,7 +277,6 @@ async def expose(obj, exptime, outfile, overwrite):
     """Returns the status of the connected cameras."""
 
     async with obj["camera_system"] as fli:
-
         log.debug("starting camera exposure ... ")
         exposures = await asyncio.gather(
             *[camera.expose(exptime) for camera in fli.cameras],

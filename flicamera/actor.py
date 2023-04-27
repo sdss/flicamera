@@ -35,7 +35,6 @@ class FLIActor(CameraActor):
         tron: Optional[Dict[str, Any]] = None,
         **kwargs,
     ):
-
         self.observatory = OBSERVATORY
 
         self.camera_system = camera_system

@@ -59,7 +59,6 @@ async def get_mock_camera_system(
     """
 
     with unittest.mock.patch("ctypes.cdll.LoadLibrary", MockLibFLI):
-
         camera_system = FLICameraSystem(
             simulation_mode=True,
             camera_config=camera_config,
@@ -158,7 +157,6 @@ class MockFLIDevice(object):
         status_params: Dict[str, Any] = {},
         exposure_params: Union[str, List[Dict[str, Any]]] = [],
     ):
-
         global DEV_COUNTER
 
         self.dev = DEV_COUNTER
@@ -282,7 +280,6 @@ class MockLibFLI(ctypes.CDLL):
     """Mocks the CDLL object with the FLI dynamic library."""
 
     def __init__(self, dlpath: str):
-
         self.dlpath: str = dlpath
         self.devices: List[MockFLIDevice] = []
 
@@ -294,7 +291,6 @@ class MockLibFLI(ctypes.CDLL):
         self.__init__(self.dlpath)
 
     def __getattr__(self, name):
-
         # __getattr__ only gets called if there is no attribute in the class
         # that matches that name. So for the cases when we haven't overridden
         # the library function, we returns a Mock that returns 0 (no error).
@@ -315,7 +311,6 @@ class MockLibFLI(ctypes.CDLL):
         return None
 
     def FLIList(self, domain, names_ptr):
-
         device_names = [
             (dev.name + ";" + dev.state["model"]).encode() for dev in self.devices
         ]
@@ -331,7 +326,6 @@ class MockLibFLI(ctypes.CDLL):
         return self.restype(0)
 
     def FLIOpen(self, dev_ptr, name, domain):
-
         name = name.decode()
         for device in self.devices:
             if device.name == name:
@@ -341,7 +335,6 @@ class MockLibFLI(ctypes.CDLL):
         return self.restype(-errno.ENXIO)
 
     def FLIClose(self, dev):
-
         device = self._get_device(dev)
         if not device:
             return self.restype(-errno.ENXIO)
@@ -349,7 +342,6 @@ class MockLibFLI(ctypes.CDLL):
         return self.restype(0)
 
     def FLIUnlockDevice(self, dev):
-
         device = self._get_device(dev)
         if not device:
             return self.restype(-errno.ENXIO)
@@ -357,7 +349,6 @@ class MockLibFLI(ctypes.CDLL):
         return self.restype(0)
 
     def FLIGetSerialString(self, dev, serial_ptr, str_size):
-
         device = self._get_device(dev)
         if not device:
             return self.restype(-errno.ENXIO)
@@ -367,7 +358,6 @@ class MockLibFLI(ctypes.CDLL):
         return self.restype(0)
 
     def FLIGetModel(self, dev, model_ptr, str_size):
-
         device = self._get_device(dev)
         if not device:
             return self.restype(-errno.ENXIO)
@@ -377,7 +367,6 @@ class MockLibFLI(ctypes.CDLL):
         return self.restype(0)
 
     def FLISetExposureTime(self, dev, exp_time):
-
         device = self._get_device(dev)
         if not device:
             return self.restype(-errno.ENXIO)
@@ -390,7 +379,6 @@ class MockLibFLI(ctypes.CDLL):
         return self.restype(0)
 
     def FLISetTemperature(self, dev, temperature):
-
         device = self._get_device(dev)
         if not device:
             return self.restype(-errno.ENXIO)
@@ -400,7 +388,6 @@ class MockLibFLI(ctypes.CDLL):
         return self.restype(0)
 
     def FLIReadTemperature(self, dev, temp_flag, temp_ptr):
-
         device = self._get_device(dev)
         if not device:
             return self.restype(-errno.ENXIO)
@@ -413,7 +400,6 @@ class MockLibFLI(ctypes.CDLL):
         return self.restype(0)
 
     def FLIGetCoolerPower(self, dev, cooler_ptr):
-
         device = self._get_device(dev)
         if not device:
             return self.restype(-errno.ENXIO)
@@ -423,7 +409,6 @@ class MockLibFLI(ctypes.CDLL):
         return self.restype(0)
 
     def FLIGetExposureStatus(self, dev, timeleft_ptr):
-
         device = self._get_device(dev)
         if not device:
             return self.restype(-errno.ENXIO)
@@ -431,7 +416,6 @@ class MockLibFLI(ctypes.CDLL):
         if device.state["exposure_status"] == "idle":
             timeleft_ptr._obj.value = 0
         elif device.state["exposure_status"] == "exposing":
-
             time_elapsed = 1000 * (time.time() - device.state["exposure_start_time"])
             if time_elapsed > device.state["exposure_time"]:
                 timeleft_ptr._obj.value = 0
@@ -442,7 +426,6 @@ class MockLibFLI(ctypes.CDLL):
         return self.restype(0)
 
     def FLIExposeFrame(self, dev):
-
         device = self._get_device(dev)
         if not device:
             return self.restype(-errno.ENXIO)
@@ -460,7 +443,6 @@ class MockLibFLI(ctypes.CDLL):
         return self.restype(0)
 
     def FLICancelExposure(self, dev):
-
         device = self._get_device(dev)
         if not device:
             return self.restype(-errno.ENXIO)
@@ -471,7 +453,6 @@ class MockLibFLI(ctypes.CDLL):
         return self.restype(0)
 
     def FLIGetVisibleArea(self, dev, ul_x_ptr, ul_y_ptr, lr_x_ptr, lr_y_ptr):
-
         device = self._get_device(dev)
         if not device:
             return self.restype(-errno.ENXIO)
@@ -496,7 +477,6 @@ class MockLibFLI(ctypes.CDLL):
         return image
 
     def FLIGrabRow(self, dev, array_ptr, col_size):
-
         device = self._get_device(dev)
         if not device:
             return self.restype(-errno.ENXIO)
@@ -523,7 +503,6 @@ class MockLibFLI(ctypes.CDLL):
         # iterates over each elements, so do not use with large image.
         initial_address = ctypes.addressof(array_ptr._obj)
         for ii in range(col_size):
-
             offset = device.row * col_size + ii
             address = initial_address + offset * ctypes.sizeof(ctypes.c_uint16)
 

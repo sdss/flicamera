@@ -50,7 +50,6 @@ def actor():
 
 
 async def test_tcc_model(camera_system):
-
     camera = camera_system.cameras[0]
     exposure = await camera.expose(0.1)
 
@@ -60,7 +59,6 @@ async def test_tcc_model(camera_system):
 
 
 async def test_tcc_model_objsys_mount(camera_system, actor):
-
     camera = camera_system.cameras[0]
 
     actor.tron.models["tcc"]["objSys"].value = ["Mount"]
@@ -77,7 +75,6 @@ async def test_tcc_model_objsys_mount(camera_system, actor):
 
 
 async def test_tcc_model_objsys_icrs(camera_system, actor):
-
     camera = camera_system.cameras[0]
 
     actor.tron.models["tcc"]["objSys"].value = ["ICRS"]

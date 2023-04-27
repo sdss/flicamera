@@ -390,7 +390,6 @@ class LibFLI(ctypes.CDLL):
         simulation_mode: bool = False,
         log: Callable[[str], None] | None = None,
     ):
-
         self.domain = flidomain_t(FLIDOMAIN_USB | FLIDEVICE_CAMERA)
 
         if not shared_object:
@@ -421,7 +420,6 @@ class LibFLI(ctypes.CDLL):
 
     @staticmethod
     def _convert_to_list(ptr):
-
         if not ptr:
             return []
 
@@ -471,7 +469,6 @@ class LibFLIDevice(object):
     _instances = {}
 
     def __new__(cls, name, lib):
-
         # Create a singleton to avoid opening the camera multiple times.
         if name not in cls._instances:
             cls._instances[name] = super(LibFLIDevice, cls).__new__(cls)
@@ -480,9 +477,7 @@ class LibFLIDevice(object):
         return cls._instances[name]
 
     def __init__(self, name, lib):
-
         if not self.is_open:
-
             self.domain = flidomain_t(FLIDOMAIN_USB | FLIDEVICE_CAMERA)
             self._str_size = 100
 
@@ -658,14 +653,12 @@ class LibFLIDevice(object):
         v_ul_x, v_ul_y, v_lr_x, v_lr_y = self.get_visible_area()
 
         if area:
-
             ul_x = v_ul_x + area[0]
             ul_y = v_ul_y + area[1]
             lr_x = v_ul_x + area[2]
             lr_y = v_ul_y + area[3]
 
         else:
-
             ul_x = v_ul_x
             ul_y = v_ul_y
             lr_x = v_lr_x

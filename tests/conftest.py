@@ -72,7 +72,6 @@ def cameras(libfli):
 
 @pytest.fixture
 async def camera_system(mock_libfli, config):
-
     camera_system = FLICameraSystem(camera_config=TEST_DATA, simulation_mode=True)
     camera_system.setup()
 

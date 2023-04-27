@@ -15,13 +15,11 @@ from flicamera import FLICameraSystem
 
 
 def test_camera_system(camera_system):
-
     assert isinstance(camera_system, FLICameraSystem)
     assert len(camera_system.cameras) == 1
 
 
 def test_list_cameras(camera_system):
-
     available_cameras = camera_system.list_available_cameras()
 
     assert len(available_cameras) == 1
@@ -29,7 +27,6 @@ def test_list_cameras(camera_system):
 
 
 def test_get_status(camera_system):
-
     camera = camera_system.cameras[0]
     status = camera.get_status()
 
@@ -38,7 +35,6 @@ def test_get_status(camera_system):
 
 @pytest.mark.asyncio
 async def test_temperature(camera_system):
-
     camera = camera_system.cameras[0]
 
     await camera.set_temperature(250)
@@ -49,7 +45,6 @@ async def test_temperature(camera_system):
 
 @pytest.mark.asyncio
 async def test_expose(camera_system):
-
     camera = camera_system.cameras[0]
 
     exposure = await camera.expose(0.1)
@@ -60,7 +55,6 @@ async def test_expose(camera_system):
 
 @pytest.mark.asyncio
 async def test_binning(camera_system):
-
     camera = camera_system.cameras[0]
 
     await camera.set_binning(2, 2)
@@ -73,7 +67,6 @@ async def test_binning(camera_system):
 
 @pytest.mark.asyncio
 async def test_area(camera_system):
-
     camera = camera_system.cameras[0]
 
     await camera.set_image_area(area=(0, 50, 0, 25))
@@ -86,7 +79,6 @@ async def test_area(camera_system):
 
 @pytest.mark.asyncio
 async def test_expose_snapshot(camera_system, monkeypatch):
-
     camera = camera_system.cameras[0]
 
     monkeypatch.setitem(camera.camera_params, "write_snapshot", True)

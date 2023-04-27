@@ -47,7 +47,6 @@ class TronModelCards(MacroCard, metaclass=abc.ABCMeta):
     model_name: Optional[str] = None
 
     def macro(self, exposure: Exposure, context: Dict[str, Any] = {}):
-
         try:
             self.model = context["__actor__"].tron.models[self.model_name]
         except (KeyError, AttributeError):
@@ -89,7 +88,6 @@ class APOTCCCards(TronModelCards):
         exposure: Exposure,
         context: Dict[str, Any] = {},
     ) -> MacroCardReturnType:
-
         cards: MacroCardReturnType = []
 
         objSysName = self.get("objSys", 0, default="UNKNOWN")
@@ -240,7 +238,6 @@ class LCOTCCCards(TronModelCards):
         exposure: Exposure,
         context: Dict[str, Any] = {},
     ) -> MacroCardReturnType:
-
         cards: MacroCardReturnType = []
 
         objSysName = self.get("objSys", 0, default="UNKNOWN")
@@ -385,7 +382,6 @@ class LampCards(TronModelCards):
         exposure: Exposure,
         context: Dict[str, Any] = {},
     ) -> MacroCardReturnType:
-
         cards: MacroCardReturnType = []
 
         for lamp_key in ("ffLamp", "neLamp", "hgCdLamp"):
@@ -429,7 +425,6 @@ class APOCards(TronModelCards):
         exposure: Exposure,
         context: Dict[str, Any] = {},
     ) -> MacroCardReturnType:
-
         cards: MacroCardReturnType = []
 
         cards.append(
@@ -478,7 +473,6 @@ class FPSCards(TronModelCards):
         exposure: Exposure,
         context: Dict[str, Any] = {},
     ) -> MacroCardReturnType:
-
         cards: MacroCardReturnType = []
 
         cards += [

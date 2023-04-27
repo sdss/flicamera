@@ -15,7 +15,6 @@ from flicamera.mock import MockLibFLI
 
 
 def test_libfi_load(libfli: MockLibFLI):
-
     assert isinstance(libfli, flicamera.lib.LibFLI)
     assert isinstance(libfli.libc, MockLibFLI)
 
@@ -24,12 +23,10 @@ def test_libfi_load(libfli: MockLibFLI):
 
 
 def test_list_cameras(libfli):
-
     assert len(libfli.list_cameras()) > 0
 
 
 def test_get_camera(libfli, config):
-
     cameras_dict = config["cameras"]
 
     for camera_name in cameras_dict:
@@ -40,18 +37,15 @@ def test_get_camera(libfli, config):
 
 
 def test_bad_camera(libfli):
-
     with pytest.raises(flicamera.lib.FLIError):
         flicamera.lib.LibFLIDevice("bad_name", libfli)
 
 
 def test_get_camera_bad_serial(libfli):
-
     assert libfli.get_camera("BADSERIAL") is None
 
 
 def test_exposure_time_left(cameras):
-
     assert len(cameras) > 0
     assert all(cameras)
 
@@ -69,7 +63,6 @@ def test_exposure_time_left(cameras):
 
 
 def test_read_temperature(cameras):
-
     camera = cameras[0]  # FLIDevice object
     device = camera.libc.devices[0]  # MockFLIDevice object
 
@@ -78,7 +71,6 @@ def test_read_temperature(cameras):
 
 
 def test_cooler_power(cameras):
-
     camera = cameras[0]
     device = camera.libc.devices[0]
 
@@ -88,7 +80,6 @@ def test_cooler_power(cameras):
 
 
 def test_set_temperature(cameras):
-
     camera = cameras[0]
 
     temp_initial = camera.temperature["CCD"]
@@ -100,7 +91,6 @@ def test_set_temperature(cameras):
 
 
 def test_get_visible_area(cameras):
-
     camera = cameras[0]
     device = camera.libc.devices[0]
 
@@ -113,7 +103,6 @@ def test_get_visible_area(cameras):
 
 
 def test_read_frame(cameras):
-
     camera = cameras[0]
 
     camera.set_exposure_time(0.1)

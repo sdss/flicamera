@@ -139,7 +139,6 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
         write_snapshot: bool = self.camera_params.get("write_snapshot", True)
 
         if write_snapshot is True:
-
             snapshot = copy(exposure)
 
             assert snapshot.data is not None and snapshot.filename is not None
@@ -231,7 +230,6 @@ class FLICamera(BaseCamera, ExposureTypeMixIn, CoolerMixIn, ImageAreaMixIn):
         time_left = exposure.exptime
 
         while True:
-
             await asyncio.sleep(time_left)
 
             time_left = device.get_exposure_time_left() / 1000.0
@@ -304,7 +302,6 @@ class FLICameraSystem(CameraSystem[FLICamera]):
     camera_class = FLICamera
 
     def __init__(self, *args, simulation_mode: bool = False, **kwargs):
-
         self.camera_class: Type[FLICamera] = kwargs.pop("camera_system", FLICamera)
         super().__init__(*args, **kwargs)
 
@@ -319,7 +316,6 @@ class FLICameraSystem(CameraSystem[FLICamera]):
         return super().setup()
 
     def list_available_cameras(self) -> List[str]:
-
         if self.lib is None:
             return []
 
