@@ -13,8 +13,9 @@ import glob
 import os
 import shutil
 import sys
-from distutils.command.build_ext import build_ext  # type: ignore
-from distutils.core import Distribution, Extension
+
+from setuptools import Distribution, Extension
+from setuptools.command.build_ext import build_ext
 
 
 LIBFLI_PATH = os.path.join(os.path.dirname(__file__), "cextern/libfli-1.999.1-180223")

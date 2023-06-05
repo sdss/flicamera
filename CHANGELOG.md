@@ -1,5 +1,12 @@
 # Changelog
 
+## Next version
+
+### ⚙️ Engineering
+
+* Migrate from `distutils` to `setuptools` to build the C extension.
+
+
 ## 0.6.0, December 24, 2022
 
 ### ✨ Improved
