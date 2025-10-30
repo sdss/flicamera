@@ -2,6 +2,10 @@
 
 ## Next version
 
+### 🏷️ Changed
+
+* Updated active S/N of cameras at LCO after replacement of GFA1 in October 2025.
+
 ### ⚙️ Engineering
 
 * Migrate from `distutils` to `setuptools` to build the C extension.

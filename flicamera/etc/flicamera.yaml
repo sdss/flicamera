@@ -91,8 +91,8 @@ cameras:
   #   find_calibrations: false
   #   sextant: 6
   gfa1s:
-    uid: ML0172718
-    serial: ML0172718
+    uid: ML0112718
+    serial: ML0112718
     autoconnect: true
     gain: 1.46
     read_noise: 17.2
@@ -144,6 +144,15 @@ cameras:
     observatory: LCO
     find_calibrations: false
     sextant: 6
+  # gfa1s: # Replaced in October 2025
+  #   uid: ML0172718
+  #   serial: ML0172718
+  #   autoconnect: true
+  #   gain: 1.46
+  #   read_noise: 17.2
+  #   observatory: LCO
+  #   find_calibrations: false
+  #   sextant: 1
   fvc1n:
     uid: ML3331819
     serial: ML3331819
