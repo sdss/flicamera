@@ -47,7 +47,7 @@ def get_sources():
 
 
 extra_compile_args = ["-O3", "-fPIC", "-g"]
-extra_link_args = []
+extra_link_args = ["-nostartfiles"]
 
 # Do not use libusb on RTD because it makes the build fail.
 # This still creates a usable library and we are mocking the device anyway.
