@@ -262,11 +262,11 @@ _API_FUNCTION_PROTOTYPES = [
     (
         "FLIListFirst",
         [POINTER(flidomain_t), c_char_p, c_size_t, c_char_p, c_size_t],
-    ),  # (flidomain_t *domain, char *filename,size_t fnlen, char *name, size_t namelen);
+    ),  # (flidomain_t *domain, char *filename,size_t fnlen, char *name, size_t namelen);  # noqa E501
     (
         "FLIListNext",
         [POINTER(flidomain_t), c_char_p, c_size_t, c_char_p, c_size_t],
-    ),  # (flidomain_t *domain, char *filename,size_t fnlen, char *name, size_t namelen);
+    ),  # (flidomain_t *domain, char *filename,size_t fnlen, char *name, size_t namelen); # noqa E501
     (
         "FLIControlBackgroundFlush",
         [flidev_t, flibgflush_t],
@@ -322,7 +322,7 @@ _API_FUNCTION_PROTOTYPES = [
     (
         "FLIGetReadoutDimensions",
         [flidev_t, c_long_p, c_long_p, c_long_p, c_long_p, c_long_p, c_long_p],
-    ),  # (flidev_t dev, long *width, long *hoffset, long *hbin, long *height, long *voffset, long *vbin);
+    ),  # (flidev_t dev, long *width, long *hoffset, long *hbin, long *height, long *voffset, long *vbin);  # noqa E501
     (
         "FLIEnableVerticalTable",
         [flidev_t, c_long, c_long, c_long],

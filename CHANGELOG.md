@@ -10,6 +10,7 @@
 
 * Migrate from `distutils` to `setuptools` to build the C extension.
 * Use `uv` to manage Python dependencies.
+* Lint and format code with `ruff`.
 
 
 ## 0.6.0, December 24, 2022

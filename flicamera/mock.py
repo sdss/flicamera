@@ -19,11 +19,8 @@ from typing import Any, Dict, List, Optional, Union
 import astropy.io.fits
 import astropy.table
 import numpy
-from photutils.datasets import (
-    apply_poisson_noise,
-    make_gaussian_sources_image,
-    make_noise_image,
-)
+from astropy.modeling.models import Gaussian2D
+from photutils.datasets import apply_poisson_noise, make_model_image, make_noise_image
 
 import flicamera.lib
 
@@ -243,10 +240,7 @@ class MockFLIDevice(object):
                 param_ranges = exposure_params["sources"]["param_ranges"]
                 source_table = get_source_table(param_ranges, n_sources)
 
-            source_image = make_gaussian_sources_image(
-                image.shape,
-                source_table=source_table,
-            )
+            source_image = make_model_image(image.shape, Gaussian2D, source_table)
             source_image *= self.state["exposure_time"] / 1000.0
             image += source_image
 

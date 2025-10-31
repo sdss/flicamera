@@ -19,15 +19,14 @@ from typing import Any, Dict, List, Optional, Tuple, Type
 
 import astropy.time
 from astropy.io import fits
-
 from basecam import BaseCamera, CameraEvent, CameraSystem, Exposure
 from basecam.exceptions import CameraConnectionError, ExposureError
 from basecam.mixins import CoolerMixIn, ExposureTypeMixIn, ImageAreaMixIn
+
 from sdsstools.time import get_sjd
 
-from flicamera import OBSERVATORY
+from flicamera import OBSERVATORY, config
 from flicamera import __version__ as flicamera_version
-from flicamera import config
 from flicamera.lib import FLIError, FLIWarning, LibFLI, LibFLIDevice
 from flicamera.model import flicamera_model
 
