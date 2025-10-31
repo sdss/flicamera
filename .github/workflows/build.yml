@@ -66,6 +66,6 @@ jobs:
           LIBCURL_CFLAGS: -I/opt/homebrew/include
           LIBCURL_LIBS: -L/opt/homebrew/lib
 
-      # - name: Test flicamera
-      #   run: |
-      #     uv run flicamera status
+      - name: Test flicamera
+        run: |
+          uv run python -c "import flicamera.lib as lib; assert lib.LibFLI() is not None"
