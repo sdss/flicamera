@@ -1,4 +1,4 @@
-sphinx~=8.0.0
+sphinx>=8.0.0
 sphinx-click>=3.0.0
 sphinx-jsonschema>=1.16.7
 sphinx-copybutton>=0.3.1
