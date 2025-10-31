@@ -63,8 +63,8 @@ jobs:
         run: |
           uv sync --no-dev --frozen
         env:
-          LIBCURL_CFLAGS: -I/opt/homebrew/include
-          LIBCURL_LIBS: -L/opt/homebrew/lib
+          CFLAGS: -I/opt/homebrew/include
+          LDFLAGS: -L/opt/homebrew/lib
 
       - name: Test flicamera
         run: |
