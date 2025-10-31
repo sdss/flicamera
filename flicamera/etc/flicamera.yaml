@@ -145,7 +145,7 @@ cameras:
     observatory: LCO
     find_calibrations: false
     sextant: 6
-  # gfa1s: # Replaced in October 2025
+  # gfa1s: # Removed in October 2025
   #   uid: ML0172718
   #   serial: ML0172718
   #   autoconnect: true
