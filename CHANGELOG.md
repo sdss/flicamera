@@ -9,6 +9,7 @@
 ### ⚙️ Engineering
 
 * Migrate from `distutils` to `setuptools` to build the C extension.
+* Use `uv` to manage Python dependencies.
 
 
 ## 0.6.0, December 24, 2022

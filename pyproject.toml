@@ -1,86 +1,76 @@
-[tool.poetry]
+[project]
 name = "sdss-flicamera"
 version = "0.6.1a0"
 description = "A library to control Finger Lakes Instrumentation cameras."
-authors = ["José Sánchez-Gallego <gallegoj@uw.edu>"]
+authors = [
+    {name = "José Sánchez-Gallego", email = "gallegoj@uw.edu"}
+]
 license = "BSD-3-Clause"
 readme = "README.md"
-homepage = "https://github.com/sdss/flicamera"
-repository = "https://github.com/sdss/flicamera"
-documentation = "https://sdss-flicamera.readthedocs.io/en/latest/"
-keywords = ["astronomy", "software"]
-classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Science/Research",
-    "Natural Language :: English",
-    "Operating System :: OS Independent",
-    "Topic :: Documentation :: Sphinx",
-    "Topic :: Software Development :: Libraries :: Python Modules"
-]
-packages = [
-    { include = "flicamera" }
-]
-include = [
-    {path = "flicamera/etc/*"},
-    {path = "cextern/**/*", format='sdist'},
-    {path = "flicamera/*.so", format = "wheel"}
+
+requires-python = ">=3.10"
+dependencies = [
+    "sdss-basecam>=0.8.2",
+    "sdsstools>=1.9.2",
+    "click_default_group>=1.2.2",
+    "photutils>=1.2.0",
+    "scipy>=1.9.0"
 ]
 
-[tool.poetry.build]
-script = "build.py"
-generate-setup-file = false
+[project.urls]
+Homepage = "https://github.com/sdss/flicamera"
+Repository = "https://github.com/sdss/flicamera"
+Documentation = "https://sdss-flicamera.readthedocs.io/en/latest/"
 
-[tool.poetry.scripts]
+[project.scripts]
 flicamera = "flicamera.__main__:main"
 
-[tool.poetry.dependencies]
-python = "^3.8,<4.0"
-sdss-basecam = "^0.7.2"
-sdsstools = ">=0.5.2"
-click_default_group = "^1.2.2"
-photutils = "^1.0.2"
-scipy = "^1.9.1"
+[dependency-groups]
+dev = [
+    "ipython>=8.0.0",
+    "matplotlib>=3.1.1",
+    "doc8>=0.8.0",
+    "pytest>=8.0.0",
+    "pytest-asyncio>=1.2.0",
+    "pytest-cov>=2.8.1",
+    "pytest-mock>=1.13.0",
+    "pytest-sugar>=0.9.2",
+    "coverage[toml]>=5.0",
+    "ipdb>=0.12.3",
+    "taskipy>=1.1.2",
+    "Sphinx>=4.0.0",
+    "sphinx-copybutton>=0.3.1",
+    "sphinx-click>=2.3.0",
+    "myst-parser>=0.14.0",
+    "furo>=2025.9.25",
+    "setuptools>=80.9.0",
+]
 
-[tool.poetry.dev-dependencies]
-ipython = ">=8.0.0"
-matplotlib = ">=3.1.1"
-flake8 = ">=3.7.9"
-doc8 = ">=0.8.0"
-pytest = ">=5.2.2"
-pytest-asyncio = ">=0.10.0"
-pytest-cov = ">=2.8.1"
-pytest-mock = ">=1.13.0"
-pytest-sugar = ">=0.9.2"
-isort = ">=4.3.21"
-codecov = ">=2.0.15"
-coverage = {version = ">=5.0", extras = ["toml"]}
-ipdb = ">=0.12.3"
-taskipy = ">=1.1.2"
-autopep8 = ">=1.5.4"
-Sphinx = ">=4.0.0"
-sphinx-copybutton = ">=0.3.1"
-sphinx-click = ">=2.3.0"
-black = {version = ">=20.8b1", allow-prereleases = true}
-myst-parser = {version = ">=0.14.0"}
-furo = ">=2021.7.5-beta.38"
-
-[tool.black]
+[tool.ruff]
 line-length = 88
-target-version = ['py38']
-fast = true
+target-version = 'py312'
 
-[tool.isort]
-profile = "black"
-sections = ["FUTURE", "STDLIB", "TYPING", "THIRDPARTY", "SDSS", "FIRSTPARTY", "LOCALFOLDER"]
-default_section = "THIRDPARTY"
-known_first_party = "archon"
-known_typing = ["typing"]
-known_sdss = ["sdsstools", "clu", "basecam"]
-lines_after_imports = 2
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+unfixable = ["F841"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F403", "E402", "F401"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["gort"]
+lines-after-imports = 2
+section-order = ["future", "standard-library", "typing", "third-party", "sdss", "first-party", "local-folder"]
+
+[tool.ruff.lint.isort.sections]
+typing = ["typing"]
+sdss = ["sdsstools", "clu", "lvmopstools"]
+
 
 [tool.pytest.ini_options]
 addopts = "--cov flicamera --cov-report xml --cov-report html --cov-report term"
 asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 
 [tool.coverage.run]
 branch = true
@@ -93,5 +83,15 @@ omit = [
 ]
 
 [build-system]
-requires = ["poetry-core>=1.1.0", "setuptools>=67.8.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tools.setuptools]
+include_package_data = false
+
+[tool.setuptools.packages.find]
+include = ["flicamera*"]
+exclude = ["tests", "tests.*"]
+
+[tool.setuptools.package-data]
+flicamera = ["etc/*"]
