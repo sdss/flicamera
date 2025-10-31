@@ -15,7 +15,6 @@ from typing import Any, Dict, Optional
 
 from basecam.actor import CameraActor
 from basecam.events import CameraEvent, CameraSystemEvent
-
 from clu import Command
 from clu.legacy import TronConnection
 

@@ -59,13 +59,13 @@ unfixable = ["F841"]
 "__init__.py" = ["F403", "E402", "F401"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["gort"]
+known-first-party = ["flicamera"]
 lines-after-imports = 2
 section-order = ["future", "standard-library", "typing", "third-party", "sdss", "first-party", "local-folder"]
 
 [tool.ruff.lint.isort.sections]
 typing = ["typing"]
-sdss = ["sdsstools", "clu", "lvmopstools"]
+sdss = ["sdsstools", "clu", "basecam"]
 
 
 [tool.pytest.ini_options]
