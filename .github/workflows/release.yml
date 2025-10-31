@@ -12,14 +12,14 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -49,32 +49,28 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
-      - name: Create Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create release
+        uses: taiki-e/create-gh-release-action@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: flicamera ${{ github.ref }}
-          body: ''
-          draft: false
-          prerelease: false
+          title: flicamera $version
+          changelog: CHANGELOG.md
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
-          python-version: 3.8
+          python-version: 3.12
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel twine build
 
       - name: Build wheels
-        uses: RalfG/python-wheels-manylinux-build@v0.6.0
+        uses: RalfG/python-wheels-manylinux-build@v0.7.1
         with:
-          python-versions: 'cp38-cp38 cp39-cp39 cp310-cp310 cp310-cp310 cp311-cp311'
+          python-versions: 'cp310-cp310 cp310-cp310 cp311-cp311 cp312-cp312 cp313-cp313 cp314-cp314'
           system-packages: 'libusbx libusbx-devel'
 
       - name: List files
