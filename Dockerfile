@@ -1,6 +1,7 @@
-FROM ubuntu:20.04
+FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim
 
-LABEL maintainer="gallegoj@uw.edu"
+LABEL org.opencontainers.image.authors="Jose Sanchez-Gallego, gallegoj@uw.edu"
+LABEL org.opencontainers.image.source=https://github.com/sdss/flicamera
 
 WORKDIR /opt
 
@@ -11,9 +12,13 @@ RUN apt-get -y install libusb-1.0-0 libusb-1.0-0-dev python3 python3-pip git gzi
 
 COPY . flicamera
 
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
+
 RUN rm -f flicamera/libfli*.so
-RUN pip3 install -U pip wheel setuptools
-RUN cd flicamera && pip3 install .
+
+ENV PATH="$PATH:/opt/flicamera/.venv/bin"
+RUN cd flicamera && uv sync --frozen --no-cache
 
 # This is the default port but the real port can be changed when
 # starting the service.
@@ -22,9 +27,6 @@ EXPOSE 19995
 # Default actor name. Can be overriden when running the container.
 ENV ACTOR_NAME=flicamera
 ENV PYTHONPATH=/home/sdss5/software/actorkeys/sdss5/python
-
-# Connect repo to package
-LABEL org.opencontainers.image.source https://github.com/sdss/flicamera
 
 # Need to use --host 0.0.0.0 because the container won't listen to 127.0.0.1
 # See https://bit.ly/2HUwEms
