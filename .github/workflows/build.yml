@@ -68,4 +68,4 @@ jobs:
 
       - name: Test flicamera
         run: |
-          uv run python -c "import flicamera.lib as lib; assert lib.LibFLI() is not None"
+          uv run --no-dev python -c "import flicamera.lib as lib; assert lib.LibFLI() is not None"
