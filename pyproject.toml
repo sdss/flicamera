@@ -67,7 +67,6 @@ section-order = ["future", "standard-library", "typing", "third-party", "sdss", 
 typing = ["typing"]
 sdss = ["sdsstools", "clu", "basecam"]
 
-
 [tool.pytest.ini_options]
 addopts = "--cov flicamera --cov-report xml --cov-report html --cov-report term"
 asyncio_mode = "auto"
@@ -87,12 +86,15 @@ omit = [
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
-[tools.setuptools]
-include_package_data = false
+[tool.setuptools]
+include-package-data = false
 
 [tool.setuptools.packages.find]
 include = ["flicamera*"]
 exclude = ["tests", "tests.*"]
 
 [tool.setuptools.package-data]
-flicamera = ["etc/*"]
+flicamera = ["etc/*", "cextern/**/*"]
+
+[tool.setuptools.exclude-package-data]
+"flicamera.cextern" = ["*.pdf"]

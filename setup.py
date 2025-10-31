@@ -11,9 +11,13 @@
 
 import glob
 import os
+import shutil
 import sys
+import tempfile
+import zipfile
 
 from setuptools import Extension, setup
+from setuptools.command.bdist_wheel import bdist_wheel
 
 
 LIBFLI_PATH = "flicamera/cextern/libfli-1.999.1-180223"
@@ -43,7 +47,7 @@ def get_sources():
 
 
 extra_compile_args = ["-O3", "-fPIC", "-g"]
-extra_link_args = ["-nostartfiles"]
+extra_link_args = []
 
 # Do not use libusb on RTD because it makes the build fail.
 # This still creates a usable library and we are mocking the device anyway.
@@ -51,6 +55,45 @@ if RTD:
     libraries = ["m"]
 else:
     libraries = ["m", "usb-1.0"]
+
+
+class CustomWheelCommand(bdist_wheel):
+    """Custom wheel command to remove cextern files from the wheel."""
+
+    def run(self):
+        super().run()  # Create wheel normally
+
+        # Now we read the wheel file and re-create it without the cextern files.
+        dist_dir = self.dist_dir
+        if dist_dir is None:
+            return
+
+        for fname in os.listdir(dist_dir):
+            if not fname.endswith(".whl"):
+                continue
+            wheel_path = os.path.join(dist_dir, fname)
+            tmp_fd, tmp_path = tempfile.mkstemp(suffix=".whl")
+            os.close(tmp_fd)
+            try:
+                with (
+                    zipfile.ZipFile(wheel_path, "r") as zin,
+                    zipfile.ZipFile(
+                        tmp_path,
+                        "w",
+                        compression=zipfile.ZIP_DEFLATED,
+                    ) as zout,
+                ):
+                    prefix = "flicamera/cextern/"
+                    for item in zin.infolist():
+                        if item.filename.startswith(prefix):
+                            # skip cextern files
+                            continue
+                        data = zin.read(item.filename)
+                        zout.writestr(item, data)
+                shutil.move(tmp_path, wheel_path)
+            finally:
+                if os.path.exists(tmp_path):
+                    os.remove(tmp_path)
 
 
 ext_modules = [
@@ -68,4 +111,4 @@ ext_modules = [
 ]
 
 
-setup(ext_modules=ext_modules)
+setup(ext_modules=ext_modules, cmdclass={"bdist_wheel": CustomWheelCommand})

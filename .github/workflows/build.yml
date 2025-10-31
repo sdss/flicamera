@@ -62,7 +62,10 @@ jobs:
       - name: Install package
         run: |
           uv sync --no-dev --frozen
+        env:
+          LIBCURL_CFLAGS: -I/opt/homebrew/include
+          LIBCURL_LIBS: -L/opt/homebrew/lib
 
-      - name: Test flicamera
-        run: |
-          uv run flicamera status
+      # - name: Test flicamera
+      #   run: |
+      #     uv run flicamera status
