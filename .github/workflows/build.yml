@@ -1,9 +1,16 @@
 name: Build
+
 on:
   push:
-    paths:
-      - build.py
+    branches:
+      - main
+    tags:
+      - '*'
+    paths-ignore:
+      - 'docs/**'
   pull_request:
+    branches:
+      - main
 
 jobs:
   build:
