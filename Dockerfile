@@ -20,6 +20,9 @@ RUN rm -f flicamera/libfli*.so
 ENV PATH="$PATH:/opt/flicamera/.venv/bin"
 RUN cd flicamera && uv sync --frozen --no-cache
 
+# Remove cextern to save space
+RUN rm -rf flicamera/flicamera/cextern
+
 # This is the default port but the real port can be changed when
 # starting the service.
 EXPOSE 19995
