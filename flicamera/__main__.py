@@ -195,7 +195,7 @@ def flicamera(ctx, cameras, config_path, simulate, simulation_profile, verbose):
     "--host",
     type=str,
     show_envvar=True,
-    help="The host on which the actor will run. " "Defaults to localhost.",
+    help="The host on which the actor will run. Defaults to localhost.",
 )
 @click.option(
     "-p",

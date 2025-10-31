@@ -44,6 +44,7 @@ dev = [
     "myst-parser>=0.14.0",
     "furo>=2025.9.25",
     "setuptools>=80.9.0",
+    "ruff>=0.14.3",
 ]
 
 [tool.ruff]
