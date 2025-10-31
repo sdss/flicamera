@@ -90,7 +90,8 @@ cameras:
   #   observatory: APO
   #   find_calibrations: false
   #   sextant: 6
-  gfa1s:
+  gfa1s: # Replaced in October 2025. This is the original GFA1
+    # from APO that failed and was replaced.
     uid: ML0112718
     serial: ML0112718
     autoconnect: true
