@@ -2633,7 +2633,7 @@ wheels = [
 
 [[package]]
 name = "sdss-flicamera"
-version = "0.7.1a1"
+version = "0.7.1"
 source = { editable = "." }
 dependencies = [
     { name = "click-default-group" },
