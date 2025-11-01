@@ -1,5 +1,12 @@
 # Changelog
 
+## Next release
+
+### 🔧 Fixed
+
+* Update `LDFLAGS` and `CFLAGS` to build wheels on macOS with Homebrew-installed libraries in the release workflow.
+
+
 ## 0.7.0 - November 1, 2025
 
 ### 🏷️ Changed
