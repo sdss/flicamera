@@ -1,6 +1,6 @@
 [project]
 name = "sdss-flicamera"
-version = "0.6.1a0"
+version = "0.7.0"
 description = "A library to control Finger Lakes Instrumentation cameras."
 authors = [
     {name = "José Sánchez-Gallego", email = "gallegoj@uw.edu"}
