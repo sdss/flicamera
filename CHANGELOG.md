@@ -1,6 +1,6 @@
 # Changelog
 
-## Next release
+## 0.7.2 - November 2, 2025
 
 ### 🔧 Fixed
 
