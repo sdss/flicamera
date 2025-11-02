@@ -1,5 +1,12 @@
 # Changelog
 
+## Next release
+
+### 🔧 Fixed
+
+* Update the `RECORD` file in wheels to reflect the deleted `cextern` files.
+
+
 ## 0.7.1 - November 1, 2025
 
 ### 🔧 Fixed

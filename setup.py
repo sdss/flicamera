@@ -85,11 +85,25 @@ class CustomWheelCommand(bdist_wheel):
                 ):
                     prefix = "flicamera/cextern/"
                     for item in zin.infolist():
+                        # Recreate the RECORD file without cextern files
+                        if item.filename.endswith("RECORD"):
+                            record_data = zin.read(item.filename).decode("utf-8")
+                            new_record_lines = []
+                            for line in record_data.splitlines():
+                                if line.startswith(prefix):
+                                    continue
+                                new_record_lines.append(line)
+                            new_record = "\n".join(new_record_lines) + "\n"
+                            zout.writestr(item, new_record.encode("utf-8"))
+                            continue
+
+                        # Do not include cextern files
                         if item.filename.startswith(prefix):
                             # skip cextern files
                             continue
                         data = zin.read(item.filename)
                         zout.writestr(item, data)
+
                 shutil.move(tmp_path, wheel_path)
             finally:
                 if os.path.exists(tmp_path):
