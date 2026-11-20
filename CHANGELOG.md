@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.3 - November 20, 2026
+
+### 🏷️ Changed
+
+* Updated gain and read noise values for all GFAs based on flat and bias analysis.
+
 ## 0.7.2 - November 2, 2025
 
 ### 🔧 Fixed

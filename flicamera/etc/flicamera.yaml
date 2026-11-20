@@ -22,8 +22,8 @@ cameras:
     uid: ML0162718
     serial: ML0162718
     autoconnect: true
-    gain: 0.91
-    read_noise: 16.3
+    gain: 1.40
+    read_noise: 26.0
     observatory: APO
     find_calibrations: false
     sextant: 1
@@ -31,8 +31,8 @@ cameras:
     uid: ML0122718
     serial: ML0122718
     autoconnect: true
-    gain: 1.48
-    read_noise: 15.2
+    gain: 1.45
+    read_noise: 15.0
     observatory: APO
     find_calibrations: false
     sextant: 2
@@ -40,8 +40,8 @@ cameras:
     uid: ML0132718
     serial: ML0132718
     autoconnect: true
-    gain: 1.45
-    read_noise: 15.2
+    gain: 1.44
+    read_noise: 15.0
     observatory: APO
     find_calibrations: false
     sextant: 3
@@ -49,8 +49,8 @@ cameras:
     uid: ML0142718
     serial: ML0142718
     autoconnect: true
-    gain: 1.11
-    read_noise: 15.0
+    gain: 1.15
+    read_noise: 14.5
     observatory: APO
     find_calibrations: false
     sextant: 4
@@ -58,8 +58,8 @@ cameras:
     uid: ML0192718
     serial: ML0192718
     autoconnect: true
-    gain: 1.47
-    read_noise: 15.9
+    gain: 1.44
+    read_noise: 15.4
     observatory: APO
     find_calibrations: false
     sextant: 5
@@ -67,8 +67,8 @@ cameras:
     uid: ML0044718
     serial: ML0044718
     autoconnect: true
-    gain: 1.46
-    read_noise: 14.9
+    gain: 1.44
+    read_noise: 14.6
     observatory: APO
     find_calibrations: false
     sextant: 6
@@ -95,8 +95,8 @@ cameras:
     uid: ML0112718
     serial: ML0112718
     autoconnect: true
-    gain: 1.46
-    read_noise: 17.2
+    gain: 1.11
+    read_noise: 15.3
     observatory: LCO
     find_calibrations: false
     sextant: 1
@@ -104,8 +104,8 @@ cameras:
     uid: ML0024718
     serial: ML0024718
     autoconnect: true
-    gain: 1.51
-    read_noise: 15.2
+    gain: 1.49
+    read_noise: 15.0
     observatory: LCO
     find_calibrations: false
     sextant: 2
@@ -113,7 +113,7 @@ cameras:
     uid: ML0034718
     serial: ML0034718
     autoconnect: true
-    gain: 1.44
+    gain: 1.45
     read_noise: 15.0
     observatory: LCO
     find_calibrations: false
@@ -122,8 +122,8 @@ cameras:
     uid: ML0202718
     serial: ML0202718
     autoconnect: true
-    gain: 1.50
-    read_noise: 16.7
+    gain: 1.54
+    read_noise: 16.3
     observatory: LCO
     find_calibrations: false
     sextant: 4
@@ -131,8 +131,8 @@ cameras:
     uid: ML0102718
     serial: ML0102718
     autoconnect: true
-    gain: 1.53
-    read_noise: 15.5
+    gain: 1.46
+    read_noise: 15.0
     observatory: LCO
     find_calibrations: false
     sextant: 5
@@ -140,7 +140,7 @@ cameras:
     uid: ML0014718
     serial: ML0014718
     autoconnect: true
-    gain: 1.49
+    gain: 1.56
     read_noise: 14.7
     observatory: LCO
     find_calibrations: false
